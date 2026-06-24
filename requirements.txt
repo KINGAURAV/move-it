@@ -1,0 +1,11 @@
+numpy
+pandas
+mlflow
+scikit-learn
+joblib
+kafka-python
+requests
+streamlit
+matplotlib
+fastapi
+uvicorn[standard]
