@@ -46,10 +46,10 @@ move-it/
 ├── 01_vayu_workspaces/       # Vayu AI Studio workspace allocation
 ├── 02_vayu_mlflow/           # MLflow experiment tracking
 ├── 03_vayu_kafka/            # Kafka topic configuration & streaming
-├── 04_starter-kit/           # Ingestion API (Flask) & ML Training (Notebook)
+├── 04_starter-kit/           # ML training notebook
 ├── 05_model_registry/        # Model versioning & metadata
 ├── 06_deploy_model/          # Model deployment to Vayu ML Service
-└── 07_build_app/             # Streamlit Dashboard + Integrated Simulator
+└── 07_build_app/             # FastAPI ingest + Streamlit dashboard + simulator
 ```
 
 | Step | Vayu service | Folder | What to run / open |
@@ -58,10 +58,10 @@ move-it/
 | 1 | **Vayu AI Studio Workspace** | `01_vayu_workspaces/` | `README.md` — setup environment |
 | 2 | **Vayu MLflow** | `02_vayu_mlflow/` | `README.md` — track training runs |
 | 3 | **Vayu Kafka** | `03_vayu_kafka/` | `README.md` — provision topics |
-| 4 | **Data Pipeline & ML Lab** | `04_starter-kit/` | Flask API + Jupyter training notebook |
+| 4 | **Data Pipeline & ML Lab** | `04_starter-kit/` | Jupyter training notebook (`train_model.ipynb`) |
 | 5 | **Vayu Model Registry** | `05_model_registry/` | `README.md` — register trained models |
 | 6 | **Vayu ML Service** | `06_deploy_model/` | `README.md` — deploy model endpoint |
-| 7 | **Vayu Realtime Inference** | `07_build_app/` | Streamlit Dashboard (with built-in simulator) |
+| 7 | **Vayu Realtime Inference** | `07_build_app/` | FastAPI ingest + Streamlit dashboard (built-in simulator) |
 
 ---
 
@@ -97,9 +97,9 @@ move-it/
 
 ### What this code does
 
-1. **Data Ingestion** — Flask API receives HTTP POST from simulated sensors and pushes to Kafka.
-2. **ML Pipeline** — Jupyter consumer reads Kafka, processes features, and trains a Random Forest model.
-3. **Dashboard** — Streamlit UI displays live telemetry and predictions. Includes a **built-in simulator** to mimic sensor data.
+1. **Data Ingestion** — FastAPI gateway (`07_build_app/ingestion_api.py`) receives HTTP POST from the simulator and pushes to Kafka.
+2. **ML Pipeline** — Jupyter notebook trains the model (`04_starter-kit/train_model.ipynb`).
+3. **Dashboard** — Streamlit UI (`07_build_app/app.py`) consumes Kafka, runs ML inference, and shows live telemetry. Includes a **built-in simulator** (no separate ESP32 required for the demo).
 
 ### Minimal run
 
@@ -109,21 +109,33 @@ move-it/
    pip install -r requirements.txt
    ```
 
-2. **Start the Ingestion API**
-   ```bash
-   # Ensure your KAFKA_BROKER env var is set
-   python 04_starter-kit/ingestion_api.py
-   ```
-
-3. **Run Training**
+2. **Run training (once)**
    Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio and run all cells.
 
-4. **Launch Dashboard & Simulator**
+3. **Launch the realtime pipeline** (`07_build_app/`)
+
+   **Terminal 1 — ingestion API**
    ```bash
    cd 07_build_app
+   export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
+   export KAFKA_USER="<VAYU_KAFKA_USER>"
+   export KAFKA_PASS="<VAYU_KAFKA_PASS>"
+   python ingestion_api.py
+   ```
+
+   **Terminal 2 — dashboard + simulator**
+   ```bash
+   cd 07_build_app
+   export INGEST_API_URL="http://127.0.0.1:5000/ingest"
+   export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
+   export KAFKA_USER="<VAYU_KAFKA_USER>"
+   export KAFKA_PASS="<VAYU_KAFKA_PASS>"
    streamlit run app.py
    ```
-   *Once open, click **▶️ Start Simulation** in the sidebar.*
+
+   Click **Start Simulation** in the Streamlit sidebar.
+
+   **Or run both in one Docker container** — see [`07_build_app/README.md`](07_build_app/README.md).
 
 ---
 

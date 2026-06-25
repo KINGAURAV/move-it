@@ -447,6 +447,4 @@ with st.sidebar:
     live_status()
 
 st.sidebar.divider()
-st.sidebar.write(f"Model: {model_bundle.get('source', 'unknown')}")
-st.sidebar.write(f"Broker: {KAFKA_BROKER}")
 st.sidebar.write(f"Topic: {KAFKA_TOPIC}")
