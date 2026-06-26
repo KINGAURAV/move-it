@@ -1,28 +1,35 @@
 # Step 6 — Deploy Model
 
-**Move-It** › **Vayu ML Service** · `06_deploy_model/`
+**Move-It** › **Vayu Model Serving** · `06_deploy_model/`
 
-|| |
+| | |
 |---|---|
 | **⬅ Previous** | [Step 5 — Model Registry](../05_model_registry/) |
 | **Next ➡**     | [Step 7 — Build App →](../07_build_app/) |
 
-Deploy your registered model to the **Vayu ML Service** to create a production-ready REST endpoint for your irrigation prediction.
+Deploy your registered model with **Vayu Model Serving** to create a production-ready REST endpoint for irrigation prediction.
+
+---
+
+## Open Model Serving
+
+Go to [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list).
 
 ---
 
 ## Quick Start
 
-1. **Select Model:** In the ML Service wizard, pick the model you registered in [Step 5](../05_model_registry/).
-2. **Configure Endpoint:** Set the input schema (e.g., `temp`, `humidity`) and output format.
-3. **Deploy:** Submit the deployment and wait for the **Ready** status.
-4. **Test:** Use the provided endpoint URL to send a test request and get a prediction.
+1. **Create a deployment:** On the [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list) page, start a new deployment.
+2. **Select Predictive AI:** Choose **Predictive AI** as the serving type.
+3. **Predictor config:** Select the model and version you registered in [Step 5](../05_model_registry/).
+4. **Deploy:** Submit the deployment and wait for the **Ready** status.
+5. **Test:** Use the provided predict URL (e.g., `https://<url>/v1/models/<model-name>:predict`) to send a test request. The **model name** can be retrieved from the `/v1/models` endpoint on your serving URL. You will need the full predict URL in [Step 7](../07_build_app/).
 
 ---
 
 ## Navigation
 
-|| |
+| | |
 |---|---|
 | **⬅ Previous** | [Step 5 — Model Registry](../05_model_registry/) |
 | **Next ➡**     | [Step 7 — Build App →](../07_build_app/) |

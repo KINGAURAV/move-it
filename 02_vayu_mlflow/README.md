@@ -2,27 +2,34 @@
 
 **Move-It** › **Vayu MLflow** · `02_vayu_mlflow/`
 
-|| |
+| | |
 |---|---|
-| **Previous** | [← Step 1 — Vayu AI Studio Workspace](../01_vayu_workspaces/) |
+| **Previous** | [← Step 1 — Vayu Object Storage](../01_dataset/) |
 | **Next**     | [Step 3 — Vayu Kafka →](../03_vayu_kafka/) |
 
-Use **Vayu MLflow** to track your Random Forest experiments, log parameters (e.g., `max_depth`), and monitor metrics (e.g., `accuracy`) during training.
+Deploy a managed **Vayu MLflow** instance to track training experiments, parameters, and metrics in later steps.
+
+---
+
+## Open MLflow
+
+Go to [Vayu MLflow](https://ipcloud.tatacommunications.com/aistudio/#/experiment/managed-mlflow-list).
 
 ---
 
 ## Quick Start
 
-1. **Configure MLflow:** Set your tracking URI in the training notebook (`04_starter-kit/train_model.ipynb`).
-2. **Run Experiments:** Every time you run the training pipeline, a new "run" will be logged.
-3. **View Results:** Access the MLflow UI in Vayu AI Studio to compare different model versions and decision trees.
+1. **Deploy Vayu MLflow:** Create a new managed MLflow deployment on the [Vayu MLflow](https://ipcloud.tatacommunications.com/aistudio/#/experiment/managed-mlflow-list) page.
+2. **Configure S3 and database:** Fill in your object storage (S3) credentials and database settings in the deployment wizard.
+3. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
+4. **Note the tracking URI:** You will use this URI in [Step 4](../04_starter-kit/) when training and logging runs.
 
 ---
 
 ## Navigation
 
-|| |
+| | |
 |---|---|
-| **Previous** | [← Step 1 — Vayu AI Studio Workspace](../01_vayu_workspaces/) |
+| **Previous** | [← Step 1 — Vayu Object Storage](../01_dataset/) |
 | **Next**     | [Step 3 — Vayu Kafka →](../03_vayu_kafka/) |
 | **Overview** | [Move-It overview](../README.md) |

@@ -24,7 +24,7 @@ from sklearn.preprocessing import StandardScaler
 
 APP_DIR = Path(__file__).resolve().parent
 ROOT_DIR = APP_DIR.parent
-DATASET_PATH = ROOT_DIR / "00_dataset" / "cropdata.csv"
+DATASET_PATH = ROOT_DIR / "01_dataset" / "cropdata.csv"
 
 sys.path.insert(0, str(APP_DIR))
 from kafka_config import KAFKA_BROKER, KAFKA_TOPIC, consumer_config

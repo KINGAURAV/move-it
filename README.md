@@ -42,25 +42,25 @@ move-it/
 ├── README.md
 ├── requirements.txt
 │
-├── 00_dataset/               # Historical sensor logs for training
-├── 01_vayu_workspaces/       # Vayu AI Studio workspace allocation
+├── 00_vayu_workspaces/       # Vayu AI Studio workspace allocation
+├── 01_dataset/               # Historical sensor logs for training
 ├── 02_vayu_mlflow/           # MLflow experiment tracking
-├── 03_vayu_kafka/            # Kafka topic configuration & streaming
-├── 04_starter-kit/           # ML training notebook
-├── 05_model_registry/        # Model versioning & metadata
-├── 06_deploy_model/          # Model deployment to Vayu ML Service
+├── 03_vayu_kafka/            # Kafka deployment & create_topic.py
+├── 04_starter-kit/           # train_model.ipynb — training template
+├── 05_model_registry/        # upload_model.py & model registration
+├── 06_deploy_model/          # Model deployment to Vayu Model Serving
 └── 07_build_app/             # FastAPI ingest + Streamlit dashboard + simulator
 ```
 
 | Step | Vayu service | Folder | What to run / open |
 |------|--------------|--------|-------------------|
-| 0 | **Vayu Object Storage** | `00_dataset/` | Prepare historical sensor CSVs |
-| 1 | **Vayu AI Studio Workspace** | `01_vayu_workspaces/` | `README.md` — setup environment |
-| 2 | **Vayu MLflow** | `02_vayu_mlflow/` | `README.md` — track training runs |
-| 3 | **Vayu Kafka** | `03_vayu_kafka/` | `README.md` — provision topics |
-| 4 | **Data Pipeline & ML Lab** | `04_starter-kit/` | Jupyter training notebook (`train_model.ipynb`) |
-| 5 | **Vayu Model Registry** | `05_model_registry/` | `README.md` — register trained models |
-| 6 | **Vayu ML Service** | `06_deploy_model/` | `README.md` — deploy model endpoint |
+| 0 | **Vayu AI Studio Workspace** | `00_vayu_workspaces/` | `README.md` — create workspace (enable Docker) |
+| 1 | **Vayu Object Storage** | `01_dataset/` | `01_dataset.ipynb` — pull/upload dataset from S3 |
+| 2 | **Vayu MLflow** | `02_vayu_mlflow/` | `README.md` — deploy managed MLflow |
+| 3 | **Vayu Kafka** | `03_vayu_kafka/` | `create_topic.py` — deploy Kafka and create topic |
+| 4 | **Data Pipeline & ML Lab** | `04_starter-kit/` | `train_model.ipynb` — train and save `model.joblib` |
+| 5 | **Vayu Model Registry** | `05_model_registry/` | `upload_model.py` — upload and register model |
+| 6 | **Vayu Model Serving** | `06_deploy_model/` | `README.md` — deploy Predictive AI endpoint |
 | 7 | **Vayu Realtime Inference** | `07_build_app/` | FastAPI ingest + Streamlit dashboard (built-in simulator) |
 
 ---
@@ -69,12 +69,13 @@ move-it/
 
 | Journey step | How to leverage Vayu ecosystem (detailed) |
 |--------------|------------------------------------------|
-| **Vayu Object Storage** | Store historical sensor CSVs so **Vayu AI Studio** notebooks can read them during training (`00_dataset/`). |
-| **Vayu AI Studio Workspace** | Open Jupyter notebooks for Kafka consumption and Random Forest training (`04_starter-kit/`). |
-| **Vayu MLflow** | Log parameters (e.g., `max_depth`) and metrics (e.g., `accuracy`) during training (`02_vayu_mlflow/`). |
-| **Vayu Kafka** | Act as the high-throughput buffer between the Flask API and the ML consumer (`03_vayu_kafka/`). |
-| **Vayu Model Registry** | Save and version your trained `.joblib` models (`05_model_registry/`). |
-| **Vayu ML Service** | Serve the prediction model as a REST API for the dashboard/actuators (`06_deploy_model/`). |
+| **Vayu AI Studio Workspace** | Create your workspace with **Enable Docker in the Workspace** turned on, then clone this repo (`00_vayu_workspaces/`). |
+| **Vayu Object Storage** | Pull `cropdata.csv` from S3 if needed, using upload/download snippets in `01_dataset/` (`01_dataset.ipynb`). |
+| **Vayu MLflow** | Deploy managed MLflow, configure S3 and database, and wait for **Ready** (`02_vayu_mlflow/`). |
+| **Vayu Kafka** | Deploy Kafka, run `create_topic.py`, and wait for **Ready** (`03_vayu_kafka/`). |
+| **Starter Kit (Training)** | Train with `train_model.ipynb`, log to MLflow, and save `model.joblib` (`04_starter-kit/`). |
+| **Vayu Model Registry** | Upload `model.joblib` to S3 and register with sklearn metadata (`05_model_registry/`). |
+| **Vayu Model Serving** | Deploy via **Predictive AI**, selecting the registered model and version (`06_deploy_model/`). |
 | **Vayu Realtime Inference** | Host the Streamlit dashboard to visualize live sensor trends and predictions (`07_build_app/`). |
 
 ---
@@ -88,7 +89,7 @@ move-it/
 | Stream Processing | **Jupyter Notebook** (Kafka Consumer) |
 | ML Framework | **Scikit-learn (Random Forest)** + **Pandas** |
 | Experiment Tracking | **Vayu MLflow** |
-| Deployment | **Vayu ML Service** (Model Endpoint) |
+| Deployment | **Vayu Model Serving** (Model Endpoint) |
 | Dashboard | **Streamlit** |
 
 ---

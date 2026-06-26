@@ -1,4 +1,4 @@
-# Step 4 — Starter Kit (Ingestion & Training)
+# Step 4 — Starter Kit (Training)
 
 **Move-It** › **Starter Kit** · `04_starter-kit/`
 
@@ -7,7 +7,7 @@
 | **⬅ Previous** | [Step 3 — Vayu Kafka](../03_vayu_kafka/) |
 | **Next ➡**     | [Step 5 — Model Registry](../05_model_registry/) |
 
-This step is the core of your pipeline, providing the **Flask API** for real-time sensor data ingestion and the **Jupyter Notebook** for machine learning model training.
+This step provides a training template to build your irrigation model, log metrics and parameters to **Vayu MLflow**, and save the trained artifact locally.
 
 ---
 
@@ -15,7 +15,7 @@ This step is the core of your pipeline, providing the **Flask API** for real-tim
 
 | File                  | Description                                                         |
 |-----------------------|---------------------------------------------------------------------|
-| `train_model.ipynb`   | Notebook for training the Random Forest model and logging to MLflow |
+| `train_model.ipynb`   | Train a logistic regression model, log to MLflow, save `model.joblib` |
 
 ---
 
@@ -23,10 +23,10 @@ This step is the core of your pipeline, providing the **Flask API** for real-tim
 
 | Step | Vayu Service / Folder     | Requirements                          |
 |------|--------------------------|---------------------------------------|
-| 0    | `00_dataset/`            | Historical sensor CSVs                |
-| 1    | `01_vayu_workspaces/`    | Active Python environment             |
-| 2    | `02_vayu_mlflow/`        | MLflow Tracking URI                   |
-| 3    | `03_vayu_kafka/`         | Kafka Bootstrap Servers & Topic Name  |
+| 0    | `00_vayu_workspaces/`    | Active Python environment             |
+| 1    | `01_dataset/`            | `cropdata.csv` available locally      |
+| 2    | `02_vayu_mlflow/`        | MLflow deployment **Ready**           |
+| 3    | `03_vayu_kafka/`         | Kafka deployment **Ready** (optional for training) |
 
 ---
 
@@ -36,8 +36,10 @@ Install dependencies:
 
 ## Quick Start
 
-1. **Run the Training Pipeline:**
-   - Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio and execute all cells.
+1. **Open the training notebook:** `04_starter-kit/train_model.ipynb` in your Vayu AI Studio workspace.
+2. **Set the MLflow tracking URI:** Replace the placeholder in the first cell with your managed MLflow URI from [Step 2](../02_vayu_mlflow/).
+3. **Run all cells:** The notebook trains the model, logs parameters and metrics to MLflow, and saves the artifact to `04_starter-kit/model.joblib`.
+4. **Continue to registration:** Proceed to [Step 5](../05_model_registry/) to upload and register the model.
 
 ---
 

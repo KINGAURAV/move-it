@@ -1,4 +1,4 @@
-# Step 1: Set up Your Vayu AI Studio Workspace
+# Step 0: Set up Your Vayu AI Studio Workspace
 
 Welcome to **Move-It**!  
 This step will help you set up the Vayu AI Studio Workspace required for your IoT data pipeline and machine learning training.
@@ -10,7 +10,7 @@ This step will help you set up the Vayu AI Studio Workspace required for your Io
 |         |                                                |
 |---------|------------------------------------------------|
 | **⬅️ Previous** | [Move-It Overview](../README.md)              |
-| **➡️ Next**     | [Step 2 — Vayu MLflow](../02_vayu_mlflow/)    |
+| **➡️ Next**     | [Step 1 — Vayu Object Storage](../01_dataset/)    |
 
 ---
 
@@ -24,8 +24,9 @@ This step will help you set up the Vayu AI Studio Workspace required for your Io
 
 1. **Create a Vayu AI Studio Workspace**
 
-   - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/uat/aistudio/#/build/workspace-list).
+   - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts.
+   - Make sure **Enable Docker in the Workspace** is turned on before you finish creating the workspace.
 
 2. **Import This Repository**
 
@@ -52,7 +53,7 @@ This step will help you set up the Vayu AI Studio Workspace required for your Io
 
 | Resource               | Link                                                                                           |
 |------------------------|------------------------------------------------------------------------------------------------|
-| Vayu AI Studio         | [Workspace Dashboard](https://ipcloud.tatacommunications.com/uat/aistudio/#/build/workspace-list)        |
+| Vayu AI Studio         | [Workspace Dashboard](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list)        |
 | Documentation          | [Vayu AI Studio Docs](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/) |
 
 ---
@@ -62,5 +63,5 @@ This step will help you set up the Vayu AI Studio Workspace required for your Io
 |         |                                                |
 |---------|------------------------------------------------|
 | **⬅️ Previous** | [Move-It Overview](../README.md)              |
-| **➡️ Next**     | [Step 2 — Vayu MLflow](../02_vayu_mlflow/)    |
+| **➡️ Next**     | [Step 1 — Vayu Object Storage](../01_dataset/)    |
 | **Overview**    | [Move-It Overview](../README.md)              |
