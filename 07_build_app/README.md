@@ -7,7 +7,7 @@
 | **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
 | **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
 
-Run the **full real-time pipeline** locally or in Docker: simulate sensors, push telemetry through Kafka, call your deployed **Vayu Model Serving** endpoint, and show live irrigation decisions in Streamlit.
+Run the **full real-time pipeline** locally, or build a Docker image for deployment in [Step 8](../08_deploy/).
 
 ---
 
@@ -126,35 +126,23 @@ Open the URL Streamlit prints (usually `http://localhost:8501`). You can also se
 
 ---
 
-## Run with Docker (single container)
+## Build Docker image
 
-Build from the `move-it/` root:
+Build the image from the `move-it/` root (required before [Step 8](../08_deploy/)):
 
 ```bash
 cd move-it
-docker build -f 07_build_app/Dockerfile -t move-it:latest .
+docker build -f 07_build_app/Dockerfile -t move-it-dash:latest .
 ```
 
-Run:
-
-```bash
-docker run --rm -p 8501:8501 -p 5000:5000 \
-  -e KAFKA_BROKER="<VAYU_KAFKA_BROKER>" \
-  -e KAFKA_USER="<VAYU_KAFKA_USER>" \
-  -e KAFKA_PASS="<VAYU_KAFKA_PASS>" \
-  -e KAFKA_TOPIC="greenhouse_telemetry" \
-  -e PREDICT_URL="http://<host>:<port>/v1/models/<model-name>:predict" \
-  move-it:latest
-```
+The image runs **both** services in one container:
 
 | Port | Service |
 |------|---------|
 | `8501` | Streamlit dashboard |
 | `5000` | FastAPI ingest (`/ingest`, `/health`, `/docs`) |
 
-Inside the container, `INGEST_API_URL` defaults to `http://127.0.0.1:5000/ingest` so the simulator talks to the co-located ingest API.
-
-> **Note:** `CMD` uses `uvicorn ... & exec streamlit ...` — not `&&`. Both servers are long-running; `&&` would start only uvicorn and never reach Streamlit.
+Push the image to your registry and deploy it on Vayu as an ML Service — see [Step 8 — Deploy to Vayu](../08_deploy/).
 
 ---
 

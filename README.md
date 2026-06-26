@@ -129,7 +129,7 @@ move-it/
 
    Click **Start Simulation** in the Streamlit sidebar.
 
-   **Or run both in one Docker container** — see [`07_build_app/README.md`](07_build_app/README.md).
+   **Or build the Docker image** for [Step 8](../08_deploy/) — see [`07_build_app/README.md`](07_build_app/README.md).
 
 ---
 
