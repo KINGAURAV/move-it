@@ -8,7 +8,7 @@
 #   docker run -p 8501:8501 -p 5000:5000 \
 #     -e KAFKA_BROKER=host:9095 \
 #     -e KAFKA_USER=... \
-#     -e KAFKA_PASS=... \
+#     -e PREDICT_URL=http://host:port/v1/models/name:predict \
 #     move-it:latest
 FROM python:3.11-slim-bookworm
 
@@ -24,7 +24,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# cropdata.csv is used to train the model on first startup (no bundled .joblib in repo)
+# cropdata.csv is used for feature encoding (matches training notebook preprocessing)
 COPY 00_dataset/cropdata.csv ./00_dataset/cropdata.csv
 COPY 07_build_app/app.py \
      07_build_app/ingestion_api.py \
