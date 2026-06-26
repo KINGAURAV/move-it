@@ -6,33 +6,6 @@
 
 **Outcome:** This starter template demonstrates a complete streaming ML pipeline: sensor data $\to$ HTTP $\to$ Kafka $\to$ Streamlit $\to$ ML Inference. The UI returns real-time telemetry (Temperature, Humidity), predicts water requirements using a trained model (e.g., Random Forest), and visualizes the irrigation action (ON/OFF) in a live dashboard.
 
-### System Architecture
-
-```text
-Wokwi ESP32 + DHT22 (Simulated)
-        │
-        ▼
-Temperature, Humidity (Telemetry)
-        │
-        ▼
-HTTP POST (Ingestion Gateway)
-        │
-        ▼
-Vayu Kafka Topic (Streaming Buffer)
-        │
-        ▼
-Jupyter Notebook Consumer (Real-time Processing)
-        │
-        ▼
-Pandas DataFrame (Feature Engineering)
-        │
-        ▼
-Random Forest Model (ML Inference)
-        │
-        ▼
-Water Requirement Prediction & Irrigation Action
-```
-
 ---
 
 ## Project layout (steps)
@@ -126,7 +99,7 @@ move-it/
    MLFLOW_TRACKING_URI=https://username:password@tracking-url
 
    # Vayu Kafka
-   KAFKA_BROKER=<your-kafka-broker>
+   KAFKA_BROKER=<your-kafka-broker-url>
    KAFKA_USER=<your-kafka-user>
    KAFKA_PASS=<your-kafka-password>
    KAFKA_TOPIC=greenhouse_telemetry
