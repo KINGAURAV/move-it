@@ -4,13 +4,18 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 
-KAFKA_BROKER = os.getenv("KAFKA_BROKER", "<VAYU_KAFKA_BROKER>")
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+KAFKA_BROKER = os.getenv("KAFKA_BROKER", "")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "greenhouse_telemetry")
 KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "streamlit_consumer_group")
 
-KAFKA_USER = os.getenv("KAFKA_USER", "<VAYU_KAFKA_USER>")
-KAFKA_PASS = os.getenv("KAFKA_PASS", "<VAYU_KAFKA_PASS>")
+KAFKA_USER = os.getenv("KAFKA_USER", "")
+KAFKA_PASS = os.getenv("KAFKA_PASS", "")
 
 KAFKA_SECURITY = {
     "security_protocol": "SASL_PLAINTEXT",

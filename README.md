@@ -110,17 +110,37 @@ move-it/
    pip install -r requirements.txt
    ```
 
-2. **Run training (once)**
+2. **Create a `.env` file** in the project root (`move-it/.env`) with your Vayu credentials:
+
+   ```bash
+   # Vayu Object Storage (S3)
+   AWS_ACCESS_KEY_ID=<your-access-key>
+   AWS_SECRET_ACCESS_KEY=<your-secret-key>
+   S3_ENDPOINT=<your-s3-endpoint>
+   S3_BUCKET_NAME=<your-bucket-name>
+   S3_DATASET_KEY=cropdata.csv
+   S3_MODEL_KEY=move-it/model.joblib
+
+   # Vayu MLflow
+   MLFLOW_TRACKING_URI=<your-mlflow-tracking-uri>
+
+   # Vayu Kafka
+   KAFKA_BROKER=<your-kafka-broker>
+   KAFKA_USER=<your-kafka-user>
+   KAFKA_PASS=<your-kafka-password>
+   KAFKA_TOPIC=greenhouse_telemetry
+   ```
+
+   Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
+
+3. **Run training (once)**
    Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio and run all cells.
 
-3. **Launch the realtime pipeline** (`07_build_app/`)
+4. **Launch the realtime pipeline** (`07_build_app/`)
 
    **Terminal 1 — ingestion API**
    ```bash
    cd 07_build_app
-   export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-   export KAFKA_USER="<VAYU_KAFKA_USER>"
-   export KAFKA_PASS="<VAYU_KAFKA_PASS>"
    python ingestion_api.py
    ```
 
@@ -128,9 +148,6 @@ move-it/
    ```bash
    cd 07_build_app
    export INGEST_API_URL="http://127.0.0.1:5000/ingest"
-   export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-   export KAFKA_USER="<VAYU_KAFKA_USER>"
-   export KAFKA_PASS="<VAYU_KAFKA_PASS>"
    streamlit run app.py
    ```
 

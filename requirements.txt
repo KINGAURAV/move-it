@@ -1,4 +1,5 @@
 boto3
+python-dotenv
 numpy
 pandas
 mlflow
