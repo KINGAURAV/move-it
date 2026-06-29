@@ -29,17 +29,13 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 
 1. **Deploy Vayu Kafka:** Create a new Kafka deployment on the [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) page.
 2. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
-3. **Create a topic:** Replace the placeholder values in [`create_topic.py`](create_topic.py) (or export them as environment variables), then run:
+3. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`, and optionally `KAFKA_TOPIC` (default: `greenhouse_telemetry`). Then run:
 
    ```bash
-   export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-   export KAFKA_USER="<VAYU_KAFKA_USER>"
-   export KAFKA_PASS="<VAYU_KAFKA_PASS>"
-   export KAFKA_TOPIC="greenhouse_telemetry"
    python 03_vayu_kafka/create_topic.py
    ```
 
-   Default topic name is `greenhouse_telemetry`. Change `KAFKA_TOPIC` if your team uses a different name.
+   [`create_topic.py`](create_topic.py) loads Kafka settings from `.env` automatically. Change `KAFKA_TOPIC` in `.env` if your team uses a different topic name.
 
 ---
 
