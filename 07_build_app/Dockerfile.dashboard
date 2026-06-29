@@ -1,7 +1,7 @@
 # Move-It — Streamlit dashboard only (simulator + Kafka consumer + Model Serving client)
 # Deploy as ML Service 2 (port 8501). Requires INGEST_API_URL from the ingest service.
 # Build from move-it/ root:
-#   docker build -f 07_build_app/Dockerfile.dashboard -t move-it-dashboard:latest .
+#   docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/move-it-dashboard:latest --push .
 FROM python:3.11-slim-bookworm
 
 WORKDIR /app

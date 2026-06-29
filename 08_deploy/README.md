@@ -51,15 +51,10 @@ Build context **must** be `move-it/`. Details: [`07_build_app/README.md`](../07_
 
 ```bash
 cd move-it
+docker login <image-registry>
 
-docker build -f 07_build_app/Dockerfile.ingest -t move-it-ingest:latest .
-docker build -f 07_build_app/Dockerfile.dashboard -t move-it-dashboard:latest .
-
-docker tag move-it-ingest:latest <registry-host>/move-it-ingest:latest
-docker tag move-it-dashboard:latest <registry-host>/move-it-dashboard:latest
-docker login <registry-host>
-docker push <registry-host>/move-it-ingest:latest
-docker push <registry-host>/move-it-dashboard:latest
+docker build -f 07_build_app/Dockerfile.ingest -t <image-registry>/move-it-ingest:latest --push .
+docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/move-it-dashboard:latest --push .
 ```
 
 ---
@@ -80,7 +75,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute → O
 |-------|-------|
 | **Name** | e.g. `move-it-ingest` |
 | **Framework** | **Python3** |
-| **Image** | `<registry-host>/move-it-ingest:latest` |
+| **Image** | `<image-registry>/move-it-ingest:latest` |
 | **Port** | **5000** |
 | **Public Expose** | **Enable** |
 
@@ -118,7 +113,7 @@ Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/i
 |-------|-------|
 | **Name** | e.g. `move-it-dashboard` |
 | **Framework** | **Streamlit** |
-| **Image** | `<registry-host>/move-it-dashboard:latest` |
+| **Image** | `<image-registry>/move-it-dashboard:latest` |
 | **Port** | **8501** |
 | **Public Expose** | **Enable** |
 

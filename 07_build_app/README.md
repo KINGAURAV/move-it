@@ -125,29 +125,17 @@ Build from the **`move-it/`** root (not `07_build_app/`).
 
 ### Production — two images for Vayu ML Service
 
+Log in to your registry once, then build and push each image in one step (`--push` tags directly to `<image-registry>`):
+
 ```bash
 cd move-it
+docker login <image-registry>
 
-docker build -f 07_build_app/Dockerfile.ingest -t move-it-ingest:latest .
-docker build -f 07_build_app/Dockerfile.dashboard -t move-it-dashboard:latest .
-
-docker tag move-it-ingest:latest <registry-host>/move-it-ingest:latest
-docker tag move-it-dashboard:latest <registry-host>/move-it-dashboard:latest
-docker push <registry-host>/move-it-ingest:latest
-docker push <registry-host>/move-it-dashboard:latest
+docker build -f 07_build_app/Dockerfile.ingest -t <image-registry>/move-it-ingest:latest --push .
+docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/move-it-dashboard:latest --push .
 ```
 
 Deploy **ingest first**, then **dashboard** with `INGEST_API_URL` set to the ingest public URL — see [Step 8](../08_deploy/).
-
-### Local — single container (optional)
-
-```bash
-docker build -f 07_build_app/Dockerfile -t move-it-local:latest .
-docker run --rm -p 8501:8501 -p 5000:5000 \
-  -e KAFKA_BROKER="..." -e KAFKA_USER="..." -e KAFKA_PASS="..." \
-  -e PREDICT_URL="..." \
-  move-it-local:latest
-```
 
 ---
 
