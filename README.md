@@ -109,7 +109,18 @@ move-it/
    Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
 
 3. **Run training (once)**
-   Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio and run all cells.
+
+   Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio, select the kernel, then run all cells:
+
+   1. Open **Select Kernel** and choose **Python Environments**.
+
+      ![Select Kernel — Python Environments](assets/kernel_select.png)
+
+   2. Under **Select a Python Environment**, pick the **Recommended** environment (it should point to the `.venv` from [Step 0](00_vayu_workspaces/)).
+
+      ![Select a Python Environment](assets/Select_kernerl_env.png)
+
+   See [Step 4](04_starter-kit/) for full training details.
 
 4. **Launch the realtime pipeline** (`07_build_app/`)
 

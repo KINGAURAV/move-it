@@ -52,8 +52,22 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
    ```bash
    cd move-it
+   python3 -m venv .venv
+   source .venv/bin/activate
    pip install -r requirements.txt
    ```
+
+4. **Select the notebook kernel**
+
+   When you open any `.ipynb` in this project, use the virtual environment above:
+
+   1. Open **Select Kernel** and choose **Python Environments**.
+
+      ![Select Kernel — Python Environments](../assets/kernel_select.png)
+
+   2. Under **Select a Python Environment**, pick the **Recommended** environment (it should point to the `.venv` Python you just created).
+
+      ![Select a Python Environment](../assets/Select_kernerl_env.png)
 
 ---
 

@@ -38,7 +38,17 @@ This step contains the greenhouse crop dataset used to train the irrigation mode
 
 1. **Check locally:** Open `cropdata.csv` and confirm the columns above are present. If the file is already here, continue to [Step 2](../02_vayu_mlflow/).
 
-2. **Pull from S3 (if needed):** Open [`01_dataset.ipynb`](01_dataset.ipynb), replace the placeholder S3 credentials and bucket values, then run the **Download Dataset from Vayu Object Storage** cell.
+2. **Pull from S3 (if needed):** Open [`01_dataset.ipynb`](01_dataset.ipynb), then select the notebook kernel:
+
+   1. Open **Select Kernel** and choose **Python Environments**.
+
+      ![Select Kernel — Python Environments](../assets/kernel_select.png)
+
+   2. Under **Select a Python Environment**, pick the **Recommended** environment (it should point to the `.venv` from [Step 0](../00_vayu_workspaces/)).
+
+      ![Select a Python Environment](../assets/Select_kernerl_env.png)
+
+   Run the **Download Dataset from Vayu Object Storage** cell (credentials load from the root `.env`).
 
 3. **Upload to S3 (optional):** Use the **Upload Dataset to Vayu Object Storage** cell in the same notebook if you want a copy stored in your bucket.
 

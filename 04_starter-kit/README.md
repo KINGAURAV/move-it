@@ -36,7 +36,16 @@ Install dependencies:
 
 ## Quick Start
 
-1. **Open the training notebook:** `04_starter-kit/train_model.ipynb` in your Vayu AI Studio workspace.
+1. **Open the training notebook:** `04_starter-kit/train_model.ipynb` in your Vayu AI Studio workspace, then select the kernel:
+
+   1. Open **Select Kernel** and choose **Python Environments**.
+
+      ![Select Kernel — Python Environments](../assets/kernel_select.png)
+
+   2. Under **Select a Python Environment**, pick the **Recommended** environment (it should point to the `.venv` from [Step 0](../00_vayu_workspaces/)).
+
+      ![Select a Python Environment](../assets/Select_kernerl_env.png)
+
 2. **Configure MLflow in `.env`:** Set `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` in the root `.env` (see [overview](../README.md)).
 3. **Run all cells:** The notebook trains the model, logs parameters and metrics to MLflow, and saves the artifact to `04_starter-kit/model.joblib`.
 4. **Continue to registration:** Proceed to [Step 5](../05_model_registry/) to upload and register the model.
