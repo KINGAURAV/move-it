@@ -121,9 +121,12 @@ Open the URL Streamlit prints (usually `http://localhost:8501`). You can also se
 
 ## Build Docker images
 
-Build from the **`move-it/`** root (not `07_build_app/`).
+Build from the **`move-it/`** root (not `07_build_app/`). You build **two images** — one per ML Service in [Step 8](../08_deploy/):
 
-### Production — two images for Vayu ML Service
+| Image tag | Dockerfile | Port | Purpose |
+|-----------|------------|------|---------|
+| `<image-registry>/move-it-ingest:latest` | `Dockerfile.ingest` | **5000** | **Ingest API** — FastAPI service (`ingestion_api.py`) that accepts sensor readings over HTTP and publishes them to **Vayu Kafka**. Deploy this **first**. |
+| `<image-registry>/move-it-dashboard:latest` | `Dockerfile.dashboard` | **8501** | **Dashboard** — Streamlit app (`app.py`) with the built-in simulator, Kafka consumer, and **Model Serving** client for live telemetry and irrigation predictions. Deploy **second** (needs the ingest public URL as `INGEST_API_URL`). |
 
 Log in to your registry once, then build and push each image in one step (`--push` tags directly to `<image-registry>`):
 
