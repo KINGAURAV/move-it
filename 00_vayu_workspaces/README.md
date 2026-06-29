@@ -24,7 +24,7 @@ This step will help you set up the Vayu AI Studio Workspace required for your Io
 
 Go to [Vayu AI Studio Workspace](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
 
-For the full create wizard (Start → Infrastructure → Configure Compute and Storage → Observability → Review), see the [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/).
+For the full create wizard (Start → Infrastructure → Configure Compute and Storage → Observability → Review), see the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace).
 
 ---
 
@@ -33,7 +33,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 1. **Create a Vayu AI Studio Workspace**
 
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
-   - Click **Create Workspace** and follow the prompts. See the [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/) for step-by-step wizard details.
+   - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
    - Make sure **Enable Docker in the Workspace** is turned on before you finish creating the workspace.
 
 2. **Import This Repository**
