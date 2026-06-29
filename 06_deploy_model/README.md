@@ -15,11 +15,13 @@ Deploy your registered model with **Vayu Model Serving** to create a production-
 
 Go to [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list).
 
+For the full create wizard (Start → Infrastructure → Predictor Configuration → Configure Compute and Storage → Review), see the [Model Serving documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/).
+
 ---
 
 ## Quick Start
 
-1. **Create a deployment:** On the [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list) page, start a new deployment.
+1. **Create a deployment:** On the [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list) page, start a new deployment. Follow the [Model Serving documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/) for step-by-step wizard details.
 2. **Select Predictive AI:** Choose **Predictive AI** as the serving type.
 3. **Predictor config:** Select the model and version you registered in [Step 5](../05_model_registry/).
 4. **Deploy:** Submit the deployment and wait for the **Ready** status.

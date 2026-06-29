@@ -15,6 +15,8 @@ Upload your trained `model.joblib` from [Step 4](../04_starter-kit/) to **Vayu O
 
 Go to [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list).
 
+For the full registration wizard (Start → Model Configuration → Object Storage → Review), see the [Model Registry documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-registry/).
+
 ---
 
 ## Folder Contents
@@ -39,7 +41,7 @@ python 05_model_registry/upload_model.py
 
 ### 2. Register the model
 
-On the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) page:
+On the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) page. Follow the [Model Registry documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-registry/) for step-by-step wizard details:
 
 1. **Register** a new model.
 2. **Framework:** Select **sklearn**.

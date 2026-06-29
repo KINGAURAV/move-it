@@ -65,9 +65,13 @@ Note the full image reference (e.g. `<registry-host>/move-it-dash:latest`) for t
 
 Go to [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list) to create a new deployment.
 
+For the full create wizard (Start → Infrastructure → Configure Compute → Observability → Review), see the [ML Service documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/).
+
 ---
 
 ## Step 3 — Create the ML Service (wizard)
+
+Follow the [ML Service documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/) for step-by-step wizard details. Map **Move-It** settings as below.
 
 ### 3.1 Start — image and runtime
 
