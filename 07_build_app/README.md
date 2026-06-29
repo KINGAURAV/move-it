@@ -7,7 +7,7 @@
 | **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
 | **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
 
-Run the **full real-time pipeline** locally, or build a Docker image for deployment in [Step 8](../08_deploy/).
+Run the **full real-time pipeline** locally, or build Docker images for [Step 8](../08_deploy/) (two separate ML Services: ingest first, dashboard second).
 
 ---
 
@@ -54,19 +54,12 @@ Runs on port **5000** by default (`PORT` env var).
 
 The **Streamlit** app users interact with. It does four things:
 
-1. **Built-in sensor simulator** — generates random temp/humidity every 2s and POSTs to the ingest API when you click **Start Simulation**.
-2. **Kafka consumer** — background thread reads messages from the same topic.
-3. **Model inference** — builds feature rows from sensor data (preprocessing uses `01_dataset/cropdata.csv`), then calls your **Vayu Model Serving** predict URL via HTTP POST. It does **not** train or load a local `.joblib` model.
-4. **Live UI** — shows latest telemetry, irrigation prediction, probability, a rolling table, and charts.
+### Dockerfiles
 
-Configure the predict endpoint with **`PREDICT_URL`** (recommended for deployment) or via the sidebar (**Predict host**, **Model name**).
-
-### Other files
-
-| File | Role |
-|------|------|
-| `kafka_config.py` | Shared Kafka broker, topic, and SASL settings |
-| `Dockerfile` | Single image running **both** ingest API and Streamlit |
+| File | Deploy as | Port | Contents |
+|------|-----------|------|----------|
+| `Dockerfile.ingest` | **ML Service 1** — ingest API | **5000** | `ingestion_api.py`, `kafka_config.py` |
+| `Dockerfile.dashboard` | **ML Service 2** — dashboard | **8501** | `app.py`, `kafka_config.py`, `cropdata.csv` |
 
 ---
 
@@ -126,23 +119,35 @@ Open the URL Streamlit prints (usually `http://localhost:8501`). You can also se
 
 ---
 
-## Build Docker image
+## Build Docker images
 
-Build the image from the `move-it/` root (required before [Step 8](../08_deploy/)):
+Build from the **`move-it/`** root (not `07_build_app/`).
+
+### Production — two images for Vayu ML Service
 
 ```bash
 cd move-it
-docker build -f 07_build_app/Dockerfile -t move-it-dash:latest .
+
+docker build -f 07_build_app/Dockerfile.ingest -t move-it-ingest:latest .
+docker build -f 07_build_app/Dockerfile.dashboard -t move-it-dashboard:latest .
+
+docker tag move-it-ingest:latest <registry-host>/move-it-ingest:latest
+docker tag move-it-dashboard:latest <registry-host>/move-it-dashboard:latest
+docker push <registry-host>/move-it-ingest:latest
+docker push <registry-host>/move-it-dashboard:latest
 ```
 
-The image runs **both** services in one container:
+Deploy **ingest first**, then **dashboard** with `INGEST_API_URL` set to the ingest public URL — see [Step 8](../08_deploy/).
 
-| Port | Service |
-|------|---------|
-| `8501` | Streamlit dashboard |
-| `5000` | FastAPI ingest (`/ingest`, `/health`, `/docs`) |
+### Local — single container (optional)
 
-Push the image to your registry and deploy it on Vayu as an ML Service — see [Step 8 — Deploy to Vayu](../08_deploy/).
+```bash
+docker build -f 07_build_app/Dockerfile -t move-it-local:latest .
+docker run --rm -p 8501:8501 -p 5000:5000 \
+  -e KAFKA_BROKER="..." -e KAFKA_USER="..." -e KAFKA_PASS="..." \
+  -e PREDICT_URL="..." \
+  move-it-local:latest
+```
 
 ---
 

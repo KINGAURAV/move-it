@@ -34,13 +34,25 @@ DEFAULT_PREDICT_HOST = os.getenv("VAYU_PREDICT_HOST", "http://localhost:8080")
 DEFAULT_MODEL_NAME = os.getenv("VAYU_MODEL_NAME", "sklearn-model")
 
 
+def _is_dev_proxy_ingest_url(url: str) -> bool:
+    """Detect Jupyter / codeserver port-forward URLs that return HTML instead of JSON."""
+    lowered = url.lower()
+    if "proxy" not in lowered:
+        return False
+    return any(
+        marker in lowered
+        for marker in ("codeserver", "vscode", "jupyter", "rstudio", "/user/", "aistudio")
+    )
+
+
 def resolve_ingest_url(raw: str | None = None) -> str:
     url = (raw or os.getenv("INGEST_API_URL", LOCAL_INGEST_URL)).strip()
-    lowered = url.lower()
-    if "proxy" in lowered or (
-        lowered.startswith("https://") and "localhost" not in lowered and "127.0.0.1" not in lowered
-    ):
+    if not url:
         return LOCAL_INGEST_URL
+    if _is_dev_proxy_ingest_url(url):
+        return LOCAL_INGEST_URL
+    if not url.rstrip("/").endswith("/ingest"):
+        url = url.rstrip("/") + "/ingest"
     return url
 
 

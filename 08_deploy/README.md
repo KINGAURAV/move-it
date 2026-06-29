@@ -1,31 +1,35 @@
-# Step 8 — Deploy Move-It (Streamlit Dashboard)
+# Step 8 — Deploy Move-It (Two ML Services)
 
 **Move-It** › **Vayu ML Service** · `07_build_app/`
 
 | | |
 |---|---|
-| **⬅ Previous** | [Step 7 — Build app & Docker image](../07_build_app/) |
+| **⬅ Previous** | [Step 7 — Build app & Docker images](../07_build_app/) |
 | **🏁 Next** | — (journey complete) |
 | **🏠 Overview** | [Move-It overview](../README.md) |
 
 Deploy the **Move-It dashboard** (Streamlit + co-located ingest API) to the **Vayu platform** as an **ML Service**. After deployment you get a **public URL** where judges can run the built-in simulator, see live telemetry, and watch irrigation predictions from your **Vayu Model Serving** endpoint.
 
+1. **Ingest API** (`ingestion_api.py`) — HTTP → Kafka  
+2. **Dashboard** (`app.py`) — simulator, Kafka consumer, Model Serving client, Streamlit UI  
+
+Deploy **ingest first**, copy its public URL, then deploy the dashboard with `INGEST_API_URL` pointing at it.
+
 ---
 
-## What you are deploying
+## Architecture
 
-The Docker image from [`07_build_app/Dockerfile`](../07_build_app/Dockerfile) runs **two processes** in one container:
+```text
+  ML Service 2 — Dashboard (:8501)
+  app.py  ──POST /ingest──►  ML Service 1 — Ingest (:5000)
+         ◄──Kafka consume──     ingestion_api.py ──► Kafka
+         ──POST predict──►  Vayu Model Serving (Step 6)
+```
 
-| Process | Port | Role |
-|---------|------|------|
-| **Streamlit** (`app.py`) | **8501** | Dashboard, simulator, Kafka consumer, Model Serving client |
-| **FastAPI ingest** (`ingestion_api.py`) | **5000** | `POST /ingest` → Vayu Kafka (used internally by the simulator) |
-
-| Connection | Source |
-|------------|--------|
-| **Predictions** | **Vayu Model Serving** — HTTP POST from `app.py` ([Step 6](../06_deploy_model/)) |
-| **Telemetry stream** | **Vayu Kafka** — ingest publishes; dashboard consumes ([Step 3](../03_vayu_kafka/)) |
-| **Preprocessing** | `01_dataset/cropdata.csv` baked into the image (feature encoding only; model is remote) |
+| Service | Image | Port | Framework |
+|---------|-------|------|-----------|
+| **move-it-ingest** | `Dockerfile.ingest` | **5000** | **Python3** (CMD runs uvicorn) |
+| **move-it-dashboard** | `Dockerfile.dashboard` | **8501** | **Streamlit** |
 
 ---
 
@@ -34,72 +38,105 @@ The Docker image from [`07_build_app/Dockerfile`](../07_build_app/Dockerfile) ru
 | Step | Folder | You need |
 |------|--------|----------|
 | 3 | [`03_vayu_kafka/`](../03_vayu_kafka/) | Kafka **Ready**, topic created |
-| 4 | [`04_starter-kit/`](../04_starter-kit/) | Model trained (`model.joblib`) |
-| 5 | [`05_model_registry/`](../05_model_registry/) | Model registered in registry |
 | 6 | [`06_deploy_model/`](../06_deploy_model/) | Model Serving **Ready** — predict URL |
-| 7 | [`07_build_app/`](../07_build_app/) | App tested locally; image built and pushed to registry |
+| 7 | [`07_build_app/`](../07_build_app/) | Tested locally; **both images** built and pushed |
 
-**Before Step 8:** Run the dashboard locally ([Step 7](../07_build_app/README.md)) with **Start Simulation** and confirm predictions reach Model Serving.
+**Before Step 8:** Run locally with two terminals ([Step 7](../07_build_app/README.md)) and confirm **Start Simulation** works.
 
 ---
 
-## Step 1 — Build and push the Docker image
+## Step 1 — Build and push both images
 
-Build context **must** be `move-it/` (not `07_build_app/`). Details: [`07_build_app/README.md`](../07_build_app/README.md).
+Build context **must** be `move-it/`. Details: [`07_build_app/README.md`](../07_build_app/README.md).
 
 ```bash
 cd move-it
 
-docker build -f 07_build_app/Dockerfile -t move-it-dash:latest .
+docker build -f 07_build_app/Dockerfile.ingest -t move-it-ingest:latest .
+docker build -f 07_build_app/Dockerfile.dashboard -t move-it-dashboard:latest .
 
-docker tag move-it-dash:latest <registry-host>/move-it-dash:latest
+docker tag move-it-ingest:latest <registry-host>/move-it-ingest:latest
+docker tag move-it-dashboard:latest <registry-host>/move-it-dashboard:latest
 docker login <registry-host>
-docker push <registry-host>/move-it-dash:latest
+docker push <registry-host>/move-it-ingest:latest
+docker push <registry-host>/move-it-dashboard:latest
 ```
-
-Note the full image reference (e.g. `<registry-host>/move-it-dash:latest`) for the ML Service wizard.
 
 ---
 
 ## Step 2 — Open Vayu ML Services
 
-Go to [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list) to create a new deployment.
+Go to [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list).
 
 For the full create wizard (Start → Infrastructure → Configure Compute → Observability → Review), see the [ML Service documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/).
 
 ---
 
-## Step 3 — Create the ML Service (wizard)
+## Phase A — Deploy ingest API (first)
 
-Follow the [ML Service documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/) for step-by-step wizard details. Map **Move-It** settings as below.
+### A.1 Start — image and runtime
 
-### 3.1 Start — image and runtime
+| Field | Value |
+|-------|-------|
+| **Name** | e.g. `move-it-ingest` |
+| **Framework** | **Python3** |
+| **Image** | `<registry-host>/move-it-ingest:latest` |
+| **Port** | **5000** |
+| **Public Expose** | **Enable** |
 
-| Field | Move-It value |
-|-------|----------------|
+### A.2 Environment variables
+
+| Key | Required |
+|-----|----------|
+| `KAFKA_BROKER` | Yes |
+| `KAFKA_USER` | Yes |
+| `KAFKA_PASS` | Yes |
+| `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
+
+### A.3 Verify ingest
+
+When status is **Ready**, note the **Public URL** (call it `<INGEST_PUBLIC_URL>`).
+
+```bash
+curl -s "<INGEST_PUBLIC_URL>/health"
+curl -s -X POST "<INGEST_PUBLIC_URL>/ingest" \
+  -H "Content-Type: application/json" \
+  -d '{"temp": 25.0, "humidity": 60.0, "MOI": 10.0}'
+```
+
+Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_PUBLIC_URL>/docs`.
+
+Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/ingest` path).
+
+---
+
+## Phase B — Deploy dashboard (second)
+
+### B.1 Start — image and runtime
+
+| Field | Value |
+|-------|-------|
 | **Name** | e.g. `move-it-dashboard` |
 | **Framework** | **Streamlit** |
-| **Private Registry → Registry URL** | Your hackathon / Vayu registry host |
-| **Private Registry → Image** | e.g. `<registry-host>/move-it-dash:latest` |
-| **Private Registry → Username / Password** | Registry credentials |
+| **Image** | `<registry-host>/move-it-dashboard:latest` |
 | **Port** | **8501** |
-| **Public Expose** | **Enable** (required for the demo) |
+| **Public Expose** | **Enable** |
 
-### 3.2 Environment variables
-
-Set these in the ML Service wizard:
+### B.2 Environment variables
 
 | Key | Required | Description |
 |-----|----------|-------------|
-| `PREDICT_URL` | **Yes** | Full predict URL from [Step 6](../06_deploy_model/), e.g. `http://<host>:<port>/v1/models/<name>:predict` |
-| `KAFKA_BROKER` | **Yes** | Vayu Kafka bootstrap servers |
-| `KAFKA_USER` | **Yes** | Kafka SASL username |
-| `KAFKA_PASS` | **Yes** | Kafka SASL password |
-| `KAFKA_TOPIC` | No | Default: `greenhouse_telemetry` |
+| `INGEST_API_URL` | **Yes** | Phase A URL, e.g. `https://<ingest-host>/ingest` |
+| `PREDICT_URL` | **Yes** | From [Step 6](../06_deploy_model/) |
+| `KAFKA_BROKER` | Yes | Same broker as ingest |
+| `KAFKA_USER` | Yes | |
+| `KAFKA_PASS` | Yes | |
+| `KAFKA_TOPIC` | No | Default `greenhouse_telemetry` |
 
 **Example:**
 
 ```text
+INGEST_API_URL=https://<INGEST_PUBLIC_HOST>/ingest
 PREDICT_URL=http://<INGRESS_HOST>:<PORT>/v1/models/<MODEL_NAME>:predict
 KAFKA_BROKER=<VAYU_KAFKA_BROKER>
 KAFKA_USER=<VAYU_KAFKA_USER>
@@ -107,43 +144,41 @@ KAFKA_PASS=<VAYU_KAFKA_PASS>
 KAFKA_TOPIC=greenhouse_telemetry
 ```
 
-`INGEST_API_URL` defaults to `http://127.0.0.1:5000/ingest` inside the container — the simulator talks to the co-located ingest API automatically.
-
-### 3.3 Infrastructure & compute
+### B.3 Infrastructure
 
 | Field | Guidance |
 |-------|----------|
-| **Resources / flavor** | Lightweight — **CPU** is sufficient |
+| **Resources** | CPU is sufficient |
 | **Replicas** | `1` for demo |
 
 ---
 
-## Step 4 — Verify the deployment
+## Step 3 — Verify end-to-end
 
-1. Open [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list) → click your service name.
-2. Copy the **Public URL** and open it in a browser.
-3. Confirm the **Move-It IoT Dashboard** loads.
-4. Click **Start Simulation** in the sidebar.
-5. Verify temperature/humidity update and **Irrigation Action** changes from Model Serving predictions.
+1. Open the **dashboard** public URL (port 8501).
+2. Sidebar should show your **ingest public URL** (not `127.0.0.1`).
+3. Confirm **Kafka: Connected**.
+4. Click **Start Simulation**.
+5. Verify temperature/humidity update and **Irrigation Action** from Model Serving.
 
 | Symptom | What to check |
 |---------|----------------|
-| Page does not load | Port **8501**, **Public Expose**, pod status **Ready** |
-| Predict endpoint error | `PREDICT_URL`; Model Serving status **Ready** |
-| Kafka disconnected | `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`; topic exists |
-| Simulation sends but no predictions | `PREDICT_URL` matches your Step 6 endpoint |
-| UI stuck on "Waiting" | Click **Start Simulation**; check sidebar prediction errors |
+| Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
+| Dashboard page won't load | Port **8501**, **Public Expose** |
+| Simulation error / JSON parse | `INGEST_API_URL` must be the **ingest public URL** from Phase A |
+| Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
+| Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
+| No predictions | `PREDICT_URL`; Model Serving **Ready** |
 
 ---
 
 ## Demo checklist
 
-- [ ] Dashboard connects to **Vayu Model Serving** via `PREDICT_URL`.
-- [ ] **Live stream:** simulator running; telemetry updating.
-- [ ] **Inference:** irrigation ON/OFF reflects model output.
-- [ ] Docker image built from `move-it/` root and pushed to registry.
-- [ ] ML Service **Ready** on port **8501** with env vars set.
-- [ ] Public URL documented for judges.
+- [ ] **Ingest** ML Service **Ready** on port **5000**; `/health` and `/ingest` work publicly  
+- [ ] **Dashboard** ML Service **Ready** on port **8501** with `INGEST_API_URL` + `PREDICT_URL`  
+- [ ] **Start Simulation** updates telemetry and irrigation predictions  
+- [ ] Both images pushed from `move-it/` root  
+- [ ] Public URLs documented for judges  
 
 ---
 
