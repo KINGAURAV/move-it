@@ -85,6 +85,22 @@ Both processes must run together.
 
 **Terminal 1 — Ingestion API**
 
+When running inside a **Vayu AI Studio workspace** (ingest exposed via the workspace port proxy), edit [`ingestion_api.py`](ingestion_api.py) **lines 65–70** — replace the existing `FastAPI(...)` block with:
+
+```python
+app = FastAPI(
+    title="Move-It Ingestion API",
+    description="HTTP gateway for greenhouse sensor telemetry -> Vayu Kafka",
+    version="1.0.0",
+    lifespan=lifespan,
+    root_path="/proxy/5000",
+)
+```
+
+The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` on line 69.
+
+This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
+
 ```bash
 cd move-it/07_build_app
 
@@ -96,7 +112,7 @@ export KAFKA_TOPIC="greenhouse_telemetry"
 python ingestion_api.py
 ```
 
-Verify: `curl http://127.0.0.1:5000/health`
+Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `.../proxy/5000/health`)
 
 **Terminal 2 — Dashboard**
 
@@ -165,7 +181,7 @@ For local testing, **Predict host** and **Model name** in the sidebar can be use
 | Sidebar shows **Kafka: Disconnected** | Check `KAFKA_BROKER` / `KAFKA_USER` / `KAFKA_PASS`; confirm topic exists |
 | **Set predict host/model or PREDICT_URL** | Set `PREDICT_URL` or fill **Predict host** + **Model name** in the sidebar |
 | Prediction errors | Confirm Model Serving is **Ready** and the predict URL from [Step 6](../06_deploy_model/) is correct |
-| Simulation errors / JSON parse failures | Set `INGEST_API_URL=http://127.0.0.1:5000/ingest` — avoid Jupyter/codeserver proxy URLs |
+| Simulation errors / JSON parse failures | Set `INGEST_API_URL` to the correct ingest URL; in a workspace, use the proxy path (e.g. `.../proxy/5000/ingest`) and ensure `root_path="/proxy/5000"` is set on the FastAPI app |
 | Ingest logs missing but Streamlit says "Sent" | Start `ingestion_api.py` first |
 | UI stuck on "Waiting" | Click **Start Simulation**; check sidebar **Buffered predictions** |
 | Preprocessing error | Ensure `01_dataset/cropdata.csv` exists (included in Docker image) |
