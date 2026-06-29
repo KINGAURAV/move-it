@@ -20,10 +20,22 @@ Deploy **ingest first**, copy its public URL, then deploy the dashboard with `IN
 ## Architecture
 
 ```text
-  ML Service 2 — Dashboard (:8501)
-  app.py  ──POST /ingest──►  ML Service 1 — Ingest (:5000)
-         ◄──Kafka consume──     ingestion_api.py ──► Kafka
-         ──POST predict──►  Vayu Model Serving (Step 6)
+ML Service 2 — Dashboard (:8501)     app.py · simulator
+        │
+        │  POST /ingest
+        ▼
+ML Service 1 — Ingest (:5000)        ingestion_api.py
+        │
+        ▼
+Vayu Kafka — greenhouse_telemetry (Step 3)
+        │
+        │  Kafka consumer (app.py)
+        ▼
+ML Service 2 — Dashboard (:8501)
+        │
+        │  POST predict
+        ▼
+Vayu Model Serving (Step 6)
 ```
 
 | Service | Image | Port | Framework |
