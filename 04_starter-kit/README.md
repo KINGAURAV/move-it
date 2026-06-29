@@ -37,7 +37,7 @@ Install dependencies:
 ## Quick Start
 
 1. **Open the training notebook:** `04_starter-kit/train_model.ipynb` in your Vayu AI Studio workspace.
-2. **Set the MLflow tracking URI:** Replace the placeholder in the first cell with your managed MLflow URI from [Step 2](../02_vayu_mlflow/).
+2. **Configure MLflow in `.env`:** Set `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` in the root `.env` (see [overview](../README.md)).
 3. **Run all cells:** The notebook trains the model, logs parameters and metrics to MLflow, and saves the artifact to `04_starter-kit/model.joblib`.
 4. **Continue to registration:** Proceed to [Step 5](../05_model_registry/) to upload and register the model.
 

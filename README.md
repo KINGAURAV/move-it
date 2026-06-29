@@ -95,8 +95,9 @@ move-it/
    S3_MODEL_KEY=move-it/model.joblib
 
    # Vayu MLflow
-   # Format: https://username:password@tracking-url
-   MLFLOW_TRACKING_URI=https://username:password@tracking-url
+   MLFLOW_TRACKING_URL=https://<your-mlflow-host>
+   MLFLOW_TRACKING_USERNAME=<your-username>
+   MLFLOW_TRACKING_PASSWORD=<your-password>
 
    # Vayu Kafka
    KAFKA_BROKER=<your-kafka-broker-url>
@@ -106,8 +107,6 @@ move-it/
    ```
 
    Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
-
-   For **MLflow**, paste your tracking URI in this form: `https://username:password@tracking-url` (replace with your actual username, password, and host).
 
 3. **Run training (once)**
    Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio and run all cells.
