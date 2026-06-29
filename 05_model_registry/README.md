@@ -39,6 +39,8 @@ python 05_model_registry/upload_model.py
 
 [`upload_model.py`](upload_model.py) reads `S3_MODEL_KEY` from `.env` (default: `move-it/model.joblib`). Change that value in `.env` if your team uses a different object path.
 
+**Verify the upload:** Open [Vayu Cloud Storage](https://ipcloud.tatacommunications.com/cloud/console/vcs/#/vcs/s3-browser), select the bucket named in `S3_BUCKET_NAME`, then navigate to the path in `S3_MODEL_KEY` (for example, `move-it/model.joblib` → open the `move-it` folder and confirm `model.joblib` is present).
+
 ### 2. Register the model
 
 On the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) page. Follow the [Creating Model Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-registry/#creating-model-registry) for step-by-step wizard details:
