@@ -63,7 +63,7 @@ docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/move-it-da
 
 Go to [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list).
 
-For the full create wizard (Start → Infrastructure → Configure Compute → Observability → Review), see the [ML Service documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/).
+For the full create wizard (Start → Infrastructure → Configure Compute → Observability → Review), see the [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service).
 
 ---
 
