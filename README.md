@@ -104,6 +104,13 @@ move-it/
    KAFKA_USER=<your-kafka-user>
    KAFKA_PASS=<your-kafka-password>
    KAFKA_TOPIC=greenhouse_telemetry
+
+   # Vayu Container Registry (Step 8 — build, sign, deploy)
+   IMAGE_REGISTRY=<your-image-registry>
+   REGISTRY_PROJECT=<your-registry-project>
+   REGISTRY_USERNAME=<container-registry-username>
+   REGISTRY_PASSWORD=<container-registry-password>
+   VAYU_USERNAME=<your-vayu-username>
    ```
 
    Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
@@ -139,7 +146,7 @@ move-it/
 
    Click **Start Simulation** in the Streamlit sidebar.
 
-   **Or build the Docker image** for [Step 8](../08_deploy/) — see [`07_build_app/README.md`](07_build_app/README.md).
+   **Or deploy to Vayu** — build, sign, and push Docker images in [Step 8](08_deploy/).
 
 ---
 

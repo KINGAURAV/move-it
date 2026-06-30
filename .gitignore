@@ -9,4 +9,5 @@ __pycache__/
 *.ipynb_checkpoints/
 .qdrant-initialized/
 meta.json
-.DS_Store
+tcl-cosign
+08_deploy/image-signing/
