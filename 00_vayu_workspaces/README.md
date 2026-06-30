@@ -38,7 +38,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
 2. **Import This Repository**
 
-   - Clone or upload the `move-it` GitHub repository into your new workspace.
+   - Clone the `move-it` repository into your new workspace:
 
    ```bash
    git clone https://ailab.cloudservices.tatacommunications.com/code/vayu-hackathon/move-it.git
