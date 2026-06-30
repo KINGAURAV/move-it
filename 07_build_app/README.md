@@ -7,7 +7,7 @@
 | **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
 | **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
 
-Run the **full real-time pipeline** locally, or build Docker images for [Step 8](../08_deploy/) (two separate ML Services: ingest first, dashboard second).
+Run the **full real-time pipeline** locally, then continue to [Step 8](../08_deploy/) to build, sign, and deploy Docker images as two separate ML Services (ingest first, dashboard second).
 
 ---
 
@@ -133,28 +133,7 @@ streamlit run app.py
 
 Open the URL Streamlit prints (usually `http://localhost:8501`). You can also set **Predict host** and **Model name** in the sidebar instead of `PREDICT_URL`, then click **Start Simulation**.
 
----
-
-## Build Docker images
-
-Build from the **`move-it/`** root (not `07_build_app/`). You build **two images** — one per ML Service in [Step 8](../08_deploy/):
-
-| Image tag | Dockerfile | Port | Purpose |
-|-----------|------------|------|---------|
-| `<image-registry>/move-it-ingest:latest` | `Dockerfile.ingest` | **5000** | **Ingest API** — FastAPI service (`ingestion_api.py`) that accepts sensor readings over HTTP and publishes them to **Vayu Kafka**. Deploy this **first**. |
-| `<image-registry>/move-it-dashboard:latest` | `Dockerfile.dashboard` | **8501** | **Dashboard** — Streamlit app (`app.py`) with the built-in simulator, Kafka consumer, and **Model Serving** client for live telemetry and irrigation predictions. Deploy **second** (needs the ingest public URL as `INGEST_API_URL`). |
-
-Log in to your registry once, then build and push each image in one step (`--push` tags directly to `<image-registry>`):
-
-```bash
-cd move-it
-docker login <image-registry>
-
-docker build -f 07_build_app/Dockerfile.ingest -t <image-registry>/move-it-ingest:latest --push .
-docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/move-it-dashboard:latest --push .
-```
-
-Deploy **ingest first**, then **dashboard** with `INGEST_API_URL` set to the ingest public URL — see [Step 8](../08_deploy/).
+When local testing works, continue to [Step 8](../08_deploy/) to build, sign, and push the Docker images.
 
 ---
 

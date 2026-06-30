@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **⬅ Previous** | [Step 7 — Build app & Docker images](../07_build_app/) |
+| **⬅ Previous** | [Step 7 — Build app](../07_build_app/) |
 | **🏁 Next** | — (journey complete) |
 | **🏠 Overview** | [Move-It overview](../README.md) |
 
@@ -59,19 +59,37 @@ Vayu Model Serving (Step 6)
 
 ## Step 1 — Build and push both images
 
-Build context **must** be `move-it/`. Details: [`07_build_app/README.md`](../07_build_app/README.md).
+Build context **must** be `move-it/` (not `07_build_app/`). You build **two images** — one per ML Service:
+
+| Image tag | Dockerfile | Port | Purpose |
+|-----------|------------|------|---------|
+| `<image-registry>/<project>/move-it-ingest:latest` | `Dockerfile.ingest` | **5000** | **Ingest API** — FastAPI (`ingestion_api.py`) publishes sensor readings to **Vayu Kafka**. Deploy **first**. |
+| `<image-registry>/<project>/move-it-dashboard:latest` | `Dockerfile.dashboard` | **8501** | **Dashboard** — Streamlit (`app.py`) with simulator, Kafka consumer, and Model Serving client. Deploy **second**. |
+
+For registry login, credentials, and push details, see the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/).
 
 ```bash
 cd move-it
 docker login <image-registry>
 
-docker build -f 07_build_app/Dockerfile.ingest -t <image-registry>/move-it-ingest:latest --push .
-docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/move-it-dashboard:latest --push .
+docker build -f 07_build_app/Dockerfile.ingest -t <image-registry>/<project>/move-it-ingest:latest --push .
+docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/<project>/move-it-dashboard:latest --push .
 ```
 
 ---
 
-## Step 2 — Open Vayu ML Services
+## Step 2 — Sign both images
+
+Vayu ML Services require **signed** container images. Sign **each** image after push — repeat for ingest and dashboard.
+
+Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) — especially **Steps 4–8** (signing certificates, `tcl-cosign` setup, sign, and verify). Image references:
+
+- `<image-registry>/<project>/move-it-ingest:latest`
+- `<image-registry>/<project>/move-it-dashboard:latest`
+
+---
+
+## Step 3 — Open Vayu ML Services
 
 Go to [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list).
 
@@ -87,7 +105,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute → O
 |-------|-------|
 | **Name** | e.g. `move-it-ingest` |
 | **Framework** | **Python3** |
-| **Image** | `<image-registry>/move-it-ingest:latest` |
+| **Image** | `<image-registry>/<project>/move-it-ingest:latest` |
 | **Port** | **5000** |
 | **Public Expose** | **Enable** |
 
@@ -125,7 +143,7 @@ Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/i
 |-------|-------|
 | **Name** | e.g. `move-it-dashboard` |
 | **Framework** | **Streamlit** |
-| **Image** | `<image-registry>/move-it-dashboard:latest` |
+| **Image** | `<image-registry>/<project>/move-it-dashboard:latest` |
 | **Port** | **8501** |
 | **Public Expose** | **Enable** |
 
@@ -160,7 +178,7 @@ KAFKA_TOPIC=greenhouse_telemetry
 
 ---
 
-## Step 3 — Verify end-to-end
+## Step 4 — Verify end-to-end
 
 1. Open the **dashboard** public URL (port 8501).
 2. Sidebar should show your **ingest public URL** (not `127.0.0.1`).
@@ -184,7 +202,7 @@ KAFKA_TOPIC=greenhouse_telemetry
 - [ ] **Ingest** ML Service **Ready** on port **5000**; `/health` and `/ingest` work publicly  
 - [ ] **Dashboard** ML Service **Ready** on port **8501** with `INGEST_API_URL` + `PREDICT_URL`  
 - [ ] **Start Simulation** updates telemetry and irrigation predictions  
-- [ ] Both images pushed from `move-it/` root  
+- [ ] Both images pushed and **signed** from `move-it/` root  
 - [ ] Public URLs documented for judges  
 
 ---

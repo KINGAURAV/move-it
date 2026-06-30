@@ -139,7 +139,7 @@ move-it/
 
    Click **Start Simulation** in the Streamlit sidebar.
 
-   **Or build the Docker image** for [Step 8](../08_deploy/) — see [`07_build_app/README.md`](07_build_app/README.md).
+   **Or deploy to Vayu** — build, sign, and push Docker images in [Step 8](08_deploy/).
 
 ---
 
