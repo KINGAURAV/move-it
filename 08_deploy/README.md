@@ -85,6 +85,8 @@ docker build -f 07_build_app/Dockerfile.ingest -t $IMAGE_REGISTRY/$REGISTRY_PROJ
 docker build -f 07_build_app/Dockerfile.dashboard -t $IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-dashboard:latest --push .
 ```
 
+Re-run `set -a && source .env && set +a` (and the `docker login` line that follows) whenever you update registry variables in `.env` — otherwise the shell still has the old values.
+
 ---
 
 ## Step 2 — Sign both images
