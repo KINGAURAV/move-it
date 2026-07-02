@@ -36,6 +36,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
+   - **Object storage host alias:** During workspace creation, add a **host alias** for object storage using the **IP** and **endpoint** from your provided SOP document. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
    - Make sure **Enable Docker in the Workspace** is turned on before you finish creating the workspace.
 
 2. **Import This Repository**
