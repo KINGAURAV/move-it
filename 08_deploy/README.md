@@ -96,7 +96,7 @@ Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/doc
 - `<image-registry>/<project>/move-it-ingest:latest`
 - `<image-registry>/<project>/move-it-dashboard:latest`
 
-**Optional:** use the automated flow — see [`image-signing/README.md`](image-signing/README.md).
+**Optional:** use the [automated image signing guide](image-signing/README.md).
 
 ---
 
