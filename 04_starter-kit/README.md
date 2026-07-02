@@ -46,6 +46,8 @@ Install dependencies:
 
       ![Select a Python Environment](../assets/Select_kernerl_env.png)
 
+   3. **Validate the path:** Confirm the selected interpreter path ends with `<your-env-name>/bin/python` (for example, `.venv/bin/python` if you created `.venv` in [Step 0](../00_vayu_workspaces/)).
+
 2. **Configure MLflow in `.env`:** Set `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` in the root `.env` (see [overview](../README.md)).
 3. **Run all cells:** The notebook trains the model, logs parameters and metrics to MLflow, and saves the artifact to `04_starter-kit/model.joblib`.
 4. **Continue to registration:** Proceed to [Step 5](../05_model_registry/) to upload and register the model.

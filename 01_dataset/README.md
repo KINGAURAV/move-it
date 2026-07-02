@@ -48,6 +48,8 @@ This step contains the greenhouse crop dataset used to train the irrigation mode
 
       ![Select a Python Environment](../assets/Select_kernerl_env.png)
 
+   3. **Validate the path:** Confirm the selected interpreter path ends with `<your-env-name>/bin/python` (for example, `.venv/bin/python` if you created `.venv` in [Step 0](../00_vayu_workspaces/)).
+
    Run the **Download Dataset from Vayu Object Storage** cell (credentials load from the root `.env`).
 
 3. **Upload to S3 (optional):** Use the **Upload Dataset to Vayu Object Storage** cell in the same notebook if you want a copy stored in your bucket.

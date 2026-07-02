@@ -72,6 +72,8 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
       ![Select a Python Environment](../assets/Select_kernerl_env.png)
 
+   3. **Validate the path:** Confirm the selected interpreter path ends with `<your-env-name>/bin/python` (for example, `.venv/bin/python` if you created `.venv` in step 3).
+
 ---
 
 ## 🔗 Resources

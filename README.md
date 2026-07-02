@@ -130,6 +130,8 @@ move-it/
 
       ![Select a Python Environment](assets/Select_kernerl_env.png)
 
+   3. **Validate the path:** Confirm the selected interpreter path ends with `<your-env-name>/bin/python` (for example, `.venv/bin/python` if you created `.venv` in [Step 0](00_vayu_workspaces/)).
+
    See [Step 4](04_starter-kit/) for full training details.
 
 4. **Launch the realtime pipeline** (`07_build_app/`)
