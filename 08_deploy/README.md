@@ -89,9 +89,11 @@ Re-run `set -a && source .env && set +a` (and the `docker login` line that follo
 
 ---
 
-## Step 2 — Sign both images
+## Step 2 — Sign both images(Mandatory)
 
 Vayu ML Services require **signed** container images. Sign **each** image after push — repeat for ingest and dashboard.
+
+*If you push a new tag, the **previous tag must be signed before** you push the new one.*
 
 Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) (Steps 4–8: certificates, `tcl-cosign`, sign, and verify). Image references:
 
