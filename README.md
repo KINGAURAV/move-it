@@ -78,7 +78,12 @@ move-it/
 ### Minimal run
 
 1. **Set up the environment**
+
+   Complete [Step 0](00_vayu_workspaces/) first (workspace, clone repo). Inside your workspace terminal:
+
    ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
    cd move-it
    pip install -r requirements.txt
    ```
