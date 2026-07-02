@@ -32,13 +32,15 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
 1. **Create a Vayu AI Studio Workspace**
 
+   > ## ⏭️ **SKIP THIS STEP** if a Vayu AI Studio workspace has already been provided to you — continue with step 2 below.
+
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
    - Make sure **Enable Docker in the Workspace** is turned on before you finish creating the workspace.
 
 2. **Import This Repository**
 
-   - Clone the `move-it` repository into your new workspace:
+   Clone the `move-it` repository into your new workspace:
 
    ```bash
    git clone https://ailab.cloudservices.tatacommunications.com/code/vayu-hackathon/move-it.git
@@ -51,9 +53,9 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    Inside your workspace terminal:
 
    ```bash
-   cd move-it
    python3 -m venv .venv
    source .venv/bin/activate
+   cd move-it
    pip install -r requirements.txt
    ```
 
@@ -65,7 +67,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
       ![Select Kernel — Python Environments](../assets/kernel_select.png)
 
-   2. Under **Select a Python Environment**, pick the **Recommended** environment (it should point to the `.venv` Python you just created).
+   2. Under **Select a Python Environment**, pick the **Recommended** environment (it should point to the `.venv` you created).
 
       ![Select a Python Environment](../assets/Select_kernerl_env.png)
 

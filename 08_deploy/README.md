@@ -60,9 +60,9 @@ Vayu Model Serving (Step 6)
 
 ## Folder Contents
 
-| File | Purpose |
-|------|---------|
-| [`sign_image.py`](sign_image.py) | Download `tcl-cosign`, fetch signing certs, sign or verify an image |
+| File / folder | Purpose |
+|---------------|---------|
+| [`image-signing/`](image-signing/) | Optional automated signing guide and [`sign_image.py`](image-signing/sign_image.py) |
 
 ---
 
@@ -89,49 +89,14 @@ docker build -f 07_build_app/Dockerfile.dashboard -t $IMAGE_REGISTRY/$REGISTRY_P
 
 ## Step 2 — Sign both images
 
-Vayu ML Services require **signed** container images. Sign **each** image after push — repeat this step once for ingest and once for dashboard.
+Vayu ML Services require **signed** container images. Sign **each** image after push — repeat for ingest and dashboard.
 
-See the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) for background (credentials, OIDC flow, and troubleshooting).
+Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) (Steps 4–8: certificates, `tcl-cosign`, sign, and verify). Image references:
 
-[`sign_image.py`](sign_image.py) automates the setup: it downloads `tcl-cosign` to the repo root, creates `08_deploy/image-signing/`, fetches the Sigstore certificates, and runs `tcl-cosign`.
+- `<image-registry>/<project>/move-it-ingest:latest`
+- `<image-registry>/<project>/move-it-dashboard:latest`
 
-[`sign_image.py`](sign_image.py) loads registry credentials from the root `.env` via `load_dotenv`. Export `IMAGE` for the image you are signing (ingest or dashboard).
-
-**Sign the ingest image:**
-
-```bash
-cd move-it
-set -a && source .env && set +a
-
-export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
-
-python 08_deploy/sign_image.py sign
-```
-
-**Sign the dashboard image:**
-
-```bash
-export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-dashboard:latest
-python 08_deploy/sign_image.py sign
-```
-
-Follow the browser prompt during signing (copy the authorization code when redirected).
-
-**Verify (optional, repeat per image):**
-
-```bash
-export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
-python 08_deploy/sign_image.py verify
-```
-
-| Variable | Used for | Source |
-|----------|----------|--------|
-| `IMAGE_REGISTRY` | build + sign + verify | Root `.env` — registry host from your Vayu user profile |
-| `REGISTRY_PROJECT` | build + sign + verify | Root `.env` — registry project name (between host and image repo) |
-| `IMAGE` | sign + verify | Export per run: `$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest` or `.../move-it-dashboard:latest` |
-| `REGISTRY_USERNAME` | sign + verify + `docker login` | Root `.env` — container registry username |
-| `REGISTRY_PASSWORD` | sign + verify + `docker login` | Root `.env` — container registry CLI secret |
-| `VAYU_USERNAME` | verify only | Root `.env` — your Vayu username (certificate identity) |
+**Optional:** use the automated flow — see [`image-signing/README.md`](image-signing/README.md).
 
 ---
 

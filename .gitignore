@@ -10,4 +10,6 @@ __pycache__/
 .qdrant-initialized/
 meta.json
 tcl-cosign
-08_deploy/image-signing/
+08_deploy/image-signing/fulcio.crt
+08_deploy/image-signing/rekor.key
+08_deploy/image-signing/ctlog.key

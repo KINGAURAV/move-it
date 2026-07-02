@@ -95,7 +95,7 @@ move-it/
    S3_MODEL_KEY=move-it/model.joblib
 
    # Vayu MLflow
-   MLFLOW_TRACKING_URL=https://<your-mlflow-host>
+   MLFLOW_TRACKING_URI=https://<your-mlflow-host>
    MLFLOW_TRACKING_USERNAME=<your-username>
    MLFLOW_TRACKING_PASSWORD=<your-password>
 

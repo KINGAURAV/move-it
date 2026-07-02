@@ -3,14 +3,14 @@
 Run from the repo root after building and pushing an image. Set registry credentials in `.env` (see `.env.example`); export `IMAGE` for the image to sign:
 
     export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
-    python 08_deploy/sign_image.py sign
+    python 08_deploy/image-signing/sign_image.py sign
 
 To verify:
 
     export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
-    python 08_deploy/sign_image.py verify
+    python 08_deploy/image-signing/sign_image.py verify
 
-See 08_deploy/README.md and the Container Registry guide for full details.
+See `08_deploy/image-signing/README.md` and the Container Registry guide for full details.
 """
 
 import os
@@ -22,9 +22,9 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+SIGN_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SIGN_DIR.parent.parent
 load_dotenv(REPO_ROOT / ".env")
-SIGN_DIR = Path(__file__).resolve().parent / "image-signing"
 COSIGN_BIN = REPO_ROOT / "tcl-cosign"
 COSIGN_URL = "https://ipcloud.tatacommunications.com/docs/downloads/tcl-cosign"
 
@@ -125,7 +125,7 @@ def verify_image() -> None:
 
 def main() -> None:
     if len(sys.argv) != 2 or sys.argv[1] not in {"sign", "verify"}:
-        print("Usage: python 08_deploy/sign_image.py sign|verify", file=sys.stderr)
+        print("Usage: python 08_deploy/image-signing/sign_image.py sign|verify", file=sys.stderr)
         sys.exit(1)
 
     if sys.argv[1] == "sign":
