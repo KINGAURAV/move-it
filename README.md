@@ -106,6 +106,7 @@ move-it/
    KAFKA_TOPIC=greenhouse_telemetry
 
    # Vayu Container Registry (Step 8 — build, sign, deploy)
+   # Host only — do not include https://, http://, or a trailing /
    IMAGE_REGISTRY=<your-image-registry>
    REGISTRY_PROJECT=<your-registry-project>
    REGISTRY_USERNAME=<container-registry-username>
@@ -114,6 +115,8 @@ move-it/
    ```
 
    Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
+
+   For `IMAGE_REGISTRY`, use the registry **hostname only** (e.g. `image-registry-....cloudservices.tatacommunications.com`) — no `https://`, `http://`, or trailing `/`.
 
 3. **Run training (once)**
 

@@ -41,6 +41,16 @@ bY+CTnvZFUm07RvwR8wMBZle7pkNdw6hGbxzNqYUYvMKkYmcBQ4hQQ7+Gg==
 """
 
 
+def normalize_image_ref(value: str) -> str:
+    value = value.strip()
+    lower = value.lower()
+    for prefix in ("https://", "http://"):
+        if lower.startswith(prefix):
+            value = value[len(prefix) :]
+            break
+    return value.rstrip("/")
+
+
 def require_env(name: str) -> str:
     value = os.getenv(name, "").strip()
     if not value:
@@ -80,7 +90,7 @@ def setup_signing_assets() -> dict[str, str]:
 
 
 def sign_image() -> None:
-    image = require_env("IMAGE")
+    image = normalize_image_ref(require_env("IMAGE"))
     username = require_env("REGISTRY_USERNAME")
     password = require_env("REGISTRY_PASSWORD")
     env = setup_signing_assets()
@@ -102,7 +112,7 @@ def sign_image() -> None:
 
 
 def verify_image() -> None:
-    image = require_env("IMAGE")
+    image = normalize_image_ref(require_env("IMAGE"))
     username = require_env("REGISTRY_USERNAME")
     password = require_env("REGISTRY_PASSWORD")
     vayu_username = require_env("VAYU_USERNAME")
