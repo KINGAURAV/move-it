@@ -7,7 +7,7 @@
 | **Previous** | [Step 0 — Vayu AI Studio Workspace](../00_vayu_workspaces/) |
 | **Next** | [Step 2 — Vayu MLflow →](../02_vayu_mlflow/) |
 
-This step contains the greenhouse crop dataset used to train the irrigation model. If you already have `cropdata.csv` in this folder, you can skip the download. Otherwise, pull it from **Vayu Object Storage (S3)** using the notebook snippets below.
+This step contains the greenhouse crop dataset used to train the irrigation model. If you already have `cropdata.csv` in this folder, you can skip the download. Otherwise, pull it from **Vayu Object Storage (S3)** using the notebook snippets below. S3 credentials are provided in the **Access Guide**.
 
 ---
 

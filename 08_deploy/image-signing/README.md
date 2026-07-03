@@ -25,7 +25,7 @@ These certificate files are gitignored and re-downloaded when you run the script
 
 ## Prerequisites
 
-Set registry variables in the root [`.env`](../../README.md) (see [`.env.example`](../../.env.example)):
+Set registry variables in the root [`.env`](../../README.md) (see [`.env.example`](../../.env.example)). Values are provided in the **Access Guide**:
 
 - `IMAGE_REGISTRY`
 - `REGISTRY_PROJECT`
@@ -38,6 +38,7 @@ Set registry variables in the root [`.env`](../../README.md) (see [`.env.example
 ## Sign the ingest image
 
 ```bash
+cd /home/jovyan
 cd move-it
 set -a && source .env && set +a
 

@@ -68,11 +68,12 @@ The **Streamlit** app users interact with. It does four things:
 Complete [Steps 0–6](../README.md) first. For this step you need:
 
 - Python 3.11+
-- **Vayu Kafka** credentials and topic ([Step 3](../03_vayu_kafka/))
+- **Vayu Kafka** credentials and topic ([Step 3](../03_vayu_kafka/); connection details in the **Access Guide**)
 - **Vayu Model Serving** predict endpoint ([Step 6](../06_deploy_model/))
 - `01_dataset/cropdata.csv` (for feature preprocessing only)
 
 ```bash
+cd /home/jovyan
 cd move-it
 pip install -r requirements.txt
 ```
@@ -102,6 +103,7 @@ The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` 
 This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
 
 ```bash
+cd /home/jovyan
 cd move-it/07_build_app
 
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
@@ -117,6 +119,7 @@ Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `
 **Terminal 2 — Dashboard**
 
 ```bash
+cd /home/jovyan
 cd move-it/07_build_app
 
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"

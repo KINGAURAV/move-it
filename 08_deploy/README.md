@@ -52,7 +52,7 @@ Vayu Model Serving (Step 6)
 | 3 | [`03_vayu_kafka/`](../03_vayu_kafka/) | Kafka **Ready**, topic created |
 | 6 | [`06_deploy_model/`](../06_deploy_model/) | Model Serving **Ready** — predict URL |
 | 7 | [`07_build_app/`](../07_build_app/) | Tested locally |
-| — | Container registry | Registry username and CLI secret ([Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)) |
+| — | Container registry | Registry username and CLI secret (provided in the **Access Guide**; see also the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)) |
 
 **Before Step 8:** Run locally with two terminals ([Step 7](../07_build_app/README.md)) and confirm **Start Simulation** works.
 
@@ -75,9 +75,10 @@ Build context **must** be `move-it/` (not `07_build_app/`). You build **two imag
 | `<image-registry>/<project>/move-it-ingest:latest` | `Dockerfile.ingest` | **5000** | **Ingest API** — FastAPI (`ingestion_api.py`) publishes sensor readings to **Vayu Kafka**. Deploy **first**. |
 | `<image-registry>/<project>/move-it-dashboard:latest` | `Dockerfile.dashboard` | **8501** | **Dashboard** — Streamlit (`app.py`) with simulator, Kafka consumer, and Model Serving client. Deploy **second**. |
 
-For registry login and push details, see the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/). Set `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` in the root [`.env`](../README.md). Image tags use the form `$IMAGE_REGISTRY/$REGISTRY_PROJECT/<image-name>:latest`.
+For registry login and push details, see the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/). Set `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` in the root [`.env`](../README.md) using values from the **Access Guide**. Image tags use the form `$IMAGE_REGISTRY/$REGISTRY_PROJECT/<image-name>:latest`.
 
 ```bash
+cd /home/jovyan
 cd move-it
 set -a && source .env && set +a && echo "$REGISTRY_PASSWORD" | docker login "$IMAGE_REGISTRY" -u "$REGISTRY_USERNAME" --password-stdin
 

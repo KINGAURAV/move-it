@@ -7,7 +7,7 @@
 | **Previous** | [← Step 2 — Vayu MLflow](../02_vayu_mlflow/) |
 | **Next**     | [Step 4 — Starter Kit →](../04_starter-kit/) |
 
-Deploy **Vayu Kafka** and create a topic that acts as the streaming buffer between your ingestion gateway and downstream consumers.
+Deploy **Vayu Kafka** and create a topic that acts as the streaming buffer between your ingestion gateway and downstream consumers. Kafka connection details are provided in the **Access Guide**.
 
 ---
 
@@ -29,9 +29,11 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 
 1. **Deploy Vayu Kafka:** Create a new Kafka deployment on the [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) page.
 2. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
-3. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`, and optionally `KAFKA_TOPIC` (default: `greenhouse_telemetry`). Then run:
+3. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`, and optionally `KAFKA_TOPIC` (default: `greenhouse_telemetry`) — use the values from the **Access Guide**. Then run:
 
    ```bash
+   cd /home/jovyan
+   cd move-it
    python 03_vayu_kafka/create_topic.py
    ```
 

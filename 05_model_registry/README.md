@@ -31,9 +31,11 @@ For the full registration wizard (Start → Model Configuration → Object Stora
 
 ### 1. Upload `model.joblib` to S3
 
-Ensure your project root [`.env`](../README.md) includes the S3 variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME`, and `S3_MODEL_KEY`). Then run:
+Ensure your project root [`.env`](../README.md) includes the S3 variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME`, and `S3_MODEL_KEY`) from the **Access Guide**. Then run:
 
 ```bash
+cd /home/jovyan
+cd move-it
 python 05_model_registry/upload_model.py
 ```
 

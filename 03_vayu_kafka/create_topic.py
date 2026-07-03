@@ -1,7 +1,9 @@
 """Create a Vayu Kafka topic for Move-It telemetry.
 
-Run from the repo root after your Kafka deployment is Ready:
+Run from the repo root after your Kafka deployment is Ready. From `/home/jovyan`, `cd move-it`:
 
+    cd /home/jovyan
+    cd move-it
     python 03_vayu_kafka/create_topic.py
 
 Set Kafka variables in the project root `.env` file.

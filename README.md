@@ -2,7 +2,7 @@
 
 ## Problem statement and outcome
 
-**Problem:** Traditional greenhouse irrigation often relies on manual scheduling or simple timers, leading to water waste or plant stress due to unpredictable environmental changes. Choose a real usecase (e.g., a smart greenhouse, an automated hydroponics farm, or a vertical urban farm) and a sensor set they care about. Build an end‑to‑end IoT-to-ML pipeline **using the Vayu platform**: simulate sensors (Wokwi ESP32) streaming data via HTTP to a **FastAPI** gateway, ingest data into a **Vayu Kafka** topic, process the stream in a **Vayu AI Studio** notebook to train a model, and deploy a **Streamlit** dashboard that provides real-time monitoring and automated irrigation decisions.
+**Problem:** Traditional greenhouse irrigation often relies on manual scheduling or simple timers, leading to water waste or plant stress due to unpredictable environmental changes. Choose a real usecase (e.g., a smart greenhouse, an automated hydroponics farm, or a vertical urban farm) and a sensor set they care about. Build an end‑to‑end IoT-to-ML pipeline **using the Vayu platform**: simulate sensors (Wokwi ESP32) streaming data via HTTP to a **FastAPI** gateway, ingest data into a **Vayu Kafka** topic, process the stream in a **Vayu AI Studio Workspace** notebook to train a model, and deploy a **Streamlit** dashboard via **Vayu ML Service** that provides real-time monitoring and automated irrigation decisions.
 
 **Outcome:** This starter template demonstrates a complete streaming ML pipeline: sensor data $\to$ HTTP $\to$ Kafka $\to$ Streamlit $\to$ ML Inference. The UI returns real-time telemetry (Temperature, Humidity), predicts water requirements using a trained model (e.g., Random Forest), and visualizes the irrigation action (ON/OFF) in a live dashboard.
 
@@ -22,7 +22,8 @@ move-it/
 ├── 04_starter-kit/           # train_model.ipynb — training template
 ├── 05_model_registry/        # upload_model.py & model registration
 ├── 06_deploy_model/          # Model deployment to Vayu Model Serving
-└── 07_build_app/             # FastAPI ingest + Streamlit dashboard + simulator
+├── 07_build_app/             # FastAPI ingest + Streamlit dashboard + simulator
+└── 08_deploy/                # Build, sign & push container images; deploy via Vayu ML Service
 ```
 
 | Step | Vayu service | Folder | What to run / open |
@@ -34,7 +35,8 @@ move-it/
 | 4 | **Data Pipeline & ML Lab** | `04_starter-kit/` | `train_model.ipynb` — train and save `model.joblib` |
 | 5 | **Vayu Model Registry** | `05_model_registry/` | `upload_model.py` — upload and register model |
 | 6 | **Vayu Model Serving** | `06_deploy_model/` | `README.md` — deploy Predictive AI endpoint |
-| 7 | **Vayu Realtime Inference** | `07_build_app/` | FastAPI ingest + Streamlit dashboard (built-in simulator) |
+| 7 | **Vayu Realtime Inference** | `07_build_app/` | FastAPI ingest + Streamlit dashboard (build & run locally) |
+| 8 | **Vayu ML Service** | `08_deploy/` | `README.md` — build and sign images, then deploy ingest + dashboard |
 
 ---
 
@@ -43,13 +45,14 @@ move-it/
 | Journey step | How to leverage Vayu ecosystem (detailed) |
 |--------------|------------------------------------------|
 | **Vayu AI Studio Workspace** | Create your workspace with **Enable Docker in the Workspace** turned on, then clone this repo (`00_vayu_workspaces/`). |
-| **Vayu Object Storage** | Pull `cropdata.csv` from S3 if needed, using upload/download snippets in `01_dataset/` (`01_dataset.ipynb`). |
+| **Vayu Object Storage** | Pull `cropdata.csv` from S3 if needed, using upload/download snippets in `01_dataset/` (`01_dataset.ipynb`). S3 credentials are in the **Access Guide**. |
 | **Vayu MLflow** | Deploy managed MLflow, configure S3 and database, and wait for **Ready** (`02_vayu_mlflow/`). |
-| **Vayu Kafka** | Deploy Kafka, run `create_topic.py`, and wait for **Ready** (`03_vayu_kafka/`). |
+| **Vayu Kafka** | Deploy Kafka, run `create_topic.py`, and wait for **Ready** (`03_vayu_kafka/`). Kafka credentials are in the **Access Guide**. |
 | **Starter Kit (Training)** | Train with `train_model.ipynb`, log to MLflow, and save `model.joblib` (`04_starter-kit/`). |
 | **Vayu Model Registry** | Upload `model.joblib` to S3 and register with sklearn metadata (`05_model_registry/`). |
 | **Vayu Model Serving** | Deploy via **Predictive AI**, selecting the registered model and version (`06_deploy_model/`). |
-| **Vayu Realtime Inference** | Host the Streamlit dashboard to visualize live sensor trends and predictions (`07_build_app/`). |
+| **Vayu Realtime Inference** | Build and run the Streamlit dashboard locally to validate live sensor trends and predictions (`07_build_app/`). |
+| **Vayu ML Service** | Build and sign container images, push to the registry, and deploy ingest + dashboard as ML Services (`08_deploy/`). Container Registry credentials are in the **Access Guide**. |
 
 ---
 
@@ -77,11 +80,14 @@ move-it/
 
 ### Minimal run
 
+Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the **Container Registry** are provided in the **Access Guide**.
+
 1. **Set up the environment**
 
-   Complete [Step 0](00_vayu_workspaces/) first (workspace, clone repo). Inside your workspace terminal:
+   Complete [Step 0](00_vayu_workspaces/) first (workspace, clone repo). From `/home/jovyan` in your workspace terminal:
 
    ```bash
+   cd /home/jovyan
    python3 -m venv .venv
    source .venv/bin/activate
    cd move-it
@@ -91,39 +97,20 @@ move-it/
 2. **Create a `.env` file** in the project root (`move-it/.env`) with your Vayu credentials:
 
    ```bash
-   # Vayu Object Storage (S3)
-   AWS_ACCESS_KEY_ID=<your-access-key>
-   AWS_SECRET_ACCESS_KEY=<your-secret-key>
-   S3_ENDPOINT=<your-s3-endpoint>
-   S3_BUCKET_NAME=<your-bucket-name>
-   S3_DATASET_KEY=cropdata.csv
-   S3_MODEL_KEY=move-it/model.joblib
-
-   # Vayu MLflow
-   MLFLOW_TRACKING_URI=https://<your-mlflow-host>
-   MLFLOW_TRACKING_USERNAME=<your-username>
-   MLFLOW_TRACKING_PASSWORD=<your-password>
-
-   # Vayu Kafka
-   KAFKA_BROKER=<your-kafka-broker-url>
-   KAFKA_USER=<your-kafka-user>
-   KAFKA_PASS=<your-kafka-password>
-   KAFKA_TOPIC=greenhouse_telemetry
-
-   # Vayu Container Registry (Step 8 — build, sign, deploy)
-   # Host only — do not include https://, http://, or a trailing /
-   IMAGE_REGISTRY=<your-image-registry>
-   REGISTRY_PROJECT=<your-registry-project>
-   REGISTRY_USERNAME=<container-registry-username>
-   REGISTRY_PASSWORD=<container-registry-password>
-   VAYU_USERNAME=<your-vayu-username>
+   cd /home/jovyan
+   cd move-it
+   cp .env.example .env
    ```
 
-   Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
+   Open `.env` and replace the placeholder values with your credentials. Use the **Access Guide** for **Vayu Object Storage (S3)**, **Vayu Kafka**, and **Container Registry** values. Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
 
    For `IMAGE_REGISTRY`, use the registry **hostname only** (e.g. `image-registry-....cloudservices.tatacommunications.com`) — no `https://`, `http://`, or trailing `/`.
 
-3. **Run training (once)**
+3. **Deploy Vayu MLflow** (required before training)
+
+   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, and copy the tracking URI and credentials into your `.env` (`MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`).
+
+4. **Run training (once)**
 
    Open `04_starter-kit/train_model.ipynb` in Vayu AI Studio, select the kernel, then run all cells:
 
@@ -139,17 +126,19 @@ move-it/
 
    See [Step 4](04_starter-kit/) for full training details.
 
-4. **Launch the realtime pipeline** (`07_build_app/`)
+5. **Launch the realtime pipeline** (`07_build_app/`)
 
    **Terminal 1 — ingestion API**
    ```bash
-   cd 07_build_app
+   cd /home/jovyan
+   cd move-it/07_build_app
    python ingestion_api.py
    ```
 
    **Terminal 2 — dashboard + simulator**
    ```bash
-   cd 07_build_app
+   cd /home/jovyan
+   cd move-it/07_build_app
    export INGEST_API_URL="http://127.0.0.1:5000/ingest"
    streamlit run app.py
    ```

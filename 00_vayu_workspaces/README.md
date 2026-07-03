@@ -36,14 +36,15 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
-   - **Object storage host alias:** During workspace creation, add a **host alias** for object storage using the **IP** and **endpoint** from your provided SOP document. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
+   - **Object storage host alias:** During workspace creation, add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
    - Make sure **Enable Docker in the Workspace** is turned on before you finish creating the workspace.
 
 2. **Import This Repository**
 
-   Clone the `move-it` repository into your new workspace:
+   Clone the `move-it` repository into your workspace home (`/home/jovyan`):
 
    ```bash
+   cd /home/jovyan
    git clone https://ailab.cloudservices.tatacommunications.com/code/vayu-hackathon/move-it.git
    ```
 
@@ -54,6 +55,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    Inside your workspace terminal:
 
    ```bash
+   cd /home/jovyan
    python3 -m venv .venv
    source .venv/bin/activate
    cd move-it
