@@ -1,9 +1,8 @@
 """Upload model.joblib from Step 4 to Vayu Object Storage (S3).
 
-Run from the repo root after training. From `/home/jovyan`, `cd move-it`:
+Run from the repo root after training:
 
-    cd /home/jovyan
-    cd move-it
+    cd /home/jovyan/move-it
     python 05_model_registry/upload_model.py
 
 Set AWS and S3 variables in the project root `.env` file.

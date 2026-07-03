@@ -78,8 +78,7 @@ Build context **must** be `move-it/` (not `07_build_app/`). You build **two imag
 For registry login and push details, see the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/). Set `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, and `REGISTRY_PASSWORD` in the root [`.env`](../README.md) using values from the **Access Guide**. Image tags use the form `$IMAGE_REGISTRY/$REGISTRY_PROJECT/<image-name>:latest`.
 
 ```bash
-cd /home/jovyan
-cd move-it
+cd /home/jovyan/move-it
 set -a && source .env && set +a && echo "$REGISTRY_PASSWORD" | docker login "$IMAGE_REGISTRY" -u "$REGISTRY_USERNAME" --password-stdin
 
 docker build -f 07_build_app/Dockerfile.ingest -t $IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest --push .

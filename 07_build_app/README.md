@@ -73,8 +73,7 @@ Complete [Steps 0–6](../README.md) first. For this step you need:
 - `01_dataset/cropdata.csv` (for feature preprocessing only)
 
 ```bash
-cd /home/jovyan
-cd move-it
+cd /home/jovyan/move-it
 pip install -r requirements.txt
 ```
 
@@ -103,8 +102,7 @@ The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` 
 This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
 
 ```bash
-cd /home/jovyan
-cd move-it/07_build_app
+cd /home/jovyan/move-it/07_build_app
 
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
 export KAFKA_USER="<VAYU_KAFKA_USER>"
@@ -119,8 +117,7 @@ Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `
 **Terminal 2 — Dashboard**
 
 ```bash
-cd /home/jovyan
-cd move-it/07_build_app
+cd /home/jovyan/move-it/07_build_app
 
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"

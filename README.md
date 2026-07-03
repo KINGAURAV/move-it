@@ -84,21 +84,23 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
 1. **Set up the environment**
 
-   Complete [Step 0](00_vayu_workspaces/) first (workspace, clone repo). From `/home/jovyan` in your workspace terminal:
+   Complete [Step 0](00_vayu_workspaces/) first (create workspace, enable Docker). From `/home/jovyan` in your workspace terminal:
 
    ```bash
    cd /home/jovyan
+   git clone https://ailab.cloudservices.tatacommunications.com/code/vayu-hackathon/move-it.git
    python3 -m venv .venv
    source .venv/bin/activate
    cd move-it
    pip install -r requirements.txt
    ```
 
+   Skip `git clone` if the repo is already present under `/home/jovyan/move-it`.
+
 2. **Create a `.env` file** in the project root (`move-it/.env`) with your Vayu credentials:
 
    ```bash
-   cd /home/jovyan
-   cd move-it
+   cd /home/jovyan/move-it
    cp .env.example .env
    ```
 
@@ -130,15 +132,13 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    **Terminal 1 — ingestion API**
    ```bash
-   cd /home/jovyan
-   cd move-it/07_build_app
+   cd /home/jovyan/move-it/07_build_app
    python ingestion_api.py
    ```
 
    **Terminal 2 — dashboard + simulator**
    ```bash
-   cd /home/jovyan
-   cd move-it/07_build_app
+   cd /home/jovyan/move-it/07_build_app
    export INGEST_API_URL="http://127.0.0.1:5000/ingest"
    streamlit run app.py
    ```

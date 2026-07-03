@@ -38,8 +38,7 @@ Set registry variables in the root [`.env`](../../README.md) (see [`.env.example
 ## Sign the ingest image
 
 ```bash
-cd /home/jovyan
-cd move-it
+cd /home/jovyan/move-it
 set -a && source .env && set +a
 
 export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest

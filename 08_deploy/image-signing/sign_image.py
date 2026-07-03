@@ -1,9 +1,8 @@
 """Download tcl-cosign tooling and sign or verify a container image.
 
-Run from the repo root after building and pushing an image. From `/home/jovyan`, `cd move-it`. Set registry credentials in `.env` (see `.env.example`); export `IMAGE` for the image to sign:
+Run from the repo root after building and pushing an image. Set registry credentials in `.env` (see `.env.example`); export `IMAGE` for the image to sign:
 
-    cd /home/jovyan
-    cd move-it
+    cd /home/jovyan/move-it
     export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
     python 08_deploy/image-signing/sign_image.py sign
 

@@ -32,8 +32,7 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 3. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`, and optionally `KAFKA_TOPIC` (default: `greenhouse_telemetry`) — use the values from the **Access Guide**. Then run:
 
    ```bash
-   cd /home/jovyan
-   cd move-it
+   cd /home/jovyan/move-it
    python 03_vayu_kafka/create_topic.py
    ```
 
