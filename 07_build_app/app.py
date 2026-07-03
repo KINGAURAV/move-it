@@ -20,18 +20,20 @@ import pandas as pd
 import requests
 import streamlit as st
 from kafka import KafkaConsumer
-from sklearn.preprocessing import StandardScaler
 
 APP_DIR = Path(__file__).resolve().parent
-ROOT_DIR = APP_DIR.parent
-DATASET_PATH = ROOT_DIR / "01_dataset" / "cropdata.csv"
 
 sys.path.insert(0, str(APP_DIR))
 from kafka_config import KAFKA_BROKER, KAFKA_TOPIC, consumer_config
 
 LOCAL_INGEST_URL = "http://127.0.0.1:5000/ingest"
-DEFAULT_PREDICT_HOST = os.getenv("VAYU_PREDICT_HOST", "http://localhost:8080")
-DEFAULT_MODEL_NAME = os.getenv("VAYU_MODEL_NAME", "sklearn-model")
+DEFAULT_PREDICT_HOST = os.getenv("VAYU_PREDICT_HOST", "http://localhost:8880")
+DEFAULT_MODEL_NAME = os.getenv("VAYU_MODEL_NAME", "model")
+
+
+def _is_full_predict_url(url: str) -> bool:
+    """True when the value is already a KServe predict endpoint."""
+    return url.rstrip("/").endswith(":predict")
 
 
 def _is_dev_proxy_ingest_url(url: str) -> bool:
@@ -59,7 +61,11 @@ def resolve_ingest_url(raw: str | None = None) -> str:
 def build_predict_url(host: str, model_name: str) -> str:
     host = host.strip().rstrip("/")
     model_name = model_name.strip()
-    if not host or not model_name:
+    if not host:
+        raise ValueError("Set predict host and model name.")
+    if _is_full_predict_url(host):
+        return host
+    if not model_name:
         raise ValueError("Set predict host and model name.")
     return f"{host}/v1/models/{model_name}:predict"
 
@@ -68,7 +74,10 @@ def resolve_predict_url(host: str | None = None, model_name: str | None = None) 
     explicit = os.getenv("PREDICT_URL", "").strip()
     if explicit:
         return explicit
-    return build_predict_url(host or DEFAULT_PREDICT_HOST, model_name or DEFAULT_MODEL_NAME)
+    host_value = (host or DEFAULT_PREDICT_HOST).strip().rstrip("/")
+    if _is_full_predict_url(host_value):
+        return host_value
+    return build_predict_url(host_value, model_name or DEFAULT_MODEL_NAME)
 
 
 def parse_ingest_response(resp: requests.Response, payload: dict) -> dict:
@@ -121,8 +130,7 @@ _seen_keys = _SHARED["seen_keys"]
 _seen_lock = _SHARED["seen_lock"]
 _state_lock = _SHARED["state_lock"]
 
-CAT_COLS = list(DEFAULT_CATEGORICALS.keys())
-NUM_COLS = ["MOI", "temp", "humidity"]
+FEATURE_COLS = list(DEFAULT_CATEGORICALS.keys()) + ["MOI", "temp", "humidity"]
 
 
 def sync_predict_config(
@@ -139,61 +147,10 @@ def sync_predict_config(
     return predict_url
 
 
-def _encode_categoricals(df: pd.DataFrame, cat_cols: list[str]) -> pd.DataFrame:
-    out = df.copy()
-    for col in cat_cols:
-        out[col] = out[col].astype("category")
-    return pd.get_dummies(out, columns=cat_cols, drop_first=True)
-
-
-def _load_preprocess_bundle(csv_path: Path) -> dict:
-    """Fit preprocessing artifacts from training data (no local model)."""
-    raw = pd.read_csv(csv_path)
-    cat_cols = list(raw.select_dtypes(include=["object"]).columns)
-
-    df = _encode_categoricals(raw, cat_cols)
-    df = df[df["result"] != 2]
-
-    scaler = StandardScaler()
-    df[NUM_COLS] = scaler.fit_transform(df[NUM_COLS])
-
-    feature_columns = [c for c in df.columns if c != "result"]
-    return {
-        "scaler": scaler,
-        "feature_columns": feature_columns,
-        "cat_cols": cat_cols,
-        "raw_sample": raw.head(300),
-        "source": str(csv_path),
-    }
-
-
-@st.cache_resource
-def load_preprocess_bundle() -> dict | None:
-    if DATASET_PATH.exists():
-        return _load_preprocess_bundle(DATASET_PATH)
-    return None
-
-
-def _build_feature_row(temp: float, humidity: float, moi: float, preprocess: dict) -> pd.DataFrame:
-    infer_row = {**DEFAULT_CATEGORICALS, "MOI": moi, "temp": temp, "humidity": humidity}
-    infer_df = pd.DataFrame([infer_row])
-
-    sample_cols = preprocess["cat_cols"] + NUM_COLS
-    combined = pd.concat([preprocess["raw_sample"][sample_cols], infer_df], ignore_index=True)
-
-    encoded = _encode_categoricals(combined, preprocess["cat_cols"])
-    encoded[NUM_COLS] = preprocess["scaler"].transform(encoded[NUM_COLS])
-
-    row = encoded.iloc[[-1]].copy()
-    for col in preprocess["feature_columns"]:
-        if col not in row.columns:
-            row[col] = 0.0
-
-    features = row[preprocess["feature_columns"]]
-    if os.getenv("DEBUG_PREDICT"):
-        print("feature columns:", len(preprocess["feature_columns"]))
-        print("built columns:", features.columns.tolist()[:10], "...")
-    return features
+def _build_kserve_instance(temp: float, humidity: float, moi: float) -> dict[str, list]:
+    """Build a KServe V1 dict instance (each feature value must be a list)."""
+    row = {**DEFAULT_CATEGORICALS, "MOI": moi, "temp": temp, "humidity": humidity}
+    return {col: [row[col]] for col in FEATURE_COLS}
 
 
 def _predict_headers() -> dict[str, str]:
@@ -233,17 +190,16 @@ def _parse_predict_response(body: dict[str, Any]) -> tuple[int, float]:
     return prediction, probability
 
 
-def predict_irrigation(temp: float, humidity: float, moi: float, preprocess: dict) -> tuple[int, float]:
+def predict_irrigation(temp: float, humidity: float, moi: float) -> tuple[int, float]:
     predict_url = str(_SHARED.get("predict_url", "")).strip() or os.getenv("PREDICT_URL", "").strip()
     if not predict_url:
         raise ValueError("Set PREDICT_URL or configure Vayu Model Serving in the sidebar.")
 
-    features = _build_feature_row(temp, humidity, moi, preprocess)
-    payload = {"instances": features.values.tolist()}
+    payload = {"instances": [_build_kserve_instance(temp, humidity, moi)]}
 
     if os.getenv("DEBUG_PREDICT"):
         print("PREDICT URL:", predict_url)
-        print("PAYLOAD instances[0][:5]:", payload["instances"][0][:5], "...")
+        print("PAYLOAD:", payload)
 
     response = requests.post(
         predict_url,
@@ -255,7 +211,7 @@ def predict_irrigation(temp: float, humidity: float, moi: float, preprocess: dic
     return _parse_predict_response(response.json())
 
 
-def _predict_row(data: dict, preprocess: dict) -> dict:
+def _predict_row(data: dict) -> dict:
     temp = float(data.get("temp", 0))
     humidity = float(data.get("humidity", 0))
     moi = float(data.get("MOI", 10))
@@ -264,7 +220,7 @@ def _predict_row(data: dict, preprocess: dict) -> dict:
         print("INPUT DATA:", data)
         print("FEATURES:", temp, humidity, moi)
 
-    prediction, probability = predict_irrigation(temp, humidity, moi, preprocess)
+    prediction, probability = predict_irrigation(temp, humidity, moi)
 
     if os.getenv("DEBUG_PREDICT"):
         print("PRED:", prediction, probability)
@@ -290,7 +246,7 @@ def _append_prediction_row(row: dict) -> None:
         _SHARED["prediction_buffer"] = _SHARED["prediction_buffer"][-20:]
 
 
-def enqueue_prediction(data: dict, preprocess: dict, source: str) -> None:
+def enqueue_prediction(data: dict, source: str) -> None:
     key = (data.get("timestamp"), float(data.get("temp", 0)), float(data.get("humidity", 0)))
     with _seen_lock:
         if key in _seen_keys:
@@ -298,7 +254,7 @@ def enqueue_prediction(data: dict, preprocess: dict, source: str) -> None:
         _seen_keys.add(key)
 
     try:
-        _append_prediction_row(_predict_row(data, preprocess))
+        _append_prediction_row(_predict_row(data))
         _kafka_status["last_prediction_error"] = None
         print(f"Queued prediction from {source}")
     except Exception as exc:
@@ -306,7 +262,7 @@ def enqueue_prediction(data: dict, preprocess: dict, source: str) -> None:
         print(f"Prediction failed ({source}): {exc}")
 
 
-def kafka_consumer_worker(preprocess: dict) -> None:
+def kafka_consumer_worker() -> None:
     while True:
         consumer = None
         try:
@@ -320,7 +276,7 @@ def kafka_consumer_worker(preprocess: dict) -> None:
                 msg_pack = consumer.poll(timeout_ms=1000)
                 for messages in msg_pack.values():
                     for msg in messages:
-                        enqueue_prediction(msg.value, preprocess, "kafka")
+                        enqueue_prediction(msg.value, "kafka")
                         _kafka_status["messages"] += 1
         except Exception as exc:
             _kafka_status["connected"] = False
@@ -332,14 +288,14 @@ def kafka_consumer_worker(preprocess: dict) -> None:
                 consumer.close()
 
 
-def ensure_kafka_consumer(preprocess: dict) -> None:
+def ensure_kafka_consumer() -> None:
     if _SHARED["kafka_started"]:
         return
     _SHARED["kafka_started"] = True
-    threading.Thread(target=kafka_consumer_worker, args=(preprocess,), daemon=True).start()
+    threading.Thread(target=kafka_consumer_worker, daemon=True).start()
 
 
-def run_sensor_simulation(preprocess: dict, ingest_url: str) -> None:
+def run_sensor_simulation(ingest_url: str) -> None:
     print(f"Simulation started -> {ingest_url}")
     while _simulating.is_set():
         payload = {
@@ -352,14 +308,14 @@ def run_sensor_simulation(preprocess: dict, ingest_url: str) -> None:
             resp = requests.post(ingest_url, json=payload, timeout=5)
             data = parse_ingest_response(resp, payload)
             print(f"Ingest OK: {data}")
-            enqueue_prediction(data, preprocess, "ingest")
+            enqueue_prediction(data, "ingest")
         except Exception as exc:
             print(f"Simulation error: {exc}")
         time.sleep(2)
     print("Simulation stopped.")
 
 
-def start_simulation(preprocess: dict, ingest_url: str) -> None:
+def start_simulation(ingest_url: str) -> None:
     with _state_lock:
         _simulating.set()
         st.session_state.simulation_running = True
@@ -367,7 +323,7 @@ def start_simulation(preprocess: dict, ingest_url: str) -> None:
         if thread is None or not thread.is_alive():
             thread = threading.Thread(
                 target=run_sensor_simulation,
-                args=(preprocess, ingest_url),
+                args=(ingest_url,),
                 daemon=True,
             )
             thread.start()
@@ -446,13 +402,11 @@ if "predict_host_header" not in st.session_state:
 if "predict_bearer_token" not in st.session_state:
     st.session_state.predict_bearer_token = os.getenv("VAYU_BEARER_TOKEN", "")
 
-preprocess_bundle = load_preprocess_bundle()
-if preprocess_bundle is None:
-    st.error(f"Could not load preprocessing spec. Ensure `{DATASET_PATH}` exists.")
-    st.stop()
-
 st.sidebar.header("Vayu Model Serving")
-st.session_state.predict_host = st.sidebar.text_input("Predict host", value=st.session_state.predict_host)
+st.session_state.predict_host = st.sidebar.text_input(
+    "Predict host (base URL or full :predict endpoint)",
+    value=st.session_state.predict_host,
+)
 st.session_state.predict_model = st.sidebar.text_input("Model name", value=st.session_state.predict_model)
 st.session_state.predict_host_header = st.sidebar.text_input(
     "Host header (optional)",
@@ -477,16 +431,16 @@ except ValueError as exc:
     predict_url = ""
     st.sidebar.error(str(exc))
 
-ensure_kafka_consumer(preprocess_bundle)
+ensure_kafka_consumer()
 
 with st.sidebar.expander("Model debug"):
-    st.write(f"Feature columns: {len(preprocess_bundle['feature_columns'])}")
+    st.write(f"Model inputs: {', '.join(FEATURE_COLS)}")
     if st.button("Test prediction (25C, 60% humidity)"):
         if not predict_url:
             st.error("Configure a valid predict endpoint first.")
         else:
             try:
-                pred, prob = predict_irrigation(25.0, 60.0, 10.0, preprocess_bundle)
+                pred, prob = predict_irrigation(25.0, 60.0, 10.0)
                 st.success(f"prediction={pred}, probability={prob:.3f}")
             except Exception as exc:
                 st.error(str(exc))
@@ -508,7 +462,7 @@ if st.sidebar.button("Start Simulation"):
     if not predict_url:
         st.sidebar.error("Set predict host/model or PREDICT_URL before starting.")
     elif not _simulating.is_set():
-        start_simulation(preprocess_bundle, ingest_url)
+        start_simulation(ingest_url)
         st.sidebar.success("Simulation running")
         st.rerun()
     else:
@@ -562,5 +516,4 @@ with st.sidebar:
     live_status()
 
 st.sidebar.divider()
-st.sidebar.write(f"Preprocess: {preprocess_bundle.get('source', 'unknown')}")
 st.sidebar.write(f"Topic: {KAFKA_TOPIC}")
