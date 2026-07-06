@@ -39,7 +39,6 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 1. **Create a Vayu AI Studio Workspace**
 
    > **Skip this step** if a Vayu AI Studio workspace has already been provided to you — continue with step 2 below.
-
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
    - **Object storage host alias:** During workspace creation, add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
@@ -71,7 +70,6 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 4. **Select the notebook kernel**
 
    When you open any `.ipynb` in this project, use the virtual environment above:
-
    1. Open **Select Kernel** and choose **Python Environments**.
 
       ![Select Kernel — Python Environments](../assets/kernel_select.png)
@@ -94,7 +92,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 <table width="100%" style="width:100%">
 <tr>
 <td align="left"><a href="../README.md">Previous — Move-It overview</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
+<td align="center"><a href="/README.md">Overview</a></td>
+<td align="right"><a href="/01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
 </tr>
 </table>
