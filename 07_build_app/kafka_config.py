@@ -8,7 +8,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=True)
 
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "greenhouse_telemetry")

@@ -18,7 +18,7 @@ from kafka import KafkaAdminClient
 from kafka.admin import NewTopic
 from kafka.errors import TopicAlreadyExistsError
 
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=True)
 
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "")
 KAFKA_USER = os.getenv("KAFKA_USER", "")
