@@ -2,84 +2,96 @@
 
 **Move-It** › **Vayu Model Serving** · `06_deploy_model/`
 
-Deploy **`04_starter_kit/model.joblib`** for **online sklearn inference** via **Vayu Model Serving**.
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../05_model_registry/">Previous — Step 5 — Model Registry</a></td>
+<td align="right"><a href="../07_build_app/">Next — Step 7 — Build App</a></td>
+</tr>
+</table>
+
+Deploy **`04_starter-kit/model.joblib`** for **online sklearn inference** via **Vayu Model Serving**.
 
 ---
 
-## Quick Navigation
-
-|        |        |
-|--------|--------|
-| **⬅ Previous** | [Step 4 — Vayu Model Registry](../05_model_registry/) |
-| **Next ➡**     | [Step 6 — Vayu inference UI](../07_build_app/) |
-
----
-
-## What's In This Step?
+<details>
+<summary><h3>🧩 What's in this step?</h3></summary>
 
 Deploy the trained sklearn `Pipeline` so the [Step 7 Streamlit UI](../07_build_app/) can call a **predict HTTP endpoint** (not local `joblib` loading).
 
----
-
-## Prerequisites
-
-- ✅ [Step 3 — Vayu training](../04_starter_kit/) — `model.joblib` and `category_labels.json` generated
-- ✅ [Step 4 — Vayu Model Registry](../05_model_registry/) — artifact registered
+</details>
 
 ---
 
-## Deploy in Vayu Model Serving
+<details>
+<summary><h3>📋 Prerequisites</h3></summary>
 
-1. **Confirm artifact** — `03_starter_kit/model.joblib` exists.
-2. **Register** via [Step 4](../05_model_registry/) if not already done.
+- [Step 4 — Starter Kit](../04_starter-kit/) — `model.joblib` and `category_labels.json` generated
+- [Step 5 — Vayu Model Registry](../05_model_registry/) — artifact registered
+
+</details>
+
+---
+
+<details>
+<summary><h3>🚀 Deploy in Vayu Model Serving</h3></summary>
+
+1. **Confirm artifact** — `04_starter-kit/model.joblib` exists.
+2. **Register** via [Step 5](../05_model_registry/) if not already done.
 3. **Create deployment** in Vayu Model Serving:
    - Model Type: **PredictiveAI**
    - Framework: **sklearn**
-   - Model and version : select from the dropdown 
-   - compute and storage : select resources based on model size 
+   - Model and version: select from the dropdown
+   - Compute and storage: select resources based on model size
    - Storage Type: select dedicated
 4. **Copy predict URL** when the endpoint is ready (V1 example):
 
    `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
 
-5. Continue to [Step 6 — Vayu inference UI](../07_build_app/) and paste host + model name in the Streamlit sidebar.
+5. Continue to [Step 7 — Build App](../07_build_app/) and paste host + model name in the Streamlit sidebar.
 
-  **Test with curl:**
+**Test with curl:**
 
-  ```bash
+First, query the `/v1/models` endpoint to list all available models. Most OpenAI-compatible inference servers expose this endpoint.
 
-  Step 1: Get the available model ID
+```bash
+curl -X GET "<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models"
+```
 
-  First, query the /v1/models endpoint to list all available models. Most OpenAI-compatible inference servers expose this endpoint.
+Sample output `{"models":["model"]}` — the id here is `model`.
 
-  curl -X GET  "<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models"
-
-  sample output {"models":["model"]} and the id here is "model"
-
-
-  curl -X POST \
+```bash
+curl -X POST \
   "https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict" \
   -H "Content-Type: application/json" \
   -d '{
     "instances": [
-      "worldcom ex-boss launches defence lawyers defending the former worldcom chief executive argued that he was not responsible for the company collapse." 
+      "worldcom ex-boss launches defence lawyers defending the former worldcom chief executive argued that he was not responsible for the company collapse."
     ]
   }'
-Example response: `{"predictions": [0]}` — map codes via `category_labels.json` or the table in [Move-It overview](../README.md).
-Note : instances should be changed based on usecase
+```
 
-## Pro Tips & Notes
+Example response: `{"predictions": [0]}` — map codes via `category_labels.json` or the table in the [Move-It overview](../README.md).
 
-- **Model name** — must match between the Vayu deployment, predict URL path, and Streamlit sidebar.
-- **Retrain** — re-run `train.ipynb` and redeploy after notebook changes.
+Note: `instances` should be changed based on the use case.
+
+</details>
 
 ---
 
-## Jump Around
+<details>
+<summary><h3>💡 Pro tips and notes</h3></summary>
 
-|        |        |
-|--------|--------|
-| **⬅ Previous** | [Step 5 — Vayu Model Registry](../05_model_registry/) |
-| **Next ➡**     | [Step 7 — Vayu inference UI](../07_build_app/) |
-| **🏠 Overview**| [Predict-It overview](../README.md) |
- 
+- **Model name** — must match between the Vayu deployment, predict URL path, and Streamlit sidebar.
+- **Retrain** — re-run `train_model.ipynb` and redeploy after notebook changes.
+
+</details>
+
+---
+
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../05_model_registry/">Previous — Step 5 — Model Registry</a></td>
+<td align="center"><a href="../README.md">Overview</a></td>
+<td align="right"><a href="../07_build_app/">Next — Step 7 — Build App</a></td>
+</tr>
+</table>

@@ -2,24 +2,30 @@
 
 **Move-It** › **Vayu MLflow** · `02_vayu_mlflow/`
 
-| | |
-|---|---|
-| **Previous** | [← Step 1 — Vayu Object Storage](../01_dataset/) |
-| **Next**     | [Step 3 — Vayu Kafka →](../03_vayu_kafka/) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../01_dataset/">Previous — Step 1 — Vayu Object Storage</a></td>
+<td align="right"><a href="../03_vayu_kafka/">Next — Step 3 — Vayu Kafka</a></td>
+</tr>
+</table>
 
 Deploy a managed **Vayu MLflow** instance to track training experiments, parameters, and metrics in later steps.
 
 ---
 
-## Open MLflow
+<details>
+<summary><h3>🔗 Open MLflow</h3></summary>
 
 Go to [Vayu MLflow](https://ipcloud.tatacommunications.com/aistudio/#/experiment/managed-mlflow-list).
 
 For the full create wizard (Start → Infrastructure → Compute → Object Storage → Database → Review), see the [Creating Managed MLflow guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/managed-mlflow/#creating-managed-mlflow).
 
+</details>
+
 ---
 
-## Quick Start
+<details>
+<summary><h3>🚀 Quick start</h3></summary>
 
 1. **Deploy Vayu MLflow:** Create a new managed MLflow deployment on the [Vayu MLflow](https://ipcloud.tatacommunications.com/aistudio/#/experiment/managed-mlflow-list) page. Follow the [Creating Managed MLflow guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/managed-mlflow/#creating-managed-mlflow) for step-by-step wizard details.
 2. **Enable authentication:** In the deployment wizard, turn on **Enable Authentication** and set a **Username** and **Password**. You will need these credentials to access the MLflow UI and to populate `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in your root `.env`.
@@ -27,12 +33,14 @@ For the full create wizard (Start → Infrastructure → Compute → Object Stor
 4. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
 5. **Note the tracking URI and credentials:** Copy the host URL, username, and password into the root `.env` as `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` — you will use these in [Step 4](../04_starter-kit/).
 
+</details>
+
 ---
 
-## Navigation
-
-| | |
-|---|---|
-| **Previous** | [← Step 1 — Vayu Object Storage](../01_dataset/) |
-| **Next**     | [Step 3 — Vayu Kafka →](../03_vayu_kafka/) |
-| **Overview** | [Move-It overview](../README.md) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../01_dataset/">Previous — Step 1 — Vayu Object Storage</a></td>
+<td align="center"><a href="../README.md">Overview</a></td>
+<td align="right"><a href="../03_vayu_kafka/">Next — Step 3 — Vayu Kafka</a></td>
+</tr>
+</table>

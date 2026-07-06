@@ -8,9 +8,28 @@
 
 ---
 
-## Project layout (steps)
+## Journey at a glance
 
-```
+Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the **Container Registry** are provided in the **Access Guide**.
+
+| Step | Vayu service | Folder | Role in the stack | How you wire it up |
+|------|--------------|--------|-------------------|--------------------|
+| 0 | **Vayu AI Studio Workspace** | [`00_vayu_workspaces/`](00_vayu_workspaces/) | Compute environment (Vayu AI Studio notebooks) | Create the workspace with **Enable Docker** turned on, then clone this repo — see the folder `README.md`. |
+| 1 | **Vayu Object Storage** | [`01_dataset/`](01_dataset/) | Data — historical greenhouse sensor logs (`cropdata.csv`) | Pull or upload `cropdata.csv` from S3 with `01_dataset.ipynb`; S3 credentials in the Access Guide. |
+| 2 | **Vayu MLflow** | [`02_vayu_mlflow/`](02_vayu_mlflow/) | Experiment tracking | Deploy managed MLflow, configure S3 + database, and wait for **Ready** — see the folder `README.md`. |
+| 3 | **Vayu Kafka** | [`03_vayu_kafka/`](03_vayu_kafka/) | Ingestion buffer — **FastAPI → Vayu Kafka** streaming | Deploy Kafka, run `create_topic.py`, and wait for **Ready**; Kafka credentials in the Access Guide. |
+| 4 | **Data Pipeline & ML Lab** | [`04_starter-kit/`](04_starter-kit/) | ML training — **Scikit-learn (Random Forest)** + **Pandas** in Jupyter | Train with `train_model.ipynb`, log to MLflow, and save `model.joblib`. |
+| 5 | **Vayu Model Registry** | [`05_model_registry/`](05_model_registry/) | Model versioning | Upload `model.joblib` to S3 and register with sklearn metadata via `upload_model.py`. |
+| 6 | **Vayu Model Serving** | [`06_deploy_model/`](06_deploy_model/) | Deployment — model prediction endpoint | Deploy via **Predictive AI**, selecting the registered model and version — see the folder `README.md`. |
+| 7 | **Vayu Realtime Inference** | [`07_build_app/`](07_build_app/) | Sensors (**Wokwi ESP32 + DHT22**, simulated), ingest gateway (**FastAPI**), Kafka consumer, and **Streamlit** dashboard | Build and run the FastAPI ingest + Streamlit dashboard locally to validate live sensor trends and predictions. |
+| 8 | **Vayu ML Service** | [`08_deploy/`](08_deploy/) | Hosting — two **Vayu ML Services** | Build and sign container images, push to the registry, then deploy ingest + dashboard as ML Services; Container Registry credentials in the Access Guide. |
+
+---
+
+<details>
+<summary><h3>Project layout</h3></summary>
+
+```text
 move-it/
 ├── README.md
 ├── requirements.txt
@@ -26,51 +45,12 @@ move-it/
 └── 08_deploy/                # Build, sign & push container images; deploy via Vayu ML Service
 ```
 
-| Step | Vayu service | Folder | What to run / open |
-|------|--------------|--------|-------------------|
-| 0 | **Vayu AI Studio Workspace** | `00_vayu_workspaces/` | `README.md` — create workspace (enable Docker) |
-| 1 | **Vayu Object Storage** | `01_dataset/` | `01_dataset.ipynb` — pull/upload dataset from S3 |
-| 2 | **Vayu MLflow** | `02_vayu_mlflow/` | `README.md` — deploy managed MLflow |
-| 3 | **Vayu Kafka** | `03_vayu_kafka/` | `create_topic.py` — deploy Kafka and create topic |
-| 4 | **Data Pipeline & ML Lab** | `04_starter-kit/` | `train_model.ipynb` — train and save `model.joblib` |
-| 5 | **Vayu Model Registry** | `05_model_registry/` | `upload_model.py` — upload and register model |
-| 6 | **Vayu Model Serving** | `06_deploy_model/` | `README.md` — deploy Predictive AI endpoint |
-| 7 | **Vayu Realtime Inference** | `07_build_app/` | FastAPI ingest + Streamlit dashboard (build & run locally) |
-| 8 | **Vayu ML Service** | `08_deploy/` | `README.md` — build and sign images, then deploy ingest + dashboard |
+</details>
 
 ---
 
-## Mapping to the Vayu “Move-It — Guided Journey”
-
-| Journey step | How to leverage Vayu ecosystem (detailed) |
-|--------------|------------------------------------------|
-| **Vayu AI Studio Workspace** | Create your workspace with **Enable Docker in the Workspace** turned on, then clone this repo (`00_vayu_workspaces/`). |
-| **Vayu Object Storage** | Pull `cropdata.csv` from S3 if needed, using upload/download snippets in `01_dataset/` (`01_dataset.ipynb`). S3 credentials are in the **Access Guide**. |
-| **Vayu MLflow** | Deploy managed MLflow, configure S3 and database, and wait for **Ready** (`02_vayu_mlflow/`). |
-| **Vayu Kafka** | Deploy Kafka, run `create_topic.py`, and wait for **Ready** (`03_vayu_kafka/`). Kafka credentials are in the **Access Guide**. |
-| **Starter Kit (Training)** | Train with `train_model.ipynb`, log to MLflow, and save `model.joblib` (`04_starter-kit/`). |
-| **Vayu Model Registry** | Upload `model.joblib` to S3 and register with sklearn metadata (`05_model_registry/`). |
-| **Vayu Model Serving** | Deploy via **Predictive AI**, selecting the registered model and version (`06_deploy_model/`). |
-| **Vayu Realtime Inference** | Build and run the Streamlit dashboard locally to validate live sensor trends and predictions (`07_build_app/`). |
-| **Vayu ML Service** | Build and sign container images, push to the registry, and deploy ingest + dashboard as ML Services (`08_deploy/`). Container Registry credentials are in the **Access Guide**. |
-
----
-
-## Tech direction / tools (Vayu ecosystem)
-
-| Layer | Vayu / stack choice |
-|--------|---------------------|
-| Sensors | **Wokwi ESP32 + DHT22** (Simulated) |
-| Ingestion | **FastAPI** $\to$ **Vayu Kafka** |
-| Stream Processing | **Jupyter Notebook** (Kafka Consumer) |
-| ML Framework | **Scikit-learn (Random Forest)** + **Pandas** |
-| Experiment Tracking | **Vayu MLflow** |
-| Deployment | **Vayu Model Serving** (Model Endpoint) |
-| Dashboard | **Streamlit** |
-
----
-
-## Quick start
+<details>
+<summary><h3>Quick start</h3></summary>
 
 ### What this code does
 
@@ -147,8 +127,13 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    **Or deploy to Vayu** — build, sign, and push Docker images in [Step 8](08_deploy/).
 
+</details>
+
 ---
 
-## License
+<details>
+<summary><h3>License</h3></summary>
 
 Use and modify for the **Vayu Hackathon** submission unless your team repo specifies otherwise.
+
+</details>

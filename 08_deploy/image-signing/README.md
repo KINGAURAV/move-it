@@ -2,13 +2,19 @@
 
 **Move-It** › **Step 8** › `08_deploy/image-signing/`
 
-Use this guide if you prefer the automated signing flow with [`sign_image.py`](sign_image.py) instead of following the manual steps in the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/).
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../README.md">Back — Step 8 — Deploy</a></td>
+<td align="right"><a href="https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/">Manual signing — Container Registry guide</a></td>
+</tr>
+</table>
 
-Vayu ML Services require **signed** container images. Sign **each** image after push — once for ingest, once for dashboard.
+Use this guide if you prefer the automated signing flow with [`sign_image.py`](sign_image.py) instead of following the manual steps in the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/). Vayu ML Services require **signed** container images. Sign **each** image after push — once for ingest, once for dashboard.
 
 ---
 
-## What gets created
+<details>
+<summary><h3>📦 What gets created</h3></summary>
 
 [`sign_image.py`](sign_image.py) downloads tooling and writes signing assets in this folder:
 
@@ -21,9 +27,12 @@ Vayu ML Services require **signed** container images. Sign **each** image after 
 
 These certificate files are gitignored and re-downloaded when you run the script.
 
+</details>
+
 ---
 
-## Prerequisites
+<details>
+<summary><h3>📋 Prerequisites</h3></summary>
 
 Set registry variables in the root [`.env`](../../README.md) (see [`.env.example`](../../.env.example)). Values are provided in the **Access Guide**:
 
@@ -33,9 +42,14 @@ Set registry variables in the root [`.env`](../../README.md) (see [`.env.example
 - `REGISTRY_PASSWORD`
 - `VAYU_USERNAME` (verify only)
 
+</details>
+
 ---
 
-## Sign the ingest image
+<details>
+<summary><h3>✍️ Sign the images</h3></summary>
+
+Sign the ingest image:
 
 ```bash
 cd /home/jovyan/move-it
@@ -46,7 +60,7 @@ export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
 python 08_deploy/image-signing/sign_image.py sign
 ```
 
-## Sign the dashboard image
+Sign the dashboard image:
 
 ```bash
 export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-dashboard:latest
@@ -55,9 +69,12 @@ python 08_deploy/image-signing/sign_image.py sign
 
 Follow the browser prompt during signing (copy the authorization code when redirected).
 
+</details>
+
 ---
 
-## Verify (optional)
+<details>
+<summary><h3>🔍 Verify (optional)</h3></summary>
 
 Repeat per image:
 
@@ -66,9 +83,12 @@ export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
 python 08_deploy/image-signing/sign_image.py verify
 ```
 
+</details>
+
 ---
 
-## Environment variables
+<details>
+<summary><h3>🔑 Environment variables</h3></summary>
 
 | Variable | Used for | Source |
 |----------|----------|--------|
@@ -79,11 +99,13 @@ python 08_deploy/image-signing/sign_image.py verify
 | `REGISTRY_PASSWORD` | sign + verify + `docker login` | Root `.env` — container registry CLI secret |
 | `VAYU_USERNAME` | verify only | Root `.env` — your Vayu username (certificate identity) |
 
+</details>
+
 ---
 
-## Navigation
-
-| | |
-|---|---|
-| **Back** | [Step 8 — Deploy](../README.md) |
-| **Manual signing** | [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../README.md">Back — Step 8 — Deploy</a></td>
+<td align="right"><a href="https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/">Manual signing — Container Registry guide</a></td>
+</tr>
+</table>

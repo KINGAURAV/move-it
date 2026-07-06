@@ -1,38 +1,44 @@
-# Step 0: Set up Your Vayu AI Studio Workspace
+# Step 0 — Set up your Vayu AI Studio Workspace
 
-Welcome to **Move-It**!  
-This step will help you set up the Vayu AI Studio Workspace required for your IoT data pipeline and machine learning training.
+**Move-It** › **Vayu AI Studio Workspace** · `00_vayu_workspaces/`
+
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../README.md">Previous — Move-It overview</a></td>
+<td align="right"><a href="../01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
+</tr>
+</table>
+
+Welcome to **Move-It**! This step helps you set up the Vayu AI Studio Workspace required for your IoT data pipeline and machine learning training.
 
 ---
 
-## 📝 Quick Navigation
-
-|         |                                                |
-|---------|------------------------------------------------|
-| **⬅️ Previous** | [Move-It Overview](../README.md)              |
-| **➡️ Next**     | [Step 1 — Vayu Object Storage](../01_dataset/)    |
-
----
-
-## Workspace Overview
+<details>
+<summary><h3>🗺️ Workspace overview</h3></summary>
 
 ![Vayu AI Studio Workspace Overview](../assets/workspaces.png)
 
+</details>
+
 ---
 
-## Open Workspace
+<details>
+<summary><h3>🔗 Open workspace</h3></summary>
 
 Go to [Vayu AI Studio Workspace](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
 
 For the full create wizard (Start → Infrastructure → Configure Compute and Storage → Observability → Review), see the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace).
 
+</details>
+
 ---
 
-## 🚀 Getting Started
+<details>
+<summary><h3>🚀 Getting started</h3></summary>
 
 1. **Create a Vayu AI Studio Workspace**
 
-   > ## ⏭️ **SKIP THIS STEP** if a Vayu AI Studio workspace has already been provided to you — continue with step 2 below.
+   > **Skip this step** if a Vayu AI Studio workspace has already been provided to you — continue with step 2 below.
 
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
@@ -76,21 +82,19 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
    3. **Validate the path:** Confirm the selected interpreter path ends with `<your-env-name>/bin/python` (for example, `.venv/bin/python` if you created `.venv` in step 3).
 
----
-
-## 🔗 Resources
-
-| Resource               | Link                                                                                           |
-|------------------------|------------------------------------------------------------------------------------------------|
-| Vayu AI Studio         | [Workspace Dashboard](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list)        |
-| Documentation          | [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/) |
+</details>
 
 ---
 
-## 📂 Project Navigation
+#### Resources
 
-|         |                                                |
-|---------|------------------------------------------------|
-| **⬅️ Previous** | [Move-It Overview](../README.md)              |
-| **➡️ Next**     | [Step 1 — Vayu Object Storage](../01_dataset/)    |
-| **Overview**    | [Move-It Overview](../README.md)              |
+- [Vayu AI Studio Workspace Dashboard](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list)
+- [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/)
+
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../README.md">Previous — Move-It overview</a></td>
+<td align="center"><a href="../README.md">Overview</a></td>
+<td align="right"><a href="../01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
+</tr>
+</table>

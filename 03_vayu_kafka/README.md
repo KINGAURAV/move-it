@@ -2,30 +2,39 @@
 
 **Move-It** › **Vayu Kafka** · `03_vayu_kafka/`
 
-| | |
-|---|---|
-| **Previous** | [← Step 2 — Vayu MLflow](../02_vayu_mlflow/) |
-| **Next**     | [Step 4 — Starter Kit →](../04_starter-kit/) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../02_vayu_mlflow/">Previous — Step 2 — Vayu MLflow</a></td>
+<td align="right"><a href="../04_starter-kit/">Next — Step 4 — Starter Kit</a></td>
+</tr>
+</table>
 
 Deploy **Vayu Kafka** and create a topic that acts as the streaming buffer between your ingestion gateway and downstream consumers. Kafka connection details are provided in the **Access Guide**.
 
 ---
 
-## Open Kafka
+<details>
+<summary><h3>🔗 Open Kafka</h3></summary>
 
 Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) to deploy Kafka.
 
+</details>
+
 ---
 
-## Folder Contents
+<details>
+<summary><h3>📂 Folder contents</h3></summary>
 
 | File | Purpose |
 |------|---------|
 | `create_topic.py` | Script to create the telemetry topic after Kafka is Ready |
 
+</details>
+
 ---
 
-## Quick Start
+<details>
+<summary><h3>🚀 Quick start</h3></summary>
 
 1. **Deploy Vayu Kafka:** Create a new Kafka deployment on the [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) page.
 2. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
@@ -38,12 +47,14 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 
    [`create_topic.py`](create_topic.py) loads Kafka settings from `.env` automatically. Change `KAFKA_TOPIC` in `.env` if your team uses a different topic name.
 
+</details>
+
 ---
 
-## Navigation
-
-| | |
-|---|---|
-| **Previous** | [← Step 2 — Vayu MLflow](../02_vayu_mlflow/) |
-| **Next**     | [Step 4 — Starter Kit →](../04_starter-kit/) |
-| **Overview** | [Move-It overview](../README.md) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../02_vayu_mlflow/">Previous — Step 2 — Vayu MLflow</a></td>
+<td align="center"><a href="../README.md">Overview</a></td>
+<td align="right"><a href="../04_starter-kit/">Next — Step 4 — Starter Kit</a></td>
+</tr>
+</table>

@@ -2,16 +2,19 @@
 
 **Move-It** › **Streamlit Dashboard** · `07_build_app/`
 
-| | |
-|---|---|
-| **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
-| **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../06_deploy_model/">Previous — Step 6 — Deploy Model</a></td>
+<td align="right"><a href="../08_deploy/">Next — Step 8 — Deploy</a></td>
+</tr>
+</table>
 
 Run the **full real-time pipeline** locally, then continue to [Step 8](../08_deploy/) to build, sign, and deploy Docker images as two separate ML Services (ingest first, dashboard second).
 
 ---
 
-## Pipeline flow
+<details>
+<summary><h3>🗺️ Pipeline flow</h3></summary>
 
 ```text
 Start Simulation (app.py)
@@ -32,11 +35,14 @@ HTTP POST → Vayu Model Serving (predict URL from Step 6)
 Live dashboard (Streamlit, port 8501)
 ```
 
+</details>
+
 ---
 
-## What each file does
+<details>
+<summary><h3>🧩 What each file does</h3></summary>
 
-### `ingestion_api.py` — HTTP → Kafka gateway
+#### `ingestion_api.py` — HTTP → Kafka gateway
 
 A small **FastAPI** service that receives sensor readings and publishes them to **Vayu Kafka**.
 
@@ -50,20 +56,23 @@ It does **not** run ML or show a UI. Think: **HTTP in → Kafka out**.
 
 Runs on port **5000** by default (`PORT` env var).
 
-### `app.py` — Dashboard + simulator + Model Serving client
+#### `app.py` — Dashboard + simulator + Model Serving client
 
 The **Streamlit** app users interact with. It does four things:
 
-### Dockerfiles
+#### Dockerfiles
 
 | File | Deploy as | Port | Contents |
 |------|-----------|------|----------|
 | `Dockerfile.ingest` | **ML Service 1** — ingest API | **5000** | `ingestion_api.py`, `kafka_config.py` |
 | `Dockerfile.dashboard` | **ML Service 2** — dashboard | **8501** | `app.py`, `kafka_config.py`, `cropdata.csv` |
 
+</details>
+
 ---
 
-## Prerequisites
+<details>
+<summary><h3>📋 Prerequisites</h3></summary>
 
 Complete [Steps 0–6](../README.md) first. For this step you need:
 
@@ -77,9 +86,12 @@ cd /home/jovyan/move-it
 pip install -r requirements.txt
 ```
 
+</details>
+
 ---
 
-## Run locally (two terminals)
+<details>
+<summary><h3>🚀 Run locally (two terminals)</h3></summary>
 
 Both processes must run together.
 
@@ -135,25 +147,31 @@ Open the URL Streamlit prints (usually `http://localhost:8501`). You can also se
 
 When local testing works, continue to [Step 8](../08_deploy/) to build, sign, and push the Docker images.
 
+</details>
+
 ---
 
-## Environment variables
+<details>
+<summary><h3>🔑 Environment variables</h3></summary>
 
 | Variable | Required | Default | Used by | Purpose |
 |----------|----------|---------|---------|---------|
-| `PREDICT_URL` | **Yes** | — | dashboard | Model Serving predict URL from [Step 6](../06_deploy_model/) |
-| `KAFKA_BROKER` | **Yes** | — | ingest + dashboard | Kafka bootstrap servers |
-| `KAFKA_USER` | **Yes** | — | ingest + dashboard | Kafka SASL username |
-| `KAFKA_PASS` | **Yes** | — | ingest + dashboard | Kafka SASL password |
+| `PREDICT_URL` | Yes | — | dashboard | Model Serving predict URL from [Step 6](../06_deploy_model/) |
+| `KAFKA_BROKER` | Yes | — | ingest + dashboard | Kafka bootstrap servers |
+| `KAFKA_USER` | Yes | — | ingest + dashboard | Kafka SASL username |
+| `KAFKA_PASS` | Yes | — | ingest + dashboard | Kafka SASL password |
 | `KAFKA_TOPIC` | No | `greenhouse_telemetry` | ingest + dashboard | Telemetry topic |
 | `INGEST_API_URL` | No | `http://127.0.0.1:5000/ingest` | dashboard | Simulator POST target |
 | `PORT` | No | `5000` | ingestion API | Ingest listen port |
 
 For local testing, **Predict host** and **Model name** in the sidebar can be used instead of `PREDICT_URL` when the env var is not set.
 
+</details>
+
 ---
 
-## Troubleshooting
+<details>
+<summary><h3>🛠️ Troubleshooting</h3></summary>
 
 | Symptom | Fix |
 |---------|-----|
@@ -165,12 +183,14 @@ For local testing, **Predict host** and **Model name** in the sidebar can be use
 | UI stuck on "Waiting" | Click **Start Simulation**; check sidebar **Buffered predictions** |
 | Preprocessing error | Ensure `01_dataset/cropdata.csv` exists (included in Docker image) |
 
+</details>
+
 ---
 
-## Navigation
-
-| | |
-|---|---|
-| **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
-| **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
-| **Overview** | [Move-It overview](../README.md) |
+<table width="100%" style="width:100%">
+<tr>
+<td align="left"><a href="../06_deploy_model/">Previous — Step 6 — Deploy Model</a></td>
+<td align="center"><a href="../README.md">Overview</a></td>
+<td align="right"><a href="../08_deploy/">Next — Step 8 — Deploy</a></td>
+</tr>
+</table>
