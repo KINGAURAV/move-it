@@ -92,7 +92,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 <table width="100%" style="width:100%">
 <tr>
 <td align="left"><a href="../README.md">Previous — Move-It overview</a></td>
-<td align="center"><a href="README.md">Overview</a></td>
-<td align="right"><a href="01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
+<td align="center"><a href="../README.md">Overview</a></td>
+<td align="right"><a href="../01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
 </tr>
 </table>
