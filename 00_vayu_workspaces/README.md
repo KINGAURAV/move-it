@@ -2,12 +2,8 @@
 
 **Move-It** › **Vayu AI Studio Workspace** · `00_vayu_workspaces/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../README.md">Previous — Move-It overview</a></td>
-<td align="right"><a href="../01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
-</tr>
-</table>
+| [← Previous — Move-It overview](../README.md) | [Next — Step 1 — Vayu Object Storage →](../01_dataset/) |
+|:---|---:|
 
 Welcome to **Move-It**! This step helps you set up the Vayu AI Studio Workspace required for your IoT data pipeline and machine learning training.
 
@@ -89,10 +85,5 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 - [Vayu AI Studio Workspace Dashboard](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list)
 - [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/)
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../README.md">Previous — Move-It overview</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../01_dataset/">Next — Step 1 — Vayu Object Storage</a></td>
-</tr>
-</table>
+| [← Previous — Move-It overview](../README.md) | [Overview](../README.md) | [Next — Step 1 — Vayu Object Storage →](../01_dataset/) |
+|:---|:---:|---:|

@@ -2,12 +2,8 @@
 
 **Move-It** › **Vayu MLflow** · `02_vayu_mlflow/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../01_dataset/">Previous — Step 1 — Vayu Object Storage</a></td>
-<td align="right"><a href="../03_vayu_kafka/">Next — Step 3 — Vayu Kafka</a></td>
-</tr>
-</table>
+| [← Previous — Step 1 — Vayu Object Storage](../01_dataset/) | [Next — Step 3 — Vayu Kafka →](../03_vayu_kafka/) |
+|:---|---:|
 
 Deploy a managed **Vayu MLflow** instance to track training experiments, parameters, and metrics in later steps.
 
@@ -37,10 +33,5 @@ For the full create wizard (Start → Infrastructure → Compute → Object Stor
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../01_dataset/">Previous — Step 1 — Vayu Object Storage</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../03_vayu_kafka/">Next — Step 3 — Vayu Kafka</a></td>
-</tr>
-</table>
+| [← Previous — Step 1 — Vayu Object Storage](../01_dataset/) | [Overview](../README.md) | [Next — Step 3 — Vayu Kafka →](../03_vayu_kafka/) |
+|:---|:---:|---:|

@@ -2,12 +2,8 @@
 
 **Move-It** › **Vayu ML Service** · `08_deploy/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../07_build_app/">Previous — Step 7 — Build App</a></td>
-<td align="right">Journey complete</td>
-</tr>
-</table>
+| [← Previous — Step 7 — Build App](../07_build_app/) | Journey complete |
+|:---|---:|
 
 Deploy the **Move-It dashboard** (Streamlit + co-located ingest API) to the **Vayu platform** as an **ML Service**. After deployment you get a **public URL** where judges can run the built-in simulator, see live telemetry, and watch irrigation predictions from your **Vayu Model Serving** endpoint.
 
@@ -264,10 +260,5 @@ KAFKA_TOPIC=greenhouse_telemetry
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../07_build_app/">Previous — Step 7 — Build App</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right">Journey complete</td>
-</tr>
-</table>
+| [← Previous — Step 7 — Build App](../07_build_app/) | [Overview](../README.md) | Journey complete |
+|:---|:---:|---:|

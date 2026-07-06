@@ -2,12 +2,8 @@
 
 **Move-It** › **Streamlit Dashboard** · `07_build_app/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../06_deploy_model/">Previous — Step 6 — Deploy Model</a></td>
-<td align="right"><a href="../08_deploy/">Next — Step 8 — Deploy</a></td>
-</tr>
-</table>
+| [← Previous — Step 6 — Deploy Model](../06_deploy_model/) | [Next — Step 8 — Deploy →](../08_deploy/) |
+|:---|---:|
 
 Run the **full real-time pipeline** locally, then continue to [Step 8](../08_deploy/) to build, sign, and deploy Docker images as two separate ML Services (ingest first, dashboard second).
 
@@ -187,10 +183,5 @@ For local testing, **Predict host** and **Model name** in the sidebar can be use
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../06_deploy_model/">Previous — Step 6 — Deploy Model</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../08_deploy/">Next — Step 8 — Deploy</a></td>
-</tr>
-</table>
+| [← Previous — Step 6 — Deploy Model](../06_deploy_model/) | [Overview](../README.md) | [Next — Step 8 — Deploy →](../08_deploy/) |
+|:---|:---:|---:|

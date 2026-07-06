@@ -2,12 +2,8 @@
 
 **Move-It** › **Vayu Kafka** · `03_vayu_kafka/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../02_vayu_mlflow/">Previous — Step 2 — Vayu MLflow</a></td>
-<td align="right"><a href="../04_starter-kit/">Next — Step 4 — Starter Kit</a></td>
-</tr>
-</table>
+| [← Previous — Step 2 — Vayu MLflow](../02_vayu_mlflow/) | [Next — Step 4 — Starter Kit →](../04_starter-kit/) |
+|:---|---:|
 
 Deploy **Vayu Kafka** and create a topic that acts as the streaming buffer between your ingestion gateway and downstream consumers. Kafka connection details are provided in the **Access Guide**.
 
@@ -51,10 +47,5 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../02_vayu_mlflow/">Previous — Step 2 — Vayu MLflow</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../04_starter-kit/">Next — Step 4 — Starter Kit</a></td>
-</tr>
-</table>
+| [← Previous — Step 2 — Vayu MLflow](../02_vayu_mlflow/) | [Overview](../README.md) | [Next — Step 4 — Starter Kit →](../04_starter-kit/) |
+|:---|:---:|---:|

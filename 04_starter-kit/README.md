@@ -2,12 +2,8 @@
 
 **Move-It** › **Starter Kit** · `04_starter-kit/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../03_vayu_kafka/">Previous — Step 3 — Vayu Kafka</a></td>
-<td align="right"><a href="../05_model_registry/">Next — Step 5 — Model Registry</a></td>
-</tr>
-</table>
+| [← Previous — Step 3 — Vayu Kafka](../03_vayu_kafka/) | [Next — Step 5 — Model Registry →](../05_model_registry/) |
+|:---|---:|
 
 This step provides a training template to build your irrigation model, log metrics and parameters to **Vayu MLflow**, and save the trained artifact locally.
 
@@ -65,10 +61,5 @@ Install dependencies:
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../03_vayu_kafka/">Previous — Step 3 — Vayu Kafka</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../05_model_registry/">Next — Step 5 — Model Registry</a></td>
-</tr>
-</table>
+| [← Previous — Step 3 — Vayu Kafka](../03_vayu_kafka/) | [Overview](../README.md) | [Next — Step 5 — Model Registry →](../05_model_registry/) |
+|:---|:---:|---:|

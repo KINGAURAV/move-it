@@ -2,12 +2,8 @@
 
 **Move-It** › **Vayu Model Registry** · `05_model_registry/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../04_starter-kit/">Previous — Step 4 — Starter Kit</a></td>
-<td align="right"><a href="../06_deploy_model/">Next — Step 6 — Deploy Model</a></td>
-</tr>
-</table>
+| [← Previous — Step 4 — Starter Kit](../04_starter-kit/) | [Next — Step 6 — Deploy Model →](../06_deploy_model/) |
+|:---|---:|
 
 Upload your trained `model.joblib` from [Step 4](../04_starter-kit/) to **Vayu Object Storage**, then register it in the **Vayu Model Registry** so it can be deployed via Model Serving.
 
@@ -70,10 +66,5 @@ On the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/d
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../04_starter-kit/">Previous — Step 4 — Starter Kit</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../06_deploy_model/">Next — Step 6 — Deploy Model</a></td>
-</tr>
-</table>
+| [← Previous — Step 4 — Starter Kit](../04_starter-kit/) | [Overview](../README.md) | [Next — Step 6 — Deploy Model →](../06_deploy_model/) |
+|:---|:---:|---:|

@@ -2,12 +2,8 @@
 
 **Move-It** › **Vayu Model Serving** · `06_deploy_model/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../05_model_registry/">Previous — Step 5 — Model Registry</a></td>
-<td align="right"><a href="../07_build_app/">Next — Step 7 — Build App</a></td>
-</tr>
-</table>
+| [← Previous — Step 5 — Model Registry](../05_model_registry/) | [Next — Step 7 — Build App →](../07_build_app/) |
+|:---|---:|
 
 Deploy **`04_starter-kit/model.joblib`** for **online sklearn inference** via **Vayu Model Serving**.
 
@@ -88,10 +84,5 @@ Note: `instances` should be changed based on the use case.
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../05_model_registry/">Previous — Step 5 — Model Registry</a></td>
-<td align="center"><a href="../README.md">Overview</a></td>
-<td align="right"><a href="../07_build_app/">Next — Step 7 — Build App</a></td>
-</tr>
-</table>
+| [← Previous — Step 5 — Model Registry](../05_model_registry/) | [Overview](../README.md) | [Next — Step 7 — Build App →](../07_build_app/) |
+|:---|:---:|---:|

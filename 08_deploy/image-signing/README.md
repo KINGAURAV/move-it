@@ -2,12 +2,8 @@
 
 **Move-It** › **Step 8** › `08_deploy/image-signing/`
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../README.md">Back — Step 8 — Deploy</a></td>
-<td align="right"><a href="https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/">Manual signing — Container Registry guide</a></td>
-</tr>
-</table>
+| [← Back — Step 8 — Deploy](../README.md) | [Manual signing — Container Registry guide →](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) |
+|:---|---:|
 
 Use this guide if you prefer the automated signing flow with [`sign_image.py`](sign_image.py) instead of following the manual steps in the [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/). Vayu ML Services require **signed** container images. Sign **each** image after push — once for ingest, once for dashboard.
 
@@ -103,9 +99,5 @@ python 08_deploy/image-signing/sign_image.py verify
 
 ---
 
-<table width="100%" style="width:100%">
-<tr>
-<td align="left"><a href="../README.md">Back — Step 8 — Deploy</a></td>
-<td align="right"><a href="https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/">Manual signing — Container Registry guide</a></td>
-</tr>
-</table>
+| [← Back — Step 8 — Deploy](../README.md) | [Manual signing — Container Registry guide →](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/) |
+|:---|---:|
