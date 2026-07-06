@@ -1,4 +1,4 @@
-# Image signing (optional automation)
+# ✍️ Image signing (optional automation)
 
 **Move-It** › **Step 8** › `08_deploy/image-signing/`
 

@@ -1,4 +1,4 @@
-# Step 6 — Deploy Model
+# 🚀 Step 6 — Deploy Model
 
 **Move-It** › **Vayu Model Serving** · `06_deploy_model/`
 

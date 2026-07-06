@@ -1,4 +1,4 @@
-# Step 5 — Model Registry
+# 🗂️ Step 5 — Model Registry
 
 **Move-It** › **Vayu Model Registry** · `05_model_registry/`
 

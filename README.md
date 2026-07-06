@@ -1,6 +1,13 @@
-# Move-It — Starter Template
+# 🌱 Move-It — Starter Template
 
-## Problem statement and outcome
+![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![FastAPI](https://img.shields.io/badge/Gateway-FastAPI-009688?logo=fastapi&logoColor=white)
+![Kafka](https://img.shields.io/badge/Streaming-Kafka-231F20?logo=apachekafka&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/Model-scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
+![Docker](https://img.shields.io/badge/Container-Docker-2496ED?logo=docker&logoColor=white)
+![Deploy](https://img.shields.io/badge/Deploy-Vayu%20ML%20Service-0EA5E9)
+
+## 🎯 Problem statement and outcome
 
 **Problem:** Traditional greenhouse irrigation often relies on manual scheduling or simple timers, leading to water waste or plant stress due to unpredictable environmental changes. Choose a real usecase (e.g., a smart greenhouse, an automated hydroponics farm, or a vertical urban farm) and a sensor set they care about. Build an end‑to‑end IoT-to-ML pipeline **using the Vayu platform**: simulate sensors (Wokwi ESP32) streaming data via HTTP to a **FastAPI** gateway, ingest data into a **Vayu Kafka** topic, process the stream in a **Vayu AI Studio Workspace** notebook to train a model, and deploy a **Streamlit** dashboard via **Vayu ML Service** that provides real-time monitoring and automated irrigation decisions.
 
@@ -8,7 +15,7 @@
 
 ---
 
-## Journey at a glance
+## 🗺️ Journey at a glance
 
 Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the **Container Registry** are provided in the **Access Guide**.
 
@@ -27,7 +34,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 ---
 
 <details>
-<summary><h3>Project layout</h3></summary>
+<summary><h3>🧱 Project layout</h3></summary>
 
 ```text
 move-it/
@@ -50,7 +57,7 @@ move-it/
 ---
 
 <details>
-<summary><h3>Quick start</h3></summary>
+<summary><h3>⚡ Quick start</h3></summary>
 
 ### What this code does
 
@@ -132,7 +139,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 ---
 
 <details>
-<summary><h3>License</h3></summary>
+<summary><h3>📄 License</h3></summary>
 
 Use and modify for the **Vayu Hackathon** submission unless your team repo specifies otherwise.
 

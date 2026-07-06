@@ -1,4 +1,4 @@
-# Step 0 — Set up your Vayu AI Studio Workspace
+# 🧑‍💻 Step 0 — Set up your Vayu AI Studio Workspace
 
 **Move-It** › **Vayu AI Studio Workspace** · `00_vayu_workspaces/`
 

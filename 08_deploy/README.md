@@ -1,4 +1,4 @@
-# Step 8 — Deploy Move-It (Two ML Services)
+# ☁️ Step 8 — Deploy Move-It (Two ML Services)
 
 **Move-It** › **Vayu ML Service** · `08_deploy/`
 

@@ -1,4 +1,4 @@
-# Step 2 — Vayu MLflow
+# 📈 Step 2 — Vayu MLflow
 
 **Move-It** › **Vayu MLflow** · `02_vayu_mlflow/`
 

@@ -1,4 +1,4 @@
-# Step 4 — Starter Kit (Training)
+# 🧪 Step 4 — Starter Kit (Training)
 
 **Move-It** › **Starter Kit** · `04_starter-kit/`
 

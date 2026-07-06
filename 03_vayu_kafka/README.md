@@ -1,4 +1,4 @@
-# Step 3 — Vayu Kafka
+# 📡 Step 3 — Vayu Kafka
 
 **Move-It** › **Vayu Kafka** · `03_vayu_kafka/`
 

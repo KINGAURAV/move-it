@@ -1,4 +1,4 @@
-# Step 7 — Build App (Realtime Dashboard)
+# 🖥️ Step 7 — Build App (Realtime Dashboard)
 
 **Move-It** › **Streamlit Dashboard** · `07_build_app/`
 
