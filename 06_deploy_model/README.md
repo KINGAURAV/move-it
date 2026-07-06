@@ -35,8 +35,9 @@ Deploy the trained sklearn `Pipeline` so the [Step 7 Streamlit UI](../07_build_a
 3. **Create deployment** in Vayu Model Serving:
    - Model Type: **PredictiveAI**
    - Framework: **sklearn**
-   - Model and version : selEct from the dropdown 
+   - Model and version : select from the dropdown 
    - compute and storage : select resources based on model size 
+   - Storage Type: select dedicated
 4. **Copy predict URL** when the endpoint is ready (V1 example):
 
    `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
