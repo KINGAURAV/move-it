@@ -169,7 +169,7 @@ Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/i
 
 #### A.5 Firewall rules
 
-After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_PUBLIC_URL>`. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
+After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_PUBLIC_URL>`. Follow the **Firewall rules SOP** shared with your team.
 
 </details>
 
@@ -222,7 +222,7 @@ KAFKA_TOPIC=greenhouse_telemetry
 
 #### B.5 Firewall rules
 
-After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **public URL**. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
+After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **public URL**. Follow the **Firewall rules SOP** shared with your team.
 
 </details>
 
@@ -240,7 +240,7 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 | Symptom | What to check |
 |---------|---------------|
 | Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
-| Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules; see [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules) |
+| Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules — follow the **Firewall rules SOP** |
 | Simulation error / JSON parse | `INGEST_API_URL` must be the **ingest public URL** from Phase A |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
 | Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
@@ -278,8 +278,7 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 
 - [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service)
 - [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)
-- [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
-  — allow external access to the ML Service public URL
+- **Firewall rules SOP** — follow the SOP shared with your team
 
 ---
 

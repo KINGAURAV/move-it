@@ -58,7 +58,7 @@ For the complete product documentation, see the [Model Serving guide](https://ip
    `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
 
    For sidebar configuration in [Step 7](../07_build_app/), see **Launch the realtime pipeline** in the [Move-It overview](../README.md).
-5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **public URL**. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
+5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **public URL**. Follow the **Firewall rules SOP** shared with your team.
 
 **Test with curl:**
 
@@ -103,8 +103,7 @@ Note: `instances` should be changed based on the use case.
 
 - [Creating Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/#creating-model-serving)
 - [Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/)
-- [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
-  — allow external access to the public URL
+- **Firewall rules SOP** — follow the SOP shared with your team
 
 ---
 
