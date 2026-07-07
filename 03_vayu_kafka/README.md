@@ -32,9 +32,14 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 <details>
 <summary><h3>🚀 Quick start</h3></summary>
 
-1. **Deploy Vayu Kafka:** Create a new Kafka deployment on the [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) page.
-2. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
-3. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`, and optionally `KAFKA_TOPIC` (default: `greenhouse_telemetry`) — use the values from the **Access Guide**. Then run:
+1. **Deploy Vayu Kafka**
+
+   > **Skip this step** if Vayu Kafka has already been provided to you — continue with step 2 below.
+
+   - Create a new Kafka deployment on the [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) page.
+   - **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
+
+2. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USER`, `KAFKA_PASS`, and optionally `KAFKA_TOPIC` (default: `greenhouse_telemetry`) — use the values from the **Access Guide**. Then run:
 
    ```bash
    cd /home/jovyan/move-it
