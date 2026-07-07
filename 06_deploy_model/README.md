@@ -12,7 +12,7 @@ Deploy **`04_starter-kit/model.joblib`** for **online sklearn inference** via **
 <details>
 <summary><h3>🧩 What's in this step?</h3></summary>
 
-Deploy the trained sklearn `Pipeline` so the [Step 7 Streamlit UI](../07_build_app/) can call a **predict HTTP endpoint** (not local `joblib` loading).
+Deploy the trained sklearn model so the [Step 7 Streamlit UI](../07_build_app/) can call a **predict HTTP endpoint** (not local `joblib` loading).
 
 </details>
 
