@@ -48,16 +48,17 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 2. **Register** via [Step 5](../05_model_registry/) if not already done.
 3. **Create deployment** on [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list). Follow the [Creating Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/#creating-model-serving) for step-by-step wizard details:
    - **Model type:** **Predictive AI**
+   - **Public access:** Enable the **Public Access** toggle in the deployment wizard.
    - **Framework:** **sklearn**
    - **Model and version:** Select the model and version you registered in [Step 5](../05_model_registry/).
    - **Compute and storage:** Choose compute and storage resources appropriate for your `model.joblib` size.
    - **Storage type:** Select **Dedicated**.
-4. **Firewall rules:** If Model Serving cannot reach the model registry, object storage, or other required services, configure firewall rules in Vayu. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
-5. **Note the predict endpoint** when the deployment is **Ready** — open the **Connect** tab on the Model Serving detail page. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
+4. **Note the predict endpoint** when the deployment is **Ready** — open the **Connect** tab on the Model Serving detail page. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
 
    `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
 
    For sidebar configuration in [Step 7](../07_build_app/), see **Launch the realtime pipeline** in the [Move-It overview](../README.md).
+5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **public URL**. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
 
 **Test with curl:**
 
@@ -103,7 +104,7 @@ Note: `instances` should be changed based on the use case.
 - [Creating Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/#creating-model-serving)
 - [Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/)
 - [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
-  — allow Model Serving to reach the registry, object storage, and other required endpoints
+  — allow external access to the public URL
 
 ---
 

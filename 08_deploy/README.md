@@ -138,11 +138,12 @@ For the full create wizard (Start → Infrastructure → Configure Compute → O
 | **Framework** | **Python3** |
 | **Image** | `<image-registry>/<project>/move-it-ingest:latest` |
 | **Port** | **5000** |
-| **Public Expose** | **Enable** |
 
-- **Firewall rules:** If your ML Services cannot reach the container registry, Kafka, Model Serving, or other required endpoints, configure firewall rules in Vayu. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules). Apply the same considerations for the dashboard in Phase B.
+#### A.2 Public Expose
 
-#### A.2 Environment variables
+Enable **Public Expose** in the ML Service wizard.
+
+#### A.3 Environment variables
 
 | Key | Required |
 |-----|----------|
@@ -151,7 +152,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute → O
 | `KAFKA_PASS` | Yes |
 | `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
 
-#### A.3 Verify ingest
+#### A.4 Verify ingest
 
 When status is **Ready**, note the **Public URL** (call it `<INGEST_PUBLIC_URL>`).
 
@@ -165,6 +166,10 @@ curl -s -X POST "<INGEST_PUBLIC_URL>/ingest" \
 Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_PUBLIC_URL>/docs`.
 
 Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/ingest` path).
+
+#### A.5 Firewall rules
+
+After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_PUBLIC_URL>`. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
 
 </details>
 
@@ -181,9 +186,12 @@ Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/i
 | **Framework** | **Streamlit** |
 | **Image** | `<image-registry>/<project>/move-it-dashboard:latest` |
 | **Port** | **8501** |
-| **Public Expose** | **Enable** |
 
-#### B.2 Environment variables
+#### B.2 Public Expose
+
+Enable **Public Expose** in the ML Service wizard.
+
+#### B.3 Environment variables
 
 | Key | Required | Description |
 |-----|----------|-------------|
@@ -205,12 +213,16 @@ KAFKA_PASS=<VAYU_KAFKA_PASS>
 KAFKA_TOPIC=greenhouse_telemetry
 ```
 
-#### B.3 Infrastructure
+#### B.4 Infrastructure
 
 | Field | Guidance |
 |-------|----------|
 | **Resources** | CPU is sufficient |
 | **Replicas** | `1` for demo |
+
+#### B.5 Firewall rules
+
+After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **public URL**. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
 
 </details>
 
@@ -228,7 +240,7 @@ KAFKA_TOPIC=greenhouse_telemetry
 | Symptom | What to check |
 |---------|---------------|
 | Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
-| Dashboard page won't load | Port **8501**, **Public Expose**; see [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules) if endpoints are unreachable |
+| Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules; see [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules) |
 | Simulation error / JSON parse | `INGEST_API_URL` must be the **ingest public URL** from Phase A |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
 | Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
@@ -267,7 +279,7 @@ KAFKA_TOPIC=greenhouse_telemetry
 - [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service)
 - [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)
 - [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
-  — allow ML Services to reach the registry, Kafka, Model Serving, and other endpoints
+  — allow external access to the ML Service public URL
 
 ---
 
