@@ -39,7 +39,7 @@ Deploy the trained sklearn `Pipeline` so the [Step 7 Streamlit UI](../07_build_a
    - **Model and version:** Select the model and version you registered in [Step 5](../05_model_registry/).
    - **Compute and storage:** Choose compute and storage resources appropriate for your `model.joblib` size.
    - **Storage type:** Select **Dedicated**.
-4. **Note the predict endpoint** when the deployment is **Ready**. The Vayu UI typically copies only the base URL through `/v1` (for example, `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
+4. **Note the predict endpoint** when the deployment is **Ready**. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
 
    `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
 

@@ -149,7 +149,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    **Option C — `.env` defaults (host + model name)**  
    Set `VAYU_PREDICT_HOST` and `VAYU_MODEL_NAME` in `.env` — same host/model rules as Option A. These pre-fill the sidebar; you can still edit the fields before starting simulation.
 
-   > **Tip:** The Vayu UI often copies only through `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_NAME>:predict` to the copied value.
+   > **Tip:** The Vayu Model Serving UI often copies only through `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_NAME>:predict` to the copied value.
 
    Confirm the resolved URL under **Predict endpoint ready** in the sidebar, then click **Start Simulation** to stream simulated sensor readings through ingest → Kafka → predictions → the live dashboard.
 
