@@ -117,6 +117,14 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
 5. **Launch the realtime pipeline** (`07_build_app/`)
 
+   Complete these steps before starting the dashboard:
+
+   - [Step 3](03_vayu_kafka/) — deploy **Vayu Kafka**, wait for **Ready**, and create the topic (`create_topic.py`)
+   - [Step 5](05_model_registry/) — upload and register `model.joblib` in the **Vayu Model Registry**
+   - [Step 6](06_deploy_model/) — deploy the model via **Predictive AI** and note the predict URL
+
+   Then start the realtime pipeline from your workspace terminal:
+
    **Terminal 1 — ingestion API**
    ```bash
    cd /home/jovyan/move-it/07_build_app
@@ -130,7 +138,20 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    streamlit run app.py
    ```
 
-   Click **Start Simulation** in the Streamlit sidebar.
+   `app.py` loads `move-it/.env` automatically (Kafka, predict endpoint, and other vars). Point the dashboard at your Model Serving endpoint — pick **one** option below (`PREDICT_URL` in `.env` overrides sidebar values if both are set).
+
+   **Option A — Sidebar (host + model name)**  
+   Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>`) and **Model name** to `<MODEL_NAME>`. The dashboard builds `http://<...>/v1/models/<MODEL_NAME>:predict`.
+
+   **Option B — Full predict URL (sidebar or `.env`)**  
+   Paste the complete `:predict` URL into **Predict host** (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`) — **Model name** is ignored when the host already ends with `:predict`. Or set `PREDICT_URL` in `.env` (sidebar fields are then ignored).
+
+   **Option C — `.env` defaults (host + model name)**  
+   Set `VAYU_PREDICT_HOST` and `VAYU_MODEL_NAME` in `.env` — same host/model rules as Option A. These pre-fill the sidebar; you can still edit the fields before starting simulation.
+
+   > **Tip:** The Vayu UI often copies only through `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_NAME>:predict` to the copied value.
+
+   Confirm the resolved URL under **Predict endpoint ready** in the sidebar, then click **Start Simulation** to stream simulated sensor readings through ingest → Kafka → predictions → the live dashboard.
 
    **Or deploy to Vayu** — build, sign, and push Docker images in [Step 8](08_deploy/).
 
