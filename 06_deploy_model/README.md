@@ -52,7 +52,8 @@ For the complete product documentation, see the [Model Serving guide](https://ip
    - **Model and version:** Select the model and version you registered in [Step 5](../05_model_registry/).
    - **Compute and storage:** Choose compute and storage resources appropriate for your `model.joblib` size.
    - **Storage type:** Select **Dedicated**.
-4. **Note the predict endpoint** when the deployment is **Ready** — open the **Connect** tab on the Model Serving detail page. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
+4. **Firewall rules:** If Model Serving cannot reach the model registry, object storage, or other required services, configure firewall rules in Vayu. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
+5. **Note the predict endpoint** when the deployment is **Ready** — open the **Connect** tab on the Model Serving detail page. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
 
    `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
 
@@ -94,6 +95,15 @@ Note: `instances` should be changed based on the use case.
 - **Retrain** — re-run `train_model.ipynb` and redeploy after notebook changes.
 
 </details>
+
+---
+
+#### Resources
+
+- [Creating Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/#creating-model-serving)
+- [Model Serving guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-serving/)
+- [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
+  — allow Model Serving to reach the registry, object storage, and other required endpoints
 
 ---
 

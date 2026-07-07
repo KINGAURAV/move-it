@@ -26,10 +26,19 @@ For the full create wizard (Start → Infrastructure → Compute → Object Stor
 1. **Deploy Vayu MLflow:** Create a new managed MLflow deployment on the [Vayu MLflow](https://ipcloud.tatacommunications.com/aistudio/#/experiment/managed-mlflow-list) page. Follow the [Creating Managed MLflow guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/managed-mlflow/#creating-managed-mlflow) for step-by-step wizard details.
 2. **Enable authentication:** In the deployment wizard, turn on **Enable Authentication** and set a **Username** and **Password**. You will need these credentials to access the MLflow UI and to populate `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in your root `.env`.
 3. **Configure S3 and database:** Fill in your object storage (S3) credentials and database settings in the deployment wizard. S3 connection details are provided in the **Access Guide**. On the **Object Storage** step, add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
-4. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
-5. **Note the tracking URI and credentials:** Copy the host URL, username, and password into the root `.env` as `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` — you will use these in [Step 4](../04_starter-kit/).
+4. **Firewall rules:** If MLflow cannot reach object storage, the database, or other required services, configure firewall rules in Vayu. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
+5. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
+6. **Note the tracking URI and credentials:** Copy the host URL, username, and password into the root `.env` as `MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` — you will use these in [Step 4](../04_starter-kit/).
 
 </details>
+
+---
+
+#### Resources
+
+- [Creating Managed MLflow guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/managed-mlflow/#creating-managed-mlflow)
+- [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
+  — allow MLflow to reach object storage, the database, and other required services
 
 ---
 

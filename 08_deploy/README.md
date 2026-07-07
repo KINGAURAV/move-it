@@ -140,6 +140,8 @@ For the full create wizard (Start → Infrastructure → Configure Compute → O
 | **Port** | **5000** |
 | **Public Expose** | **Enable** |
 
+- **Firewall rules:** If your ML Services cannot reach the container registry, Kafka, Model Serving, or other required endpoints, configure firewall rules in Vayu. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules). Apply the same considerations for the dashboard in Phase B.
+
 #### A.2 Environment variables
 
 | Key | Required |
@@ -226,7 +228,7 @@ KAFKA_TOPIC=greenhouse_telemetry
 | Symptom | What to check |
 |---------|---------------|
 | Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
-| Dashboard page won't load | Port **8501**, **Public Expose** |
+| Dashboard page won't load | Port **8501**, **Public Expose**; see [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules) if endpoints are unreachable |
 | Simulation error / JSON parse | `INGEST_API_URL` must be the **ingest public URL** from Phase A |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
 | Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
@@ -257,6 +259,15 @@ KAFKA_TOPIC=greenhouse_telemetry
 - Never commit secrets — set `PREDICT_URL` and Kafka credentials in the ML Service UI only.
 
 </details>
+
+---
+
+#### Resources
+
+- [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service)
+- [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)
+- [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
+  — allow ML Services to reach the registry, Kafka, Model Serving, and other endpoints
 
 ---
 

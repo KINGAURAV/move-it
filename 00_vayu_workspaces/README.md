@@ -38,6 +38,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    - Log in to [Vayu AI Studio](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list).
    - Click **Create Workspace** and follow the prompts. See the [Creating Workspace guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/#creating-workspace) for step-by-step wizard details.
    - **Object storage host alias:** During workspace creation, add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
+   - **Firewall rules:** If your workspace cannot reach object storage or other required services, configure firewall rules in Vayu. See [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules).
    - Make sure **Enable Docker in the Workspace** is turned on before you finish creating the workspace.
 
 2. **Import This Repository**
@@ -84,6 +85,8 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
 - [Vayu AI Studio Workspace Dashboard](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list)
 - [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/)
+- [Configuring Firewall Rules](https://ipcloud.tatacommunications.com/docs/docs/cloudorchestration/#configuring-firewall-rules)
+  — allow traffic between your workspace and object storage or other services
 
 | [← Previous — Move-It overview](../README.md) | [Overview](../README.md) | [Next — Step 1 — Vayu Object Storage →](../01_dataset/) |
 |:---|:---:|---:|
