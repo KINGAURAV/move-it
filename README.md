@@ -115,30 +115,52 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    See [Step 4](04_starter-kit/) for full training details.
 
-5. **Launch the realtime pipeline** (`07_build_app/`)
+5. **Prepare services** (complete before `app.py`)
 
-   Complete these steps before starting the dashboard:
+   **Kafka** — [Step 3](03_vayu_kafka/). Skip Kafka deployment if it is already provided; create the topic once Kafka is **Ready**:
 
-   - [Step 3](03_vayu_kafka/) — deploy **Vayu Kafka**, wait for **Ready**, and create the topic (`create_topic.py`)
-   - [Step 5](05_model_registry/) — upload and register `model.joblib` in the **Vayu Model Registry**
-   - [Step 6](06_deploy_model/) — deploy the model via **Predictive AI** and note the predict URL
+   ```bash
+   cd /home/jovyan/move-it
+   python 03_vayu_kafka/create_topic.py
+   ```
 
-   Then start the realtime pipeline from your workspace terminal:
+   **Model registry** — [Step 5](05_model_registry/). Upload `model.joblib` to S3:
+
+   ```bash
+   cd /home/jovyan/move-it
+   python 05_model_registry/upload_model.py
+   ```
+
+   Then register it in the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) UI — see [Step 5](05_model_registry/) for wizard inputs (framework, metadata, S3 prefix, and related settings).
+
+   **Model Serving** — Deploy the registered model on [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list). See [Step 6](06_deploy_model/) for wizard inputs (model type, framework, model version, Public access, compute, and related settings). When the deployment is **Ready**, note the predict URL and set `PREDICT_URL` in `move-it/.env`:
+
+   ```bash
+   cd /home/jovyan/move-it
+   # Edit .env and set:
+   # PREDICT_URL=https://<PRIVATE_OR_PUBLIC_ENDPOINT>/v1/models/<MODEL_NAME>:predict
+   ```
+
+6. **Run the realtime pipeline** (`07_build_app/`)
+
+   Start both processes from your workspace terminal. `ingestion_api.py` and `app.py` load `move-it/.env` automatically (Kafka, `PREDICT_URL`, and other vars).
 
    **Terminal 1 — ingestion API**
+
    ```bash
    cd /home/jovyan/move-it/07_build_app
    python ingestion_api.py
    ```
 
    **Terminal 2 — dashboard + simulator**
+
    ```bash
    cd /home/jovyan/move-it/07_build_app
    export INGEST_API_URL="http://127.0.0.1:5000/ingest"
    streamlit run app.py
    ```
 
-   `app.py` loads `move-it/.env` automatically (Kafka, predict endpoint, and other vars). Point the dashboard at your Model Serving endpoint — pick **one** option below (`PREDICT_URL` in `.env` overrides sidebar values if both are set).
+   Point the dashboard at Model Serving — pick **one** option below (`PREDICT_URL` in `.env` overrides sidebar values if both are set).
 
    **Option A — Sidebar (host + model name)**  
    Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>`) and **Model name** to `<MODEL_NAME>`. The dashboard builds `http://<...>/v1/models/<MODEL_NAME>:predict`.
