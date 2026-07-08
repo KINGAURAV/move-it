@@ -112,6 +112,18 @@ Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/doc
 
 **Optional:** use the [automated image signing guide](image-signing/README.md).
 
+**Verify signatures in the Container Registry**
+
+Log in to your container registry. Confirm both `move-it-ingest:latest` and `move-it-dashboard:latest` show ✅ under **Signed**. If you see ❌, the image is not signed — repeat **Step 2** before deploying.
+
+**Ingest image (`move-it-ingest:latest`):**
+
+![Ingest image signed in the Container Registry](../assets/ingest_img_signed.png)
+
+**Dashboard image (`move-it-dashboard:latest`):**
+
+![Dashboard image signed in the Container Registry](../assets/dashboard_img_signed.png)
+
 </details>
 
 ---
