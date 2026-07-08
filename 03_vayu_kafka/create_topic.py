@@ -21,8 +21,8 @@ from kafka.errors import TopicAlreadyExistsError
 load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=True)
 
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "")
-KAFKA_USER = os.getenv("KAFKA_USER", "")
-KAFKA_PASS = os.getenv("KAFKA_PASS", "")
+KAFKA_USERNAME = os.getenv("KAFKA_USERNAME", "")
+KAFKA_PASSWORD = os.getenv("KAFKA_PASSWORD", "")
 TOPIC_NAME = os.getenv("KAFKA_TOPIC", "greenhouse_telemetry")
 NUM_PARTITIONS = int(os.getenv("KAFKA_TOPIC_PARTITIONS", "1"))
 REPLICATION_FACTOR = int(os.getenv("KAFKA_TOPIC_REPLICATION_FACTOR", "1"))
@@ -30,14 +30,14 @@ REPLICATION_FACTOR = int(os.getenv("KAFKA_TOPIC_REPLICATION_FACTOR", "1"))
 KAFKA_SECURITY = {
     "security_protocol": "SASL_PLAINTEXT",
     "sasl_mechanism": "SCRAM-SHA-512",
-    "sasl_plain_username": KAFKA_USER,
-    "sasl_plain_password": KAFKA_PASS,
+    "sasl_plain_username": KAFKA_USERNAME,
+    "sasl_plain_password": KAFKA_PASSWORD,
 }
 
 
 def main() -> None:
-    if not all([KAFKA_BROKER, KAFKA_USER, KAFKA_PASS]):
-        raise ValueError("Set KAFKA_BROKER, KAFKA_USER, and KAFKA_PASS in .env")
+    if not all([KAFKA_BROKER, KAFKA_USERNAME, KAFKA_PASSWORD]):
+        raise ValueError("Set KAFKA_BROKER, KAFKA_USERNAME, and KAFKA_PASSWORD in .env")
 
     admin = KafkaAdminClient(
         bootstrap_servers=KAFKA_BROKER,

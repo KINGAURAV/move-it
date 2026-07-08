@@ -164,8 +164,8 @@ Enable **Public Expose** in the ML Service wizard.
 | Key | Required |
 |-----|----------|
 | `KAFKA_BROKER` | Yes |
-| `KAFKA_USER` | Yes |
-| `KAFKA_PASS` | Yes |
+| `KAFKA_USERNAME` | Yes |
+| `KAFKA_PASSWORD` | Yes |
 | `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
 
 #### A.4 Verify ingest
@@ -214,8 +214,8 @@ Enable **Public Expose** in the ML Service wizard.
 | `INGEST_API_URL` | **Yes** | Phase A URL, e.g. `https://<ingest-host>/ingest` |
 | `PREDICT_URL` | **Yes** | From [Step 6](../06_deploy_model/) |
 | `KAFKA_BROKER` | Yes | Same broker as ingest |
-| `KAFKA_USER` | Yes | |
-| `KAFKA_PASS` | Yes | |
+| `KAFKA_USERNAME` | Yes | |
+| `KAFKA_PASSWORD` | Yes | |
 | `KAFKA_TOPIC` | No | Default `greenhouse_telemetry` |
 
 **Example:**
@@ -224,8 +224,8 @@ Enable **Public Expose** in the ML Service wizard.
 INGEST_API_URL=https://<INGEST_PUBLIC_HOST>/ingest
 PREDICT_URL=http://<INGRESS_HOST>:<PORT>/v1/models/<MODEL_NAME>:predict
 KAFKA_BROKER=<VAYU_KAFKA_BROKER>
-KAFKA_USER=<VAYU_KAFKA_USER>
-KAFKA_PASS=<VAYU_KAFKA_PASS>
+KAFKA_USERNAME=<VAYU_KAFKA_USERNAME>
+KAFKA_PASSWORD=<VAYU_KAFKA_PASSWORD>
 KAFKA_TOPIC=greenhouse_telemetry
 ```
 

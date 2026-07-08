@@ -113,8 +113,8 @@ This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/he
 cd /home/jovyan/move-it/07_build_app
 
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-export KAFKA_USER="<VAYU_KAFKA_USER>"
-export KAFKA_PASS="<VAYU_KAFKA_PASS>"
+export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
+export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
 python ingestion_api.py
@@ -129,8 +129,8 @@ cd /home/jovyan/move-it/07_build_app
 
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-export KAFKA_USER="<VAYU_KAFKA_USER>"
-export KAFKA_PASS="<VAYU_KAFKA_PASS>"
+export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
+export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
 # Predict URL from Step 6 (required for simulation)
@@ -154,9 +154,9 @@ When local testing works, continue to [Step 8](../08_deploy/) to build, sign, an
 |----------|----------|---------|---------|---------|
 | `PREDICT_URL` | Yes | — | dashboard | Model Serving predict URL from [Step 6](../06_deploy_model/) |
 | `KAFKA_BROKER` | Yes | — | ingest + dashboard | Kafka bootstrap servers |
-| `KAFKA_USER` | Yes | — | ingest + dashboard | Kafka SASL username |
-| `KAFKA_PASS` | Yes | — | ingest + dashboard | Kafka SASL password |
-| `KAFKA_TOPIC` | No | `greenhouse_telemetry` | ingest + dashboard | Telemetry topic |
+| `KAFKA_USERNAME` | Yes | — | ingest + dashboard | Kafka SASL username |
+| `KAFKA_PASSWORD` | Yes | — | ingest + dashboard | Kafka SASL password |
+| `KAFKA_TOPIC` | No | `greenhouse_telemetry` | ingest + dashboard | Telemetry topic (created by `create_topic.py`) |
 | `INGEST_API_URL` | No | `http://127.0.0.1:5000/ingest` | dashboard | Simulator POST target |
 | `PORT` | No | `5000` | ingestion API | Ingest listen port |
 
@@ -171,7 +171,7 @@ For local testing, **Predict host** and **Model name** in the sidebar can be use
 
 | Symptom | Fix |
 |---------|-----|
-| Sidebar shows **Kafka: Disconnected** | Check `KAFKA_BROKER` / `KAFKA_USER` / `KAFKA_PASS`; confirm topic exists |
+| Sidebar shows **Kafka: Disconnected** | Check `KAFKA_BROKER` / `KAFKA_USERNAME` / `KAFKA_PASSWORD`; confirm topic exists |
 | **Set predict host/model or PREDICT_URL** | Set `PREDICT_URL` or fill **Predict host** + **Model name** in the sidebar |
 | Prediction errors | Confirm Model Serving is **Ready** and the predict URL from [Step 6](../06_deploy_model/) is correct |
 | Simulation errors / JSON parse failures | Set `INGEST_API_URL` to the correct ingest URL; in a workspace, use the proxy path (e.g. `.../proxy/5000/ingest`) and ensure `root_path="/proxy/5000"` is set on the FastAPI app |
