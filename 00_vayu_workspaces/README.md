@@ -53,7 +53,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
    Or, upload it manually via the UI.
 
-3. **Install Python Dependencies**
+3. **Install Python dependencies**
 
    Inside your workspace terminal:
 
@@ -63,14 +63,19 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    source .venv/bin/activate
    cd move-it
    pip install -r requirements.txt
+   ```
 
+4. **Set up `.env`**
+
+   ```bash
+   cd /home/jovyan/move-it
    cp .env.example .env
    # Edit .env with credentials from the Access Guide (and Step 2 / Step 6 as you progress)
    ```
 
-4. **Select the notebook kernel**
+5. **Select the notebook kernel**
 
-   When you open any `.ipynb` in this project, use the virtual environment above:
+   When you open any `.ipynb` in this project, use the virtual environment from step 3:
    1. Open **Select Kernel** and choose **Python Environments**.
 
       ![Select Kernel — Python Environments](../assets/kernel_select.png)
