@@ -84,14 +84,19 @@ curl -X POST \
   -H "Content-Type: application/json" \
   -d '{
     "instances": [
-      "worldcom ex-boss launches defence lawyers defending the former worldcom chief executive argued that he was not responsible for the company collapse."
+      {
+        "crop ID": ["Wheat"],
+        "soil_type": ["Black Soil"],
+        "Seedling Stage": ["Germination"],
+        "MOI": [10.0],
+        "temp": [25.0],
+        "humidity": [60.0]
+      }
     ]
   }'
 ```
 
-Example response: `{"predictions": [0]}` — map codes via `category_labels.json` or the table in the [Move-It overview](../README.md).
-
-Note: `instances` should be changed based on the use case.
+Example response: `{"predictions": [1]}` — `0` = no irrigation, `1` = irrigate.
 
 </details>
 
