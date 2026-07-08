@@ -63,6 +63,9 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    source .venv/bin/activate
    cd move-it
    pip install -r requirements.txt
+
+   cp .env.example .env
+   # Edit .env with credentials from the Access Guide (and Step 2 / Step 6 as you progress)
    ```
 
 4. **Select the notebook kernel**
