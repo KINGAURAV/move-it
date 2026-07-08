@@ -97,7 +97,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
 3. **Deploy Vayu MLflow** (required before training)
 
-   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, and copy the tracking URI and credentials into your `.env` (`MLFLOW_TRACKING_URI`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`).
+   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, and copy the tracking URI and credentials into your `.env` (`MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`).
 
 4. **Run training (once)**
 
