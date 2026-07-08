@@ -133,13 +133,13 @@ export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
 export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
-# Predict URL from Step 6 (required for simulation)
-export PREDICT_URL="http://<host>:<port>/v1/models/<model-name>:predict"
+# Predict URL from Step 6 (required for simulation) — get <MODEL_ID> via curl .../v1/models (see Step 6)
+export PREDICT_URL="https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict"
 
 streamlit run app.py
 ```
 
-Open the URL Streamlit prints (usually `http://localhost:8501`). You can also set **Predict host** and **Model name** in the sidebar instead of `PREDICT_URL`, then click **Start Simulation**.
+Open the URL Streamlit prints (usually `http://localhost:8501`). You can also set **Predict host** and **Model name** (`<MODEL_ID>`) in the sidebar instead of `PREDICT_URL`, then click **Start Simulation**.
 
 When local testing works, continue to [Step 8](../08_deploy/) to build, sign, and push the Docker images.
 
@@ -160,7 +160,7 @@ When local testing works, continue to [Step 8](../08_deploy/) to build, sign, an
 | `INGEST_API_URL` | No | `http://127.0.0.1:5000/ingest` | dashboard | Simulator POST target |
 | `PORT` | No | `5000` | ingestion API | Ingest listen port |
 
-For local testing, **Predict host** and **Model name** in the sidebar can be used instead of `PREDICT_URL` when the env var is not set.
+For local testing, **Predict host** and **Model name** (`<MODEL_ID>`) in the sidebar can be used instead of `PREDICT_URL` when the env var is not set. Get `<MODEL_ID>` from [Step 6](../06_deploy_model/).
 
 </details>
 
@@ -172,7 +172,7 @@ For local testing, **Predict host** and **Model name** in the sidebar can be use
 | Symptom | Fix |
 |---------|-----|
 | Sidebar shows **Kafka: Disconnected** | Check `KAFKA_BROKER` / `KAFKA_USERNAME` / `KAFKA_PASSWORD`; confirm topic exists |
-| **Set predict host/model or PREDICT_URL** | Set `PREDICT_URL` or fill **Predict host** + **Model name** in the sidebar |
+| **Set predict host/model name or PREDICT_URL** | Set `PREDICT_URL` or fill **Predict host** + **Model name** (`<MODEL_ID>`) in the sidebar |
 | Prediction errors | Confirm Model Serving is **Ready** and the predict URL from [Step 6](../06_deploy_model/) is correct |
 | Simulation errors / JSON parse failures | Set `INGEST_API_URL` to the correct ingest URL; in a workspace, use the proxy path (e.g. `.../proxy/5000/ingest`) and ensure `root_path="/proxy/5000"` is set on the FastAPI app |
 | Ingest logs missing but Streamlit says "Sent" | Start `ingestion_api.py` first |

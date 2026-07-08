@@ -105,7 +105,7 @@ Example response: `{"predictions": [1]}` — `0` = no irrigation, `1` = irrigate
 <details>
 <summary><h3>💡 Pro tips and notes</h3></summary>
 
-- **Model ID** — must match between the Vayu deployment, predict URL path, and Streamlit sidebar.
+- **Model name** (`<MODEL_ID>`) — must match between the Vayu deployment, predict URL path, and Streamlit sidebar.
 - **Retrain** — re-run `train_model.ipynb` and redeploy after notebook changes.
 
 </details>

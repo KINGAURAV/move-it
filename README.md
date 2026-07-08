@@ -168,13 +168,13 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    Point the dashboard at Model Serving — pick **one** option below (`PREDICT_URL` in `.env` overrides sidebar values if both are set).
 
-   **Option A — Sidebar (host + model ID)**  
-   Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>`) and **Model name** (in the sidebar) to `<MODEL_ID>`. The dashboard builds `http://<...>/v1/models/<MODEL_ID>:predict`.
+   **Option A — Sidebar (host + model name)**  
+   Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>`) and **Model name** (`<MODEL_ID>`) in the sidebar. The dashboard builds `http://<...>/v1/models/<MODEL_ID>:predict`.
 
    **Option B — Full predict URL (sidebar or `.env`)**  
    Paste the complete `:predict` URL into **Predict host** (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict`) — **Model name** is ignored when the host already ends with `:predict`. Or set `PREDICT_URL` in `.env` (sidebar fields are then ignored).
 
-   **Option C — `.env` defaults (host + model ID)**  
+   **Option C — `.env` defaults (host + model name)**  
    Set `VAYU_PREDICT_HOST` and `VAYU_MODEL_NAME` in `.env` — equivalent to Option A’s sidebar fields: `VAYU_PREDICT_HOST` = **Predict host** (base URL without `/v1`) and `VAYU_MODEL_NAME` = **Model name** (`<MODEL_ID>` from `/v1/models`). These pre-fill the sidebar; you can still edit the fields before starting simulation.
 
    > **Tip:** The Vayu Model Serving UI often copies only through `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_ID>:predict` to the copied value. Get `<MODEL_ID>` from `curl -X GET .../v1/models` — see [Step 6](06_deploy_model/) or the **Model Serving** section above.
