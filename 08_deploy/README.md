@@ -5,12 +5,12 @@
 | [← Previous — Step 7 — Build App](../07_build_app/) | Journey complete |
 |:---|---:|
 
-Deploy the **Move-It dashboard** (Streamlit + co-located ingest API) to the **Vayu platform** as an **ML Service**. After deployment you get a **public URL** where judges can run the built-in simulator, see live telemetry, and watch irrigation predictions from your **Vayu Model Serving** endpoint.
+Deploy the **Move-It dashboard** (Streamlit + co-located ingest API) to the **Vayu platform** as an **ML Service**. After deployment you get a **Public Endpoint** where judges can run the built-in simulator, see live telemetry, and watch irrigation predictions from your **Vayu Model Serving** endpoint.
 
 1. **Ingest API** (`ingestion_api.py`) — HTTP → Kafka
 2. **Dashboard** (`app.py`) — simulator, Kafka consumer, Model Serving client, Streamlit UI
 
-Deploy **ingest first**, copy its public URL, then deploy the dashboard with `INGEST_API_URL` pointing at it.
+Deploy **ingest first**, copy its **Public Endpoint**, then deploy the dashboard with `INGEST_API_URL` pointing at it.
 
 ---
 
@@ -170,22 +170,22 @@ Enable **Public Expose** in the ML Service wizard.
 
 #### A.4 Verify ingest
 
-When status is **Ready**, note the **Public URL** (call it `<INGEST_PUBLIC_URL>`).
+When status is **Ready**, on the ML Service detail page, **copy the Public Endpoint** (call it `<INGEST_ENDPOINT>`).
 
 ```bash
-curl -s "<INGEST_PUBLIC_URL>/health"
-curl -s -X POST "<INGEST_PUBLIC_URL>/ingest" \
+curl -s "<INGEST_ENDPOINT>/health"
+curl -s -X POST "<INGEST_ENDPOINT>/ingest" \
   -H "Content-Type: application/json" \
   -d '{"temp": 25.0, "humidity": 60.0, "MOI": 10.0}'
 ```
 
-Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_PUBLIC_URL>/docs`.
+Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_ENDPOINT>/docs`.
 
-Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/ingest` path).
+Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ingest` path).
 
 #### A.5 Firewall rules
 
-After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_PUBLIC_URL>`. Follow the **Firewall rules SOP** shared with your team.
+After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_ENDPOINT>`. Follow the **Firewall rules SOP** shared with your team.
 
 </details>
 
@@ -211,7 +211,7 @@ Enable **Public Expose** in the ML Service wizard.
 
 | Key | Required | Description |
 |-----|----------|-------------|
-| `INGEST_API_URL` | **Yes** | Phase A URL, e.g. `https://<ingest-host>/ingest` |
+| `INGEST_API_URL` | **Yes** | Phase A **Public Endpoint**, e.g. `https://<INGEST_ENDPOINT>/ingest` |
 | `PREDICT_URL` | **Yes** | From [Step 6](../06_deploy_model/) |
 | `KAFKA_BROKER` | Yes | Same broker as ingest |
 | `KAFKA_USERNAME` | Yes | |
@@ -221,8 +221,8 @@ Enable **Public Expose** in the ML Service wizard.
 **Example:**
 
 ```text
-INGEST_API_URL=https://<INGEST_PUBLIC_HOST>/ingest
-PREDICT_URL=https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict
+INGEST_API_URL=https://<INGEST_ENDPOINT>/ingest
+PREDICT_URL=https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict
 KAFKA_BROKER=<VAYU_KAFKA_BROKER>
 KAFKA_USERNAME=<VAYU_KAFKA_USERNAME>
 KAFKA_PASSWORD=<VAYU_KAFKA_PASSWORD>
@@ -236,9 +236,13 @@ KAFKA_TOPIC=greenhouse_telemetry
 | **Resources** | CPU is sufficient |
 | **Replicas** | `1` for demo |
 
-#### B.5 Firewall rules
+#### B.5 Note the dashboard endpoint
 
-After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **public URL**. Follow the **Firewall rules SOP** shared with your team.
+When status is **Ready**, on the ML Service detail page, **copy the Public Endpoint** for the dashboard.
+
+#### B.6 Firewall rules
+
+After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **Public Endpoint**. Follow the **Firewall rules SOP** shared with your team.
 
 </details>
 
@@ -247,8 +251,8 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 <details>
 <summary><h3>🔍 Step 4 — Verify end-to-end</h3></summary>
 
-1. Open the **dashboard** public URL (port 8501).
-2. Sidebar should show your **ingest public URL** (not `127.0.0.1`).
+1. Open the dashboard **Public Endpoint**.
+2. Sidebar should show your ingest **Public Endpoint** (not `127.0.0.1`).
 3. Confirm **Kafka: Connected**.
 4. Click **Start Simulation**.
 5. Verify temperature/humidity update and **Irrigation Action** from Model Serving.
@@ -257,7 +261,7 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 |---------|---------------|
 | Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
 | Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules — follow the **Firewall rules SOP** |
-| Simulation error / JSON parse | `INGEST_API_URL` must be the **ingest public URL** from Phase A |
+| Simulation error / JSON parse | `INGEST_API_URL` must be the ingest **Public Endpoint** from Phase A (`<INGEST_ENDPOINT>/ingest`) |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
 | Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
 | No predictions | `PREDICT_URL`; Model Serving **Ready** |
@@ -273,7 +277,7 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 - [ ] **Dashboard** ML Service **Ready** on port **8501** with `INGEST_API_URL` + `PREDICT_URL`
 - [ ] **Start Simulation** updates telemetry and irrigation predictions
 - [ ] Both images pushed and **signed** from `move-it/` root
-- [ ] Public URLs documented for judges
+- [ ] **Public Endpoints** documented for judges
 
 </details>
 

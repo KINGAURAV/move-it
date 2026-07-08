@@ -97,7 +97,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
 3. **Deploy Vayu MLflow** (required before training)
 
-   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, and copy the tracking URI and credentials into your `.env` (`MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`).
+   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, and on the deployment **Connect** page copy the **Public Endpoint** and credentials into your `.env` (`MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`).
 
 4. **Run training (once)**
 
@@ -133,10 +133,10 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    Then register it in the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) UI — see [Step 5](05_model_registry/) for wizard inputs (framework, metadata, S3 prefix, and related settings).
 
-   **Model Serving** — Deploy the registered model on [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list). See [Step 6](06_deploy_model/) for wizard inputs, firewall rules, and full endpoint setup. After the deployment is **Ready** and firewall rules are applied, open the **Connect** tab and **copy the URL** shown there, then get `<MODEL_ID>`:
+   **Model Serving** — Deploy the registered model on [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list). See [Step 6](06_deploy_model/) for wizard inputs, firewall rules, and full endpoint setup. After the deployment is **Ready** and firewall rules are applied, open the **Connect** tab and **copy the Public Endpoint** shown there, then get `<MODEL_ID>`:
 
    ```bash
-   curl -X GET "<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models"
+   curl -X GET "<MODEL_SERVING_ENDPOINT>/v1/models"
    ```
 
    Sample output `{"models":["model"]}` — the id here is `model`. Set the full predict URL in `move-it/.env`:
@@ -144,7 +144,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    ```bash
    cd /home/jovyan/move-it
    # Edit .env and set:
-   # PREDICT_URL=https://<PRIVATE_OR_PUBLIC_ENDPOINT>/v1/models/<MODEL_ID>:predict
+   # PREDICT_URL=https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict
    ```
 
 6. **Run the realtime pipeline** (`07_build_app/`)
@@ -169,15 +169,15 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    Point the dashboard at Model Serving — pick **one** option below (`PREDICT_URL` in `.env` overrides sidebar values if both are set).
 
    **Option A — Sidebar (host + model name)**  
-   Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>`) and **Model name** (`<MODEL_ID>`) in the sidebar. The dashboard builds `http://<...>/v1/models/<MODEL_ID>:predict`.
+   Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `https://<MODEL_SERVING_ENDPOINT>`) and **Model name** (`<MODEL_ID>`) in the sidebar. The dashboard builds `https://<...>/v1/models/<MODEL_ID>:predict`.
 
    **Option B — Full predict URL (sidebar or `.env`)**  
-   Paste the complete `:predict` URL into **Predict host** (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict`) — **Model name** is ignored when the host already ends with `:predict`. Or set `PREDICT_URL` in `.env` (sidebar fields are then ignored).
+   Paste the complete `:predict` URL into **Predict host** (e.g. `https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict`) — **Model name** is ignored when the host already ends with `:predict`. Or set `PREDICT_URL` in `.env` (sidebar fields are then ignored).
 
    **Option C — `.env` defaults (host + model name)**  
    Set `VAYU_PREDICT_HOST` and `VAYU_MODEL_NAME` in `.env` — equivalent to Option A’s sidebar fields: `VAYU_PREDICT_HOST` = **Predict host** (base URL without `/v1`) and `VAYU_MODEL_NAME` = **Model name** (`<MODEL_ID>` from `/v1/models`). These pre-fill the sidebar; you can still edit the fields before starting simulation.
 
-   > **Tip:** The Vayu Model Serving UI often copies only through `/v1` (e.g. `http://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_ID>:predict` to the copied value. Get `<MODEL_ID>` from `curl -X GET .../v1/models` — see [Step 6](06_deploy_model/) or the **Model Serving** section above.
+   > **Tip:** The Model Serving UI often copies only through `/v1` (e.g. `https://<MODEL_SERVING_ENDPOINT>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_ID>:predict` to the copied **Public Endpoint**. Get `<MODEL_ID>` from `curl -X GET .../v1/models` — see [Step 6](06_deploy_model/) or the **Model Serving** section above.
 
    Confirm the resolved URL under **Predict endpoint ready** in the sidebar, then click **Start Simulation** to stream simulated sensor readings through ingest → Kafka → predictions → the live dashboard.
 

@@ -134,7 +134,7 @@ export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
 # Predict URL from Step 6 (required for simulation) — get <MODEL_ID> via curl .../v1/models (see Step 6)
-export PREDICT_URL="https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict"
+export PREDICT_URL="https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict"
 
 streamlit run app.py
 ```

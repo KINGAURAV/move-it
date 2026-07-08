@@ -29,8 +29,8 @@ For the full create wizard (Start → Infrastructure → Compute → Object Stor
    - **Enable authentication:** Turn on **Enable Authentication** and set a **Username** and **Password**. You will need these credentials to access the MLflow UI and to populate `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in your root `.env`.
    - **Configure S3 and database:** Fill in your object storage (S3) credentials and database settings. S3 connection details are provided in the **Access Guide**.
 2. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
-3. **Note the tracking URI and credentials:** Copy the host URL, username, and password into the root `.env` as `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` — you will use these in [Step 4](../04_starter-kit/).
-4. **Firewall rules:** Configure firewall rules so external clients can reach the MLflow **public URL**. Follow the **Firewall rules SOP** shared with your team.
+3. **Note the tracking URI and credentials:** On the deployment **Connect** page, copy the **Public Endpoint**, username, and password into the root `.env` as `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, and `MLFLOW_TRACKING_PASSWORD` — you will use these in [Step 4](../04_starter-kit/).
+4. **Firewall rules:** Configure firewall rules so external clients can reach the MLflow **Public Endpoint**. Follow the **Firewall rules SOP** shared with your team.
 
 </details>
 

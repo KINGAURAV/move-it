@@ -58,21 +58,21 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 
 4. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
 
-5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **public URL**. Follow the **Firewall rules SOP** shared with your team.
+5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **Public Endpoint**. Follow the **Firewall rules SOP** shared with your team.
 
-6. **Note the predict endpoint** — open the **Connect** tab on the Model Serving detail page and **copy the URL** shown there. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`).
+6. **Note the predict endpoint** — open the **Connect** tab on the Model Serving detail page and **copy the Public Endpoint** shown there. The UI typically copies only the base URL through `/v1` (for example, `https://<MODEL_SERVING_ENDPOINT>/v1`).
 
    List available models to get `<MODEL_ID>`:
 
    ```bash
-   curl -X GET "<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models"
+   curl -X GET "<MODEL_SERVING_ENDPOINT>/v1/models"
    ```
 
    Sample output `{"models":["model"]}` — the id here is `model`.
 
    Append `/models/<MODEL_ID>:predict` to the base URL to form the full predict URL:
 
-   `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict`
+   `https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict`
 
    For sidebar configuration in [Step 7](../07_build_app/), see **Launch the realtime pipeline** in the [Move-It overview](../README.md).
 
@@ -80,7 +80,7 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 
 ```bash
 curl -X POST \
-  "https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict" \
+  "https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict" \
   -H "Content-Type: application/json" \
   -d '{
     "instances": [
