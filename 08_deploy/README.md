@@ -118,11 +118,11 @@ Log in to your container registry. Confirm both `move-it-ingest:latest` and `mov
 
 **Ingest image (`move-it-ingest:latest`):**
 
-![Ingest image signed in the Container Registry](../assets/ingest_img_signed.png)
+<img src="../assets/ingest_img_signed.png" alt="Ingest image signed in the Container Registry" width="500">
 
 **Dashboard image (`move-it-dashboard:latest`):**
 
-![Dashboard image signed in the Container Registry](../assets/dashboard_img_signed.png)
+<img src="../assets/dashboard_img_signed.png" alt="Dashboard image signed in the Container Registry" width="500">
 
 </details>
 
