@@ -56,22 +56,27 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 
 > **Note:** For any other wizard configurations not listed above, leave them as they are.
 
-4. **Note the predict endpoint** when the deployment is **Ready** — open the **Connect** tab on the Model Serving detail page. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
+4. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
 
-   `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_NAME>:predict`
-
-   For sidebar configuration in [Step 7](../07_build_app/), see **Launch the realtime pipeline** in the [Move-It overview](../README.md).
 5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **public URL**. Follow the **Firewall rules SOP** shared with your team.
 
-**Test with curl:**
+6. **Note the predict endpoint** — open the **Connect** tab on the Model Serving detail page and **copy the URL** shown there. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`).
 
-First, query the `/v1/models` endpoint to list all available models. Most OpenAI-compatible inference servers expose this endpoint.
+   List available models to get `<MODEL_ID>`:
 
-```bash
-curl -X GET "<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models"
-```
+   ```bash
+   curl -X GET "<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models"
+   ```
 
-Sample output `{"models":["model"]}` — the id here is `model`.
+   Sample output `{"models":["model"]}` — the id here is `model`.
+
+   Append `/models/<MODEL_ID>:predict` to the base URL to form the full predict URL:
+
+   `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1/models/<MODEL_ID>:predict`
+
+   For sidebar configuration in [Step 7](../07_build_app/), see **Launch the realtime pipeline** in the [Move-It overview](../README.md).
+
+**Test predict with curl:**
 
 ```bash
 curl -X POST \
@@ -95,7 +100,7 @@ Note: `instances` should be changed based on the use case.
 <details>
 <summary><h3>💡 Pro tips and notes</h3></summary>
 
-- **Model name** — must match between the Vayu deployment, predict URL path, and Streamlit sidebar.
+- **Model ID** — must match between the Vayu deployment, predict URL path, and Streamlit sidebar.
 - **Retrain** — re-run `train_model.ipynb` and redeploy after notebook changes.
 
 </details>
