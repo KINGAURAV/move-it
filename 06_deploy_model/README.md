@@ -54,7 +54,7 @@ For the complete product documentation, see the [Model Serving guide](https://ip
    - **Compute and storage:** Choose compute and storage resources appropriate for your `model.joblib` size.
    - **Storage type:** Select **Dedicated**.
 
-   For any other wizard configurations not listed above, leave them as they are.
+   > **Note:** For any other wizard configurations not listed above, leave them as they are.
 
 4. **Note the predict endpoint** when the deployment is **Ready** — open the **Connect** tab on the Model Serving detail page. The Vayu Model Serving UI typically copies only the base URL through `/v1` (for example, `https://<PRIVATE_OR_PUBLIC_ENDPOINT_FROM_MODEL_SERVING_UI>/v1`). Append `/models/<MODEL_NAME>:predict` to form the full predict URL:
 
