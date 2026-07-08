@@ -114,9 +114,11 @@ Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/doc
 
 **Verify signatures in the Container Registry**
 
-1. Log in to your container registry (provided in the **Access Guide**).
-2. Navigate to your registry **project** (`REGISTRY_PROJECT` in `.env`) and open the **`move-it-ingest`** and **`move-it-dashboard`** repositories.
-3. Confirm both `move-it-ingest:latest` and `move-it-dashboard:latest` show ✅ under **Signed**. If you see ❌, the image is not signed — repeat **Step 2** before deploying.
+1. Open [Vayu Container Registry](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/vayucontainerregistry) and log in using your **Vayu credentials**.
+2. Under **Project Name**, select the appropriate project (named in the **Access Guide**).
+3. On the project overview page, click **View Dashboard**.
+4. Open the **`move-it-ingest`** and **`move-it-dashboard`** repositories.
+5. Confirm both `move-it-ingest:latest` and `move-it-dashboard:latest` show ✅ under **Signed**. If you see ❌, the image is not signed — repeat **Step 2 — Sign both images** before deploying.
 
 **Ingest image (`move-it-ingest:latest`):**
 
