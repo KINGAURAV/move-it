@@ -91,7 +91,53 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    cp .env.example .env
    ```
 
-   Open `.env` and replace the placeholder values with your credentials. Use the **Access Guide** for **Vayu Object Storage (S3)**, **Vayu Kafka**, and **Container Registry** values. Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
+   Open `.env` and replace placeholders with your values. You can copy **S3**, **Kafka**, and **Container Registry** credentials from the **Access Guide** as soon as you have it; add **MLflow** after [Step 2](02_vayu_mlflow/) and **Model Serving** after [Step 6](06_deploy_model/). Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
+
+   **Example** (replace `<...>` placeholders with your real values):
+
+   ```bash
+   # Vayu Object Storage (S3) — Access Guide
+   AWS_ACCESS_KEY_ID=<your-access-key>
+   AWS_SECRET_ACCESS_KEY=<your-secret-key>
+   S3_ENDPOINT=<your-s3-endpoint>
+   S3_BUCKET_NAME=<your-bucket-name>
+   S3_DATASET_KEY=cropdata.csv
+   S3_MODEL_KEY=move-it/model.joblib
+
+   # Vayu MLflow — Step 2 Connect page (Public Endpoint + auth)
+   MLFLOW_TRACKING_URL=https://<your-mlflow-host>
+   MLFLOW_TRACKING_USERNAME=<your-username>
+   MLFLOW_TRACKING_PASSWORD=<your-password>
+
+   # Vayu Kafka — Access Guide (<IP>:<PORT>)
+   KAFKA_BROKER=<your-kafka-broker-url>
+   KAFKA_USERNAME=<your-kafka-username>
+   KAFKA_PASSWORD=<your-kafka-password>
+   KAFKA_TOPIC=greenhouse_telemetry
+
+   # Vayu Model Serving — Step 6 Connect page (after deployment is Ready)
+   PREDICT_URL=https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict
+
+   # Vayu Container Registry — Access Guide (Step 8 build / sign / deploy)
+   # Host only — no https://, http://, or trailing /
+   IMAGE_REGISTRY=<your-image-registry>
+   REGISTRY_PROJECT=<your-registry-project>
+   REGISTRY_USERNAME=<container-registry-username>
+   REGISTRY_PASSWORD=<container-registry-password>
+   VAYU_USERNAME=<your-vayu-username>
+   ```
+
+   | Variable(s) | Where to get them |
+   |-------------|-------------------|
+   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME` | **Access Guide** — used in [Step 1](01_dataset/) (`01_dataset.ipynb`) and [Step 5](05_model_registry/) (`upload_model.py`) |
+   | `S3_DATASET_KEY`, `S3_MODEL_KEY` | Defaults in [`.env.example`](.env.example); change only if your team uses different S3 paths |
+   | `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD` | [Step 2 — Vayu MLflow](02_vayu_mlflow/) — deployment **Connect** page (**Public Endpoint** + credentials you set at create time) |
+   | `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD` | **Access Guide** — form `KAFKA_BROKER` as `<IP>:<PORT>`; used in [Step 3](03_vayu_kafka/) (`create_topic.py`) and [Step 7](07_build_app/) |
+   | `KAFKA_TOPIC` | Default `greenhouse_telemetry`; topic created in [Step 3](03_vayu_kafka/) |
+   | `PREDICT_URL` | [Step 6 — Model Serving](06_deploy_model/) — **Public Endpoint** from **Connect** + `<MODEL_ID>` from `curl .../v1/models` (see quick-start step 5 below) |
+   | `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, `REGISTRY_PASSWORD`, `VAYU_USERNAME` | **Access Guide** — used in [Step 8](08_deploy/) (build, sign, push images) |
+
+   **Optional (dashboard only):** Instead of `PREDICT_URL`, you can set `VAYU_PREDICT_HOST` (base URL without `/v1`) and `VAYU_MODEL_NAME` (`<MODEL_ID>`) — see [Step 7](07_build_app/). Sidebar fields work too when running locally.
 
    For `IMAGE_REGISTRY`, use the registry **hostname only** (e.g. `image-registry-....cloudservices.tatacommunications.com`) — no `https://`, `http://`, or trailing `/`.
 
