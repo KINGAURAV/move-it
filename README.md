@@ -127,7 +127,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    |-------------|-------------------|
    | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME` | **Access Guide** — [Step 1](01_dataset/) (`01_dataset.ipynb`) and [Step 5](05_model_registry/) (`upload_model.py`) |
    | `S3_DATASET_KEY`, `S3_MODEL_KEY` | Defaults in [`.env.example`](.env.example); change only if your team uses different S3 paths |
-   | `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD` | [Step 2 — Vayu MLflow](02_vayu_mlflow/) — **Connect** page (**Public Endpoint** + credentials set at create time) |
+   | `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD` | [Step 2 — Vayu MLflow](02_vayu_mlflow/) |
    | `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD` | **Access Guide** — form `KAFKA_BROKER` as `<IP>:<PORT>`; [Step 3](03_vayu_kafka/) (`create_topic.py`) |
    | `KAFKA_TOPIC` | Default `greenhouse_telemetry`; topic created in [Step 3](03_vayu_kafka/) |
    | `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, `REGISTRY_PASSWORD`, `VAYU_USERNAME` | **Access Guide** — [Step 8](08_deploy/) (build, sign, push images) |
@@ -136,7 +136,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
 3. **Deploy Vayu MLflow** (required before training)
 
-   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, apply **firewall rules**, then on the deployment **Connect** page copy the **Public Endpoint** and credentials into your `.env` (`MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD`).
+   Complete [Step 2](02_vayu_mlflow/) — create a managed MLflow instance, wait for **Ready**, apply **firewall rules**, and add the tracking URI and credentials to your `.env`.
 
 4. **Run training (once)**
 
@@ -172,7 +172,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    Then register it in the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) UI — see [Step 5](05_model_registry/) for wizard inputs (framework, metadata, S3 prefix, and related settings).
 
-   **Model Serving** — Deploy the registered model on [Vayu Model Serving](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-serving-list). See [Step 6](06_deploy_model/) for wizard inputs, firewall rules, and full endpoint setup. After the deployment is **Ready** and firewall rules are applied, open the **Connect** tab and **copy the Public Endpoint** shown there, then get `<MODEL_ID>`:
+   **Model Serving** — See [Step 6](06_deploy_model/) for deployment, firewall rules, and endpoint setup. Then get `<MODEL_ID>`:
 
    ```bash
    curl -X GET "<MODEL_SERVING_ENDPOINT>/v1/models"
@@ -221,7 +221,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    **Option C — Export host + model name**  
    `export VAYU_PREDICT_HOST=...` and `export VAYU_MODEL_NAME=<MODEL_ID>` to pre-fill the sidebar instead of `PREDICT_URL`.
 
-   > **Tip:** The Model Serving UI often copies only through `/v1` (e.g. `https://<MODEL_SERVING_ENDPOINT>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_ID>:predict` to the copied **Public Endpoint**. Get `<MODEL_ID>` from `curl -X GET .../v1/models` — see [Step 6](06_deploy_model/) or the **Model Serving** section above.
+   > **Tip:** The Model Serving UI often copies only through `/v1` (e.g. `https://<MODEL_SERVING_ENDPOINT>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_ID>:predict` to the copied **Public Endpoint**. Get `<MODEL_ID>` from `curl -X GET .../v1/models` — see [Step 6](06_deploy_model/).
 
    Confirm the resolved URL under **Predict endpoint ready** in the sidebar, then click **Start Simulation** to stream simulated sensor readings through ingest → Kafka → predictions → the live dashboard.
 

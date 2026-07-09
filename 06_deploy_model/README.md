@@ -58,9 +58,9 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 
 4. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
 
-5. **Firewall rules:** Configure firewall rules so external clients can reach the predict **Public Endpoint**. Follow **`Port 443 FW Rule.pdf`** shared with your team.
+5. **Firewall rules:** After the deployment is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
-6. **Note the predict endpoint** — open the **Connect** tab on the Model Serving detail page and **copy the Public Endpoint** shown there. The UI typically copies only the base URL through `/v1` (for example, `https://<MODEL_SERVING_ENDPOINT>/v1`).
+6. **Note the predict endpoint** — open the **Connect** tab on the Model Serving detail page and **copy** the **Public Endpoint**. The UI typically copies only the base URL through `/v1` (for example, `https://<MODEL_SERVING_ENDPOINT>/v1`).
 
 7. **Get `<MODEL_ID>` and test the endpoint** (after firewall rules are applied):
 

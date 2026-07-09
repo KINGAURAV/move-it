@@ -168,15 +168,15 @@ Enable **Public Expose** in the ML Service wizard.
 | `KAFKA_PASSWORD` | Yes |
 | `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
 
-#### A.4 Note the ingest endpoint
+#### A.4 Firewall rules
 
-When status is **Ready**, on the ML Service detail page, **copy the Public Endpoint** (call it `<INGEST_ENDPOINT>`).
+After the ingest ML Service is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
+
+#### A.5 Note the ingest endpoint
+
+When status is **Ready**, open the **Connect** tab on the ingest ML Service detail page and **copy** the **Public Endpoint** (call it `<INGEST_ENDPOINT>`).
 
 Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ingest` path).
-
-#### A.5 Firewall rules
-
-After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_ENDPOINT>`. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
 #### A.6 Verify ingest
 
@@ -240,13 +240,13 @@ KAFKA_TOPIC=greenhouse_telemetry
 | **Resources** | CPU is sufficient |
 | **Replicas** | `1` for demo |
 
-#### B.5 Note the dashboard endpoint
+#### B.5 Firewall rules
 
-When status is **Ready**, on the ML Service detail page, **copy the Public Endpoint** for the dashboard.
+After the dashboard ML Service is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
-#### B.6 Firewall rules
+#### B.6 Note the dashboard endpoint
 
-After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **Public Endpoint**. Follow **`Port 443 FW Rule.pdf`** shared with your team.
+When status is **Ready**, open the **Connect** tab on the dashboard ML Service detail page and **copy** the **Public Endpoint** for the dashboard.
 
 #### B.7 Verify dashboard (after firewall)
 
