@@ -40,7 +40,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    - **Enable Docker:** Turn on **Enable Docker in the Workspace** in the workspace wizard.
    - **Object storage host alias:** Add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
    - **Public access:** Enable the **Public Access** toggle in the workspace wizard.
-   - After the workspace is **Ready**, configure firewall rules so external clients can reach the workspace **Public Endpoint**. Follow the **Firewall rules SOP** shared with your team.
+   - After the workspace is **Ready**, configure firewall rules so external clients can reach the workspace **Public Endpoint**. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
 2. **Import This Repository**
 
@@ -94,7 +94,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
 
 - [Vayu AI Studio Workspace Dashboard](https://ipcloud.tatacommunications.com/aistudio/#/build/workspace-list)
 - [Workspace documentation](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/workspace/)
-- **Firewall rules SOP** — follow the SOP shared with your team
+- **`Port 443 FW Rule.pdf`**
 
 | [← Previous — Move-It overview](../README.md) | [Overview](../README.md) | [Next — Step 1 — Vayu Object Storage →](../01_dataset/) |
 |:---|:---:|---:|

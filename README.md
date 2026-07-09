@@ -91,7 +91,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    cp .env.example .env
    ```
 
-   Open `.env` and replace `<...>` placeholders with your values. The template in [`.env.example`](.env.example) is grouped by step — copy **S3**, **Kafka**, and **Container Registry** from the **Access Guide** as soon as you have it; add **MLflow** after [Step 2](02_vayu_mlflow/). Scripts and notebooks load this file via `load_dotenv`. For [Step 7](07_build_app/) (`app.py`, `ingestion_api.py`), set predict and ingest URLs with `export` in the terminal — see that step’s README. Do not commit `.env` to git.
+   Open `.env` and replace `<...>` placeholders with your values. The template in [`.env.example`](.env.example) is grouped by step — copy **S3**, **Kafka**, and **Container Registry** from the **Access Guide** as soon as you have it; add **MLflow** after [Step 2](02_vayu_mlflow/). Scripts and notebooks load this file via `load_dotenv`. For [Step 7](07_build_app/) (`app.py`, `ingestion_api.py`), set predict and ingest URLs with `export` in the terminal — see [that step’s README](07_build_app/). Do not commit `.env` to git.
 
    **Example** (same shape as [`.env.example`](.env.example)):
 

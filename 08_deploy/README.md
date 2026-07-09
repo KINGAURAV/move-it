@@ -176,7 +176,7 @@ Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ing
 
 #### A.5 Firewall rules
 
-After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_ENDPOINT>`. Follow the **Firewall rules SOP** shared with your team.
+After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_ENDPOINT>`. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
 #### A.6 Verify ingest
 
@@ -246,7 +246,7 @@ When status is **Ready**, on the ML Service detail page, **copy the Public Endpo
 
 #### B.6 Firewall rules
 
-After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **Public Endpoint**. Follow the **Firewall rules SOP** shared with your team.
+After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **Public Endpoint**. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
 #### B.7 Verify dashboard (after firewall)
 
@@ -270,7 +270,7 @@ After firewall rules are applied on **both** ML Services (Phase A and Phase B):
 | Symptom | What to check |
 |---------|---------------|
 | Ingest `/health` fails | Firewall rules applied for ingest; port **5000**, **Public Expose**, pod **Ready** |
-| Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules — follow the **Firewall rules SOP** |
+| Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules — follow **`Port 443 FW Rule.pdf`** |
 | Simulation error / JSON parse | `INGEST_API_URL` must be the ingest **Public Endpoint** from Phase A (`<INGEST_ENDPOINT>/ingest`) |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
 | Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
@@ -308,7 +308,7 @@ After firewall rules are applied on **both** ML Services (Phase A and Phase B):
 
 - [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service)
 - [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)
-- **Firewall rules SOP** — follow the SOP shared with your team
+- **`Port 443 FW Rule.pdf`**
 
 ---
 
