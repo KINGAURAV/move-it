@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 from pydantic import BaseModel, Field
@@ -68,6 +69,11 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/docs")
 
 
 @app.middleware("http")

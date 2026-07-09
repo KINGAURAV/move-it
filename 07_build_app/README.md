@@ -46,7 +46,7 @@ A small **FastAPI** service that receives sensor readings and publishes them to 
 |----------|---------|
 | `POST /ingest` | Accept `{temp, humidity, MOI, timestamp?}` and publish to Kafka |
 | `GET /health` | Health check (broker + topic) |
-| `GET /docs` | Swagger UI |
+| `GET /docs` | Swagger UI (API docs) |
 
 It does **not** run ML or show a UI. Think: **HTTP in → Kafka out**.
 
@@ -108,7 +108,7 @@ app = FastAPI(
 
 The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` on line 69.
 
-This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
+This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/docs`, `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
 
 ```bash
 cd /home/jovyan/move-it/07_build_app
