@@ -28,7 +28,7 @@ For the full create wizard (Start → Infrastructure → Compute → Object Stor
    - **Public Expose:** Enable **Public Expose** in the deployment wizard.
    - **Enable authentication:** Turn on **Enable Authentication** and set a **Username** and **Password**. You will need these credentials to access the MLflow UI and to populate `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in your root `.env`.
    - **Configure compute (recommended):** On the **Compute** step:
-     - **CPU:** Select **4 vCPU / 16GB RAM / cpu** from the **General Purpose** flavours (choose **cpu** from the dropdown).
+     - **Flavor:** Select **4 vCPU / 16GB RAM / cpu** from the **General Purpose** flavors (choose **cpu** from the dropdown).
      - **Billing Mode:** **Monthly**
      - **Replicas:** **1**
 

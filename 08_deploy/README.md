@@ -174,7 +174,7 @@ On the **Configure Compute** step:
 
 | Field | Recommended value |
 |-------|-------------------|
-| **CPU** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavours (choose **cpu** from the dropdown) |
+| **Flavor** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavors (choose **cpu** from the dropdown) |
 | **Billing Mode** | **Hourly** |
 | **Replicas** | **1** |
 
@@ -251,7 +251,7 @@ On the **Configure Compute** step:
 
 | Field | Recommended value |
 |-------|-------------------|
-| **CPU** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavours (choose **cpu** from the dropdown) |
+| **Flavor** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavors (choose **cpu** from the dropdown) |
 | **Billing Mode** | **Hourly** |
 | **Replicas** | **1** |
 
