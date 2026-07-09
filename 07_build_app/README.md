@@ -94,7 +94,7 @@ Both processes must run together.
 
 **Terminal 1 — Ingestion API**
 
-When running inside a **Vayu AI Studio workspace** (ingest exposed via the workspace port proxy), edit [`ingestion_api.py`](ingestion_api.py) **lines 65–70** — replace the existing `FastAPI(...)` block with:
+When running inside a **Vayu AI Studio workspace** (ingest exposed via the workspace port proxy), edit [`ingestion_api.py`](ingestion_api.py) **lines 66–71** — replace the existing `FastAPI(...)` block with:
 
 ```python
 app = FastAPI(
@@ -106,7 +106,7 @@ app = FastAPI(
 )
 ```
 
-The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` on line 69.
+The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` on line 70.
 
 This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/docs`, `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
 
