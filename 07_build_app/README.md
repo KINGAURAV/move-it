@@ -114,6 +114,7 @@ This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/he
 cd /home/jovyan/move-it/07_build_app
 source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
+# Replace <...> placeholders with your actual values (from move-it/.env or the Access Guide)
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
 export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
 export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
@@ -130,6 +131,7 @@ Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `
 cd /home/jovyan/move-it/07_build_app
 source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
+# Replace <...> placeholders with your actual values (from move-it/.env, Step 6, or the Access Guide)
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
 export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
