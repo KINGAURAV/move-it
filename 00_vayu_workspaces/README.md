@@ -40,6 +40,14 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    - **Enable Docker:** Turn on **Enable Docker in the Workspace** in the workspace wizard.
    - **Object storage host alias:** Add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
    - **Public access:** Enable the **Public Access** toggle in the workspace wizard.
+   - **Configure compute and storage (recommended):** On the **Configure Compute and Storage** step:
+     - **CPU:** Select **4 vCPU / 8GB RAM / cpu** from the **General Purpose** flavours (choose **cpu** from the dropdown).
+     - **Billing Mode:** **Hourly**
+     - **Storage Flavor:** **SSD1-Persistent Storage**
+     - **Billing Mode for Storage:** **Monthly**
+     - **Size:** **5**
+
+     Change these if your workload needs more resources.
    - After the workspace is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
    - To access the workspace, open the **Connect** tab on the workspace detail page and **open** the **Public Endpoint**.
 

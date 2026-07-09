@@ -51,8 +51,15 @@ For the complete product documentation, see the [Model Serving guide](https://ip
    - **Public access:** Enable the **Public Access** toggle in the deployment wizard.
    - **Framework:** **sklearn**
    - **Model and version:** Select the model and version you registered in [Step 5](../05_model_registry/).
-   - **Compute and storage:** Choose compute and storage resources appropriate for your `model.joblib` size.
-   - **Storage type:** Select **Dedicated**.
+   - **Configure compute and storage (recommended):** On the **Configure Compute and Storage** step:
+     - **CPU:** Select **4 vCPU / 16GB RAM / cpu** from the **General Purpose** flavours (choose **cpu** from the dropdown).
+     - **Billing Mode:** **Hourly**
+     - **Storage Flavor:** **SSD1-Persistent Storage**
+     - **Billing Mode for Storage:** **Monthly**
+     - **Size:** **5Gi**
+     - **Volume Mode:** **Dedicated** (replicas are set to **1** automatically when you select this)
+
+     Change these if your workload needs more resources.
 
 > **Note:** For any other wizard configurations not listed above, leave them as they are.
 

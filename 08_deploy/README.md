@@ -168,17 +168,29 @@ Enable **Public Expose** in the ML Service wizard.
 | `KAFKA_PASSWORD` | Yes |
 | `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
 
-#### A.4 Firewall rules
+#### A.4 Configure compute (recommended)
+
+On the **Configure Compute** step:
+
+| Field | Recommended value |
+|-------|-------------------|
+| **CPU** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavours (choose **cpu** from the dropdown) |
+| **Billing Mode** | **Hourly** |
+| **Replicas** | **1** |
+
+Change these if your workload needs more resources.
+
+#### A.5 Firewall rules
 
 After the ingest ML Service is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
 
-#### A.5 Note the ingest endpoint
+#### A.6 Note the ingest endpoint
 
 When status is **Ready**, open the **Connect** tab on the ingest ML Service detail page and **copy** the **Public Endpoint** (call it `<INGEST_ENDPOINT>`).
 
 Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ingest` path).
 
-#### A.6 Verify ingest
+#### A.7 Verify ingest
 
 After firewall rules are applied, test the public endpoint:
 
@@ -233,12 +245,17 @@ KAFKA_PASSWORD=<VAYU_KAFKA_PASSWORD>
 KAFKA_TOPIC=greenhouse_telemetry
 ```
 
-#### B.4 Infrastructure
+#### B.4 Configure compute (recommended)
 
-| Field | Guidance |
-|-------|----------|
-| **Resources** | CPU is sufficient |
-| **Replicas** | `1` for demo |
+On the **Configure Compute** step:
+
+| Field | Recommended value |
+|-------|-------------------|
+| **CPU** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavours (choose **cpu** from the dropdown) |
+| **Billing Mode** | **Hourly** |
+| **Replicas** | **1** |
+
+Change these if your workload needs more resources.
 
 #### B.5 Firewall rules
 

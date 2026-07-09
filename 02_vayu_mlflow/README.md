@@ -27,6 +27,12 @@ For the full create wizard (Start → Infrastructure → Compute → Object Stor
    - **Object storage host alias:** On the **Object Storage** step, add a **host alias** for object storage using the **IP** and **endpoint** from the **Access Guide**. Enter the endpoint as the hostname **only** — do not include `http://` or `https://`.
    - **Public Expose:** Enable **Public Expose** in the deployment wizard.
    - **Enable authentication:** Turn on **Enable Authentication** and set a **Username** and **Password**. You will need these credentials to access the MLflow UI and to populate `MLFLOW_TRACKING_USERNAME` and `MLFLOW_TRACKING_PASSWORD` in your root `.env`.
+   - **Configure compute (recommended):** On the **Compute** step:
+     - **CPU:** Select **4 vCPU / 16GB RAM / cpu** from the **General Purpose** flavours (choose **cpu** from the dropdown).
+     - **Billing Mode:** **Monthly**
+     - **Replicas:** **1**
+
+     Change these if your workload needs more resources.
    - **Configure S3 and database:** Fill in your object storage (S3) credentials and database settings. S3 connection details are provided in the **Access Guide**.
 2. **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
 3. **Firewall rules:** After the deployment is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
