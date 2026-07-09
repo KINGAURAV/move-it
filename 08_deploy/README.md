@@ -168,9 +168,19 @@ Enable **Public Expose** in the ML Service wizard.
 | `KAFKA_PASSWORD` | Yes |
 | `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
 
-#### A.4 Verify ingest
+#### A.4 Note the ingest endpoint
 
 When status is **Ready**, on the ML Service detail page, **copy the Public Endpoint** (call it `<INGEST_ENDPOINT>`).
+
+Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ingest` path).
+
+#### A.5 Firewall rules
+
+After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_ENDPOINT>`. Follow the **Firewall rules SOP** shared with your team.
+
+#### A.6 Verify ingest
+
+After firewall rules are applied, test the public endpoint:
 
 ```bash
 curl -s "<INGEST_ENDPOINT>/health"
@@ -180,12 +190,6 @@ curl -s -X POST "<INGEST_ENDPOINT>/ingest" \
 ```
 
 Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_ENDPOINT>/docs`.
-
-Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ingest` path).
-
-#### A.5 Firewall rules
-
-After the ingest ML Service is **Ready**, configure firewall rules so external clients can reach `<INGEST_ENDPOINT>`. Follow the **Firewall rules SOP** shared with your team.
 
 </details>
 
@@ -244,12 +248,18 @@ When status is **Ready**, on the ML Service detail page, **copy the Public Endpo
 
 After the dashboard ML Service is **Ready**, configure firewall rules so external clients can reach the dashboard **Public Endpoint**. Follow the **Firewall rules SOP** shared with your team.
 
+#### B.7 Verify dashboard (after firewall)
+
+Open the dashboard **Public Endpoint** in your browser and confirm the Streamlit UI loads.
+
 </details>
 
 ---
 
 <details>
 <summary><h3>🔍 Step 4 — Verify end-to-end</h3></summary>
+
+After firewall rules are applied on **both** ML Services (Phase A and Phase B):
 
 1. Open the dashboard **Public Endpoint**.
 2. Sidebar should show your ingest **Public Endpoint** (not `127.0.0.1`).
@@ -259,7 +269,7 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 
 | Symptom | What to check |
 |---------|---------------|
-| Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
+| Ingest `/health` fails | Firewall rules applied for ingest; port **5000**, **Public Expose**, pod **Ready** |
 | Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules — follow the **Firewall rules SOP** |
 | Simulation error / JSON parse | `INGEST_API_URL` must be the ingest **Public Endpoint** from Phase A (`<INGEST_ENDPOINT>/ingest`) |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
@@ -273,8 +283,8 @@ After the dashboard ML Service is **Ready**, configure firewall rules so externa
 <details>
 <summary><h3>✔️ Demo checklist</h3></summary>
 
-- [ ] **Ingest** ML Service **Ready** on port **5000**; `/health` and `/ingest` work publicly
-- [ ] **Dashboard** ML Service **Ready** on port **8501** with `INGEST_API_URL` + `PREDICT_URL`
+- [ ] **Ingest** ML Service **Ready** on port **5000**; firewall rules applied; `/health` and `/ingest` work publicly
+- [ ] **Dashboard** ML Service **Ready** on port **8501**; firewall rules applied; `INGEST_API_URL` + `PREDICT_URL` set
 - [ ] **Start Simulation** updates telemetry and irrigation predictions
 - [ ] Both images pushed and **signed** from `move-it/` root
 - [ ] **Public Endpoints** documented for judges

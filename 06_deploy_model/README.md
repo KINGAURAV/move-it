@@ -62,7 +62,7 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 
 6. **Note the predict endpoint** — open the **Connect** tab on the Model Serving detail page and **copy the Public Endpoint** shown there. The UI typically copies only the base URL through `/v1` (for example, `https://<MODEL_SERVING_ENDPOINT>/v1`).
 
-   List available models to get `<MODEL_ID>`:
+7. **Get `<MODEL_ID>` and test the endpoint** (after firewall rules are applied):
 
    ```bash
    curl -X GET "<MODEL_SERVING_ENDPOINT>/v1/models"
@@ -76,27 +76,27 @@ For the complete product documentation, see the [Model Serving guide](https://ip
 
    For sidebar configuration in [Step 7](../07_build_app/), see **Launch the realtime pipeline** in the [Move-It overview](../README.md).
 
-**Test predict with curl:**
+   **Test predict with curl:**
 
-```bash
-curl -X POST \
-  "https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "instances": [
-      {
-        "crop ID": ["Wheat"],
-        "soil_type": ["Black Soil"],
-        "Seedling Stage": ["Germination"],
-        "MOI": [10.0],
-        "temp": [25.0],
-        "humidity": [60.0]
-      }
-    ]
-  }'
-```
+   ```bash
+   curl -X POST \
+     "https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "instances": [
+         {
+           "crop ID": ["Wheat"],
+           "soil_type": ["Black Soil"],
+           "Seedling Stage": ["Germination"],
+           "MOI": [10.0],
+           "temp": [25.0],
+           "humidity": [60.0]
+         }
+       ]
+     }'
+   ```
 
-Example response: `{"predictions": [1]}` — `0` = no irrigation, `1` = irrigate.
+   Example response: `{"predictions": [1]}` — `0` = no irrigation, `1` = irrigate.
 
 </details>
 
