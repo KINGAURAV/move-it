@@ -39,7 +39,7 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
    - Create a new Kafka deployment on the [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/list/kafka) page.
    - **Wait for Ready:** Submit the deployment and wait until the status shows **Ready**.
 
-2. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD`, and `KAFKA_TOPIC` — use the **Access Guide** for credentials. Form `KAFKA_BROKER` as `<IP>:<PORT>`. Then run:
+2. **Create a topic:** Ensure your project root [`.env`](../README.md) includes `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD`, and `KAFKA_TOPIC` — use the **Access Guide** for credentials. Form `KAFKA_BROKER` as `<SERVER_IP>:<PORT>`. Then run:
 
    ```bash
    cd /home/jovyan/move-it

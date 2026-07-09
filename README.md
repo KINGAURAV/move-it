@@ -128,7 +128,7 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME` | **Access Guide** — [Step 1](01_dataset/) (`01_dataset.ipynb`) and [Step 5](05_model_registry/) (`upload_model.py`) |
    | `S3_DATASET_KEY`, `S3_MODEL_KEY` | Defaults in [`.env.example`](.env.example); change only if your team uses different S3 paths |
    | `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD` | [Step 2 — Vayu MLflow](02_vayu_mlflow/) |
-   | `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD` | **Access Guide** — form `KAFKA_BROKER` as `<IP>:<PORT>`; [Step 3](03_vayu_kafka/) (`create_topic.py`) |
+   | `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD` | **Access Guide** — form `KAFKA_BROKER` as `<SERVER_IP>:<PORT>`; [Step 3](03_vayu_kafka/) (`create_topic.py`) |
    | `KAFKA_TOPIC` | Default `greenhouse_telemetry`; topic created in [Step 3](03_vayu_kafka/) |
    | `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, `REGISTRY_PASSWORD`, `VAYU_USERNAME` | **Access Guide** — [Step 8](08_deploy/) (build, sign, push images) |
 
