@@ -79,6 +79,7 @@ Complete [Steps 0–6](../README.md) first. For this step you need:
 
 ```bash
 cd /home/jovyan/move-it
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 pip install -r requirements.txt
 ```
 
@@ -111,6 +112,7 @@ This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/he
 
 ```bash
 cd /home/jovyan/move-it/07_build_app
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
 export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
@@ -126,6 +128,7 @@ Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `
 
 ```bash
 cd /home/jovyan/move-it/07_build_app
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"
 export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"

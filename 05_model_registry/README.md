@@ -40,6 +40,7 @@ Ensure your project root [`.env`](../README.md) includes the S3 variables (`AWS_
 
 ```bash
 cd /home/jovyan/move-it
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 python 05_model_registry/upload_model.py
 ```
 

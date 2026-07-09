@@ -43,6 +43,7 @@ Go to [Vayu Kafka](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms
 
    ```bash
    cd /home/jovyan/move-it
+   source /home/jovyan/.venv/bin/activate  # (skip if already activated)
    python 03_vayu_kafka/create_topic.py
    ```
 

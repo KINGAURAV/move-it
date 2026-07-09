@@ -49,6 +49,7 @@ Sign the ingest image:
 
 ```bash
 cd /home/jovyan/move-it
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 set -a && source .env && set +a
 
 export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
@@ -59,6 +60,7 @@ python 08_deploy/image-signing/sign_image.py sign
 Sign the dashboard image:
 
 ```bash
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-dashboard:latest
 python 08_deploy/image-signing/sign_image.py sign
 ```
@@ -75,6 +77,8 @@ Follow the browser prompt during signing (copy the authorization code when redir
 Repeat per image:
 
 ```bash
+cd /home/jovyan/move-it
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 export IMAGE=$IMAGE_REGISTRY/$REGISTRY_PROJECT/move-it-ingest:latest
 python 08_deploy/image-signing/sign_image.py verify
 ```
