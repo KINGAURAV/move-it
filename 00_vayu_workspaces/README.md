@@ -70,7 +70,7 @@ For the full create wizard (Start → Infrastructure → Configure Compute and S
    ```bash
    cd /home/jovyan/move-it
    cp .env.example .env
-   # Edit .env with credentials from the Access Guide (and Step 2 / Step 6 as you progress)
+   # Edit .env with credentials from the Access Guide (and Step 2 as you progress)
    ```
 
 5. **Select the notebook kernel**

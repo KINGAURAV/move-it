@@ -114,10 +114,10 @@ This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/do
 cd /home/jovyan/move-it/07_build_app
 source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
-# Replace <...> placeholders with your actual values (from move-it/.env or the Access Guide)
-export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
-export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
+# Replace <...> placeholders — Kafka values match root `.env` / Access Guide after Step 3
+export KAFKA_BROKER="<your-kafka-broker-url>"
+export KAFKA_USERNAME="<your-kafka-username>"
+export KAFKA_PASSWORD="<your-kafka-password>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
 python ingestion_api.py
@@ -131,11 +131,11 @@ Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `
 cd /home/jovyan/move-it/07_build_app
 source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
-# Replace <...> placeholders with your actual values (from move-it/.env, Step 6, or the Access Guide)
+# Export before run — app.py does not load root `.env` directly (use shell env or sidebar)
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"
-export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-export KAFKA_USERNAME="<VAYU_KAFKA_USERNAME>"
-export KAFKA_PASSWORD="<VAYU_KAFKA_PASSWORD>"
+export KAFKA_BROKER="<your-kafka-broker-url>"
+export KAFKA_USERNAME="<your-kafka-username>"
+export KAFKA_PASSWORD="<your-kafka-password>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
 # Predict URL from Step 6 (required for simulation) — get <MODEL_ID> via curl .../v1/models (see Step 6)
@@ -153,7 +153,9 @@ When local testing works, continue to [Step 8](../08_deploy/) to build, sign, an
 ---
 
 <details>
-<summary><h3>🔑 Environment variables</h3></summary>
+<summary><h3>🔑 Environment variables (shell export)</h3></summary>
+
+Set these with `export` in the terminal before running — not in root `.env`. (`kafka_config.py` loads Kafka vars from `.env` when imported, but the commands below export them explicitly for clarity.)
 
 | Variable | Required | Default | Used by | Purpose |
 |----------|----------|---------|---------|---------|
@@ -164,8 +166,9 @@ When local testing works, continue to [Step 8](../08_deploy/) to build, sign, an
 | `KAFKA_TOPIC` | No | `greenhouse_telemetry` | ingest + dashboard | Telemetry topic (created by `create_topic.py`) |
 | `INGEST_API_URL` | No | `http://127.0.0.1:5000/ingest` | dashboard | Simulator POST target |
 | `PORT` | No | `5000` | ingestion API | Ingest listen port |
+| `VAYU_PREDICT_HOST`, `VAYU_MODEL_NAME` | No | — | dashboard | Optional — pre-fill sidebar instead of `PREDICT_URL` |
 
-For local testing, **Predict host** and **Model name** (`<MODEL_ID>`) in the sidebar can be used instead of `PREDICT_URL` when the env var is not set. Get `<MODEL_ID>` from [Step 6](../06_deploy_model/).
+For local testing, **Predict host** and **Model name** (`<MODEL_ID>`) in the sidebar can be used instead of `PREDICT_URL` when that export is not set. Get `<MODEL_ID>` from [Step 6](../06_deploy_model/).
 
 </details>
 

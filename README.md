@@ -91,12 +91,12 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    cp .env.example .env
    ```
 
-   Open `.env` and replace placeholders with your values. You can copy **S3**, **Kafka**, and **Container Registry** credentials from the **Access Guide** as soon as you have it; add **MLflow** after [Step 2](02_vayu_mlflow/) and **Model Serving** after [Step 6](06_deploy_model/). Python scripts and notebooks load this file automatically via `load_dotenv`. Do not commit `.env` to git.
+   Open `.env` and replace `<...>` placeholders with your values. The template in [`.env.example`](.env.example) is grouped by step — copy **S3**, **Kafka**, and **Container Registry** from the **Access Guide** as soon as you have it; add **MLflow** after [Step 2](02_vayu_mlflow/). Scripts and notebooks load this file via `load_dotenv`. For [Step 7](07_build_app/) (`app.py`, `ingestion_api.py`), set predict and ingest URLs with `export` in the terminal — see that step’s README. Do not commit `.env` to git.
 
-   **Example** (replace `<...>` placeholders with your real values):
+   **Example** (same shape as [`.env.example`](.env.example)):
 
    ```bash
-   # Vayu Object Storage (S3) — Access Guide
+   # --- Vayu Object Storage (S3) — Step 1 ---
    AWS_ACCESS_KEY_ID=<your-access-key>
    AWS_SECRET_ACCESS_KEY=<your-secret-key>
    S3_ENDPOINT=<your-s3-endpoint>
@@ -104,22 +104,18 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    S3_DATASET_KEY=cropdata.csv
    S3_MODEL_KEY=move-it/model.joblib
 
-   # Vayu MLflow — Step 2 Connect page (Public Endpoint + auth)
+   # --- Vayu MLflow — Step 2 ---
    MLFLOW_TRACKING_URL=https://<your-mlflow-host>
    MLFLOW_TRACKING_USERNAME=<your-username>
    MLFLOW_TRACKING_PASSWORD=<your-password>
 
-   # Vayu Kafka — Access Guide (<IP>:<PORT>)
+   # --- Vayu Kafka — Step 3 ---
    KAFKA_BROKER=<your-kafka-broker-url>
    KAFKA_USERNAME=<your-kafka-username>
    KAFKA_PASSWORD=<your-kafka-password>
    KAFKA_TOPIC=greenhouse_telemetry
 
-   # Vayu Model Serving — Step 6 Connect page (after deployment is Ready)
-   PREDICT_URL=https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict
-
-   # Vayu Container Registry — Access Guide (Step 8 build / sign / deploy)
-   # Host only — no https://, http://, or trailing /
+   # --- Vayu Container Registry — Step 8 ---
    IMAGE_REGISTRY=<your-image-registry>
    REGISTRY_PROJECT=<your-registry-project>
    REGISTRY_USERNAME=<container-registry-username>
@@ -129,15 +125,12 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    | Variable(s) | Where to get them |
    |-------------|-------------------|
-   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME` | **Access Guide** — used in [Step 1](01_dataset/) (`01_dataset.ipynb`) and [Step 5](05_model_registry/) (`upload_model.py`) |
+   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME` | **Access Guide** — [Step 1](01_dataset/) (`01_dataset.ipynb`) and [Step 5](05_model_registry/) (`upload_model.py`) |
    | `S3_DATASET_KEY`, `S3_MODEL_KEY` | Defaults in [`.env.example`](.env.example); change only if your team uses different S3 paths |
-   | `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD` | [Step 2 — Vayu MLflow](02_vayu_mlflow/) — deployment **Connect** page (**Public Endpoint** + credentials you set at create time) |
-   | `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD` | **Access Guide** — form `KAFKA_BROKER` as `<IP>:<PORT>`; used in [Step 3](03_vayu_kafka/) (`create_topic.py`) and [Step 7](07_build_app/) |
+   | `MLFLOW_TRACKING_URL`, `MLFLOW_TRACKING_USERNAME`, `MLFLOW_TRACKING_PASSWORD` | [Step 2 — Vayu MLflow](02_vayu_mlflow/) — **Connect** page (**Public Endpoint** + credentials set at create time) |
+   | `KAFKA_BROKER`, `KAFKA_USERNAME`, `KAFKA_PASSWORD` | **Access Guide** — form `KAFKA_BROKER` as `<IP>:<PORT>`; [Step 3](03_vayu_kafka/) (`create_topic.py`) |
    | `KAFKA_TOPIC` | Default `greenhouse_telemetry`; topic created in [Step 3](03_vayu_kafka/) |
-   | `PREDICT_URL` | [Step 6 — Model Serving](06_deploy_model/) — **Public Endpoint** from **Connect** + `<MODEL_ID>` from `curl .../v1/models` (see quick-start step 5 below) |
-   | `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, `REGISTRY_PASSWORD`, `VAYU_USERNAME` | **Access Guide** — used in [Step 8](08_deploy/) (build, sign, push images) |
-
-   **Optional (dashboard only):** Instead of `PREDICT_URL`, you can set `VAYU_PREDICT_HOST` (base URL without `/v1`) and `VAYU_MODEL_NAME` (`<MODEL_ID>`) — see [Step 7](07_build_app/). Sidebar fields work too when running locally.
+   | `IMAGE_REGISTRY`, `REGISTRY_PROJECT`, `REGISTRY_USERNAME`, `REGISTRY_PASSWORD`, `VAYU_USERNAME` | **Access Guide** — [Step 8](08_deploy/) (build, sign, push images) |
 
    For `IMAGE_REGISTRY`, use the registry **hostname only** (e.g. `image-registry-....cloudservices.tatacommunications.com`) — no `https://`, `http://`, or trailing `/`.
 
@@ -185,22 +178,21 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
    curl -X GET "<MODEL_SERVING_ENDPOINT>/v1/models"
    ```
 
-   Sample output `{"models":["model"]}` — the id here is `model`. Set the full predict URL in `move-it/.env`:
-
-   ```bash
-   cd /home/jovyan/move-it
-   # Edit .env and set:
-   # PREDICT_URL=https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict
-   ```
+   Sample output `{"models":["model"]}` — the id here is `model`. You will `export` the predict URL when starting the dashboard in step 6 below (or set it in the Streamlit sidebar).
 
 6. **Run the realtime pipeline** (`07_build_app/`)
 
-   Start both processes from your workspace terminal. `ingestion_api.py` and `app.py` load `move-it/.env` automatically (Kafka, `PREDICT_URL`, and other vars).
+   Start both processes from your workspace terminal. Export runtime variables in each terminal — `app.py` and `ingestion_api.py` do not use `load_dotenv` directly. Kafka settings are read via `kafka_config.py` (which loads root `.env`); for local runs, the Step 7 README also shows explicit `export` commands.
 
    **Terminal 1 — ingestion API**
 
    ```bash
    cd /home/jovyan/move-it/07_build_app
+   source /home/jovyan/.venv/bin/activate  # (skip if already activated)
+   export KAFKA_BROKER="<your-kafka-broker-url>"
+   export KAFKA_USERNAME="<your-kafka-username>"
+   export KAFKA_PASSWORD="<your-kafka-password>"
+   export KAFKA_TOPIC="greenhouse_telemetry"
    python ingestion_api.py
    ```
 
@@ -208,20 +200,26 @@ Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the 
 
    ```bash
    cd /home/jovyan/move-it/07_build_app
+   source /home/jovyan/.venv/bin/activate  # (skip if already activated)
    export INGEST_API_URL="http://127.0.0.1:5000/ingest"
+   export KAFKA_BROKER="<your-kafka-broker-url>"
+   export KAFKA_USERNAME="<your-kafka-username>"
+   export KAFKA_PASSWORD="<your-kafka-password>"
+   export KAFKA_TOPIC="greenhouse_telemetry"
+   export PREDICT_URL="https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict"
    streamlit run app.py
    ```
 
-   Point the dashboard at Model Serving — pick **one** option below (`PREDICT_URL` in `.env` overrides sidebar values if both are set).
+   Point the dashboard at Model Serving — pick **one** option below.
 
    **Option A — Sidebar (host + model name)**  
    Set **Predict host** to the endpoint **without** the trailing `/v1` (e.g. `https://<MODEL_SERVING_ENDPOINT>`) and **Model name** (`<MODEL_ID>`) in the sidebar. The dashboard builds `https://<...>/v1/models/<MODEL_ID>:predict`.
 
-   **Option B — Full predict URL (sidebar or `.env`)**  
-   Paste the complete `:predict` URL into **Predict host** (e.g. `https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict`) — **Model name** is ignored when the host already ends with `:predict`. Or set `PREDICT_URL` in `.env` (sidebar fields are then ignored).
+   **Option B — Export `PREDICT_URL`**  
+   `export PREDICT_URL=...` before `streamlit run` (as in Terminal 2 above). Sidebar predict fields are ignored when this is set.
 
-   **Option C — `.env` defaults (host + model name)**  
-   Set `VAYU_PREDICT_HOST` and `VAYU_MODEL_NAME` in `.env` — equivalent to Option A’s sidebar fields: `VAYU_PREDICT_HOST` = **Predict host** (base URL without `/v1`) and `VAYU_MODEL_NAME` = **Model name** (`<MODEL_ID>` from `/v1/models`). These pre-fill the sidebar; you can still edit the fields before starting simulation.
+   **Option C — Export host + model name**  
+   `export VAYU_PREDICT_HOST=...` and `export VAYU_MODEL_NAME=<MODEL_ID>` to pre-fill the sidebar instead of `PREDICT_URL`.
 
    > **Tip:** The Model Serving UI often copies only through `/v1` (e.g. `https://<MODEL_SERVING_ENDPOINT>/v1`). For Option A or C, drop the `/v1` suffix from the host; for Option B, append `/models/<MODEL_ID>:predict` to the copied **Public Endpoint**. Get `<MODEL_ID>` from `curl -X GET .../v1/models` — see [Step 6](06_deploy_model/) or the **Model Serving** section above.
 
