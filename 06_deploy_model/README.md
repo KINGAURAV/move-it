@@ -52,11 +52,11 @@ For the complete product documentation, see the [Model Serving guide](https://ip
    - **Framework:** **sklearn**
    - **Model and version:** Select the model and version you registered in [Step 5](../05_model_registry/).
    - **Configure compute and storage (recommended):** On the **Configure Compute and Storage** step:
-     - **Flavor:** Select **4 vCPU / 16GB RAM / cpu** from the **General Purpose** flavors (choose **cpu** from the dropdown).
+     - **Flavor:** Select **8 vCPU / 32GB RAM / cpu** from the **General Purpose** flavors (choose **cpu** from the dropdown).
      - **Billing Mode:** **Hourly**
      - **Storage Flavor:** **SSD1-Persistent Storage**
      - **Billing Mode for Storage:** **Monthly**
-     - **Size:** **5 GiB**
+     - **Size:** **50 GiB**
      - **Volume Mode:** **Dedicated** (replicas are set to **1** automatically when you select this)
 
      Change these if your workload needs more resources.

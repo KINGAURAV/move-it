@@ -17,7 +17,7 @@
 
 ## 🗺️ Journey at a glance
 
-Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the **Container Registry** are provided in the **Access Guide**.
+Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, **Vayu Postgres** (used when deploying MLflow), and the **Container Registry** are provided in the **Access Guide**.
 
 | Step | Vayu service | Folder | Role in the stack | How you wire it up |
 |------|--------------|--------|-------------------|--------------------|
@@ -67,7 +67,7 @@ move-it/
 
 ### Minimal run
 
-Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, and the **Container Registry** are provided in the **Access Guide**.
+Shared service credentials for **Vayu Object Storage**, **Vayu Kafka**, **Vayu Postgres** (used when deploying MLflow), and the **Container Registry** are provided in the **Access Guide**.
 
 1. **Set up the environment**
 
