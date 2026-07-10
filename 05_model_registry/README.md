@@ -1,40 +1,46 @@
-# Step 5 — Model Registry
+# 🗂️ Step 5 — Model Registry
 
 **Move-It** › **Vayu Model Registry** · `05_model_registry/`
 
-| | |
-|---|---|
-| **⬅ Previous** | [Step 4 — Starter Kit](../04_starter-kit/) |
-| **Next ➡**     | [Step 6 — Deploy Model →](../06_deploy_model/) |
+| [← Previous — Step 4 — Starter Kit](../04_starter-kit/) | [Next — Step 6 — Deploy Model →](../06_deploy_model/) |
+|:---|---:|
 
 Upload your trained `model.joblib` from [Step 4](../04_starter-kit/) to **Vayu Object Storage**, then register it in the **Vayu Model Registry** so it can be deployed via Model Serving.
 
 ---
 
-## Open Model Registry
+<details>
+<summary><h3>🔗 Open Model Registry</h3></summary>
 
 Go to [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list).
 
 For the full registration wizard (Start → Model Configuration → Object Storage → Review), see the [Creating Model Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-registry/#creating-model-registry).
 
+</details>
+
 ---
 
-## Folder Contents
+<details>
+<summary><h3>📂 Folder contents</h3></summary>
 
 | File | Purpose |
 |------|---------|
 | `upload_model.py` | Upload `04_starter-kit/model.joblib` to S3 |
 
+</details>
+
 ---
 
-## Quick Start
+<details>
+<summary><h3>🚀 Quick start</h3></summary>
 
-### 1. Upload `model.joblib` to S3
+#### 1. Upload `model.joblib` to S3
 
 Ensure your project root [`.env`](../README.md) includes the S3 variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_ENDPOINT`, `S3_BUCKET_NAME`, and `S3_MODEL_KEY`) from the **Access Guide**. Then run:
 
 ```bash
 cd /home/jovyan/move-it
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 python 05_model_registry/upload_model.py
 ```
 
@@ -42,7 +48,7 @@ python 05_model_registry/upload_model.py
 
 **Verify the upload:** Open [Vayu Cloud Storage](https://ipcloud.tatacommunications.com/cloud/console/vcs/#/vcs/s3-browser), select the bucket named in `S3_BUCKET_NAME`, then navigate to the path in `S3_MODEL_KEY` (for example, `move-it/model.joblib` → open the `move-it` folder and confirm `model.joblib` is present).
 
-### 2. Register the model
+#### 2. Register the model
 
 On the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/deploy/model-registry-list) page. Follow the [Creating Model Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/model-registry/#creating-model-registry) for step-by-step wizard details:
 
@@ -57,12 +63,9 @@ On the [Vayu Model Registry](https://ipcloud.tatacommunications.com/aistudio/#/d
 
 5. **Verify:** Confirm the registered model appears in the registry and is ready for deployment.
 
+</details>
+
 ---
 
-## Navigation
-
-| | |
-|---|---|
-| **⬅ Previous** | [Step 4 — Starter Kit](../04_starter-kit/) |
-| **Next ➡**     | [Step 6 — Deploy Model →](../06_deploy_model/) |
-| **🏠 Overview** | [Move-It overview](../README.md) |
+| [← Previous — Step 4 — Starter Kit](../04_starter-kit/) | [Overview](../README.md) | [Next — Step 6 — Deploy Model →](../06_deploy_model/) |
+|:---|:---:|---:|

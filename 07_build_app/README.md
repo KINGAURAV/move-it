@@ -1,17 +1,16 @@
-# Step 7 — Build App (Realtime Dashboard)
+# 🖥️ Step 7 — Build App (Realtime Dashboard)
 
 **Move-It** › **Streamlit Dashboard** · `07_build_app/`
 
-| | |
-|---|---|
-| **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
-| **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
+| [← Previous — Step 6 — Deploy Model](../06_deploy_model/) | [Next — Step 8 — Deploy →](../08_deploy/) |
+|:---|---:|
 
 Run the **full real-time pipeline** locally, then continue to [Step 8](../08_deploy/) to build, sign, and deploy Docker images as two separate ML Services (ingest first, dashboard second).
 
 ---
 
-## Pipeline flow
+<details>
+<summary><h3>🗺️ Pipeline flow</h3></summary>
 
 ```text
 Start Simulation (app.py)
@@ -32,11 +31,14 @@ HTTP POST → Vayu Model Serving (predict URL from Step 6)
 Live dashboard (Streamlit, port 8501)
 ```
 
+</details>
+
 ---
 
-## What each file does
+<details>
+<summary><h3>🧩 What each file does</h3></summary>
 
-### `ingestion_api.py` — HTTP → Kafka gateway
+#### `ingestion_api.py` — HTTP → Kafka gateway
 
 A small **FastAPI** service that receives sensor readings and publishes them to **Vayu Kafka**.
 
@@ -44,26 +46,29 @@ A small **FastAPI** service that receives sensor readings and publishes them to 
 |----------|---------|
 | `POST /ingest` | Accept `{temp, humidity, MOI, timestamp?}` and publish to Kafka |
 | `GET /health` | Health check (broker + topic) |
-| `GET /docs` | Swagger UI |
+| `GET /docs` | Swagger UI (API docs) |
 
 It does **not** run ML or show a UI. Think: **HTTP in → Kafka out**.
 
 Runs on port **5000** by default (`PORT` env var).
 
-### `app.py` — Dashboard + simulator + Model Serving client
+#### `app.py` — Dashboard + simulator + Model Serving client
 
 The **Streamlit** app users interact with. It does four things:
 
-### Dockerfiles
+#### Dockerfiles
 
 | File | Deploy as | Port | Contents |
 |------|-----------|------|----------|
 | `Dockerfile.ingest` | **ML Service 1** — ingest API | **5000** | `ingestion_api.py`, `kafka_config.py` |
 | `Dockerfile.dashboard` | **ML Service 2** — dashboard | **8501** | `app.py`, `kafka_config.py`, `cropdata.csv` |
 
+</details>
+
 ---
 
-## Prerequisites
+<details>
+<summary><h3>📋 Prerequisites</h3></summary>
 
 Complete [Steps 0–6](../README.md) first. For this step you need:
 
@@ -74,18 +79,22 @@ Complete [Steps 0–6](../README.md) first. For this step you need:
 
 ```bash
 cd /home/jovyan/move-it
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 pip install -r requirements.txt
 ```
 
+</details>
+
 ---
 
-## Run locally (two terminals)
+<details>
+<summary><h3>🚀 Run locally (two terminals)</h3></summary>
 
 Both processes must run together.
 
 **Terminal 1 — Ingestion API**
 
-When running inside a **Vayu AI Studio workspace** (ingest exposed via the workspace port proxy), edit [`ingestion_api.py`](ingestion_api.py) **lines 65–70** — replace the existing `FastAPI(...)` block with:
+When running inside a **Vayu AI Studio workspace** (ingest exposed via the workspace port proxy), edit [`ingestion_api.py`](ingestion_api.py) **lines 66–71** — replace the existing `FastAPI(...)` block with:
 
 ```python
 app = FastAPI(
@@ -97,16 +106,18 @@ app = FastAPI(
 )
 ```
 
-The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` on line 69.
+The only change is adding `root_path="/proxy/5000",` after `lifespan=lifespan,` on line 70.
 
-This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
+This is required so routes work behind the workspace proxy (e.g. `/proxy/5000/docs`, `/proxy/5000/health`, `/proxy/5000/ingest`). Skip `root_path` if you are hitting the API directly on `127.0.0.1:5000`.
 
 ```bash
 cd /home/jovyan/move-it/07_build_app
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
-export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-export KAFKA_USER="<VAYU_KAFKA_USER>"
-export KAFKA_PASS="<VAYU_KAFKA_PASS>"
+# Replace <...> placeholders — Kafka values match root `.env` / Access Guide after Step 3
+export KAFKA_BROKER="<your-kafka-broker-url>"
+export KAFKA_USERNAME="<your-kafka-username>"
+export KAFKA_PASSWORD="<your-kafka-password>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
 python ingestion_api.py
@@ -118,59 +129,67 @@ Verify: `curl http://127.0.0.1:5000/health` (or your workspace proxy URL, e.g. `
 
 ```bash
 cd /home/jovyan/move-it/07_build_app
+source /home/jovyan/.venv/bin/activate  # (skip if already activated)
 
+# Export before run — app.py does not load root `.env` directly (use shell env or sidebar)
 export INGEST_API_URL="http://127.0.0.1:5000/ingest"
-export KAFKA_BROKER="<VAYU_KAFKA_BROKER>"
-export KAFKA_USER="<VAYU_KAFKA_USER>"
-export KAFKA_PASS="<VAYU_KAFKA_PASS>"
+export KAFKA_BROKER="<your-kafka-broker-url>"
+export KAFKA_USERNAME="<your-kafka-username>"
+export KAFKA_PASSWORD="<your-kafka-password>"
 export KAFKA_TOPIC="greenhouse_telemetry"
 
-# Predict URL from Step 6 (required for simulation)
-export PREDICT_URL="http://<host>:<port>/v1/models/<model-name>:predict"
+# Predict URL from Step 6 (required for simulation) — get <MODEL_ID> via curl .../v1/models (see Step 6)
+export PREDICT_URL="https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict"
 
 streamlit run app.py
 ```
 
-Open the URL Streamlit prints (usually `http://localhost:8501`). You can also set **Predict host** and **Model name** in the sidebar instead of `PREDICT_URL`, then click **Start Simulation**.
+Open the URL Streamlit prints (usually `http://localhost:8501`). You can also set **Predict host** and **Model name** (`<MODEL_ID>`) in the sidebar instead of `PREDICT_URL`, then click **Start Simulation**.
 
 When local testing works, continue to [Step 8](../08_deploy/) to build, sign, and push the Docker images.
 
+</details>
+
 ---
 
-## Environment variables
+<details>
+<summary><h3>🔑 Environment variables (shell export)</h3></summary>
+
+Set these with `export` in the terminal before running — not in root `.env`. (`kafka_config.py` loads Kafka vars from `.env` when imported, but the commands below export them explicitly for clarity.)
 
 | Variable | Required | Default | Used by | Purpose |
 |----------|----------|---------|---------|---------|
-| `PREDICT_URL` | **Yes** | — | dashboard | Model Serving predict URL from [Step 6](../06_deploy_model/) |
-| `KAFKA_BROKER` | **Yes** | — | ingest + dashboard | Kafka bootstrap servers |
-| `KAFKA_USER` | **Yes** | — | ingest + dashboard | Kafka SASL username |
-| `KAFKA_PASS` | **Yes** | — | ingest + dashboard | Kafka SASL password |
-| `KAFKA_TOPIC` | No | `greenhouse_telemetry` | ingest + dashboard | Telemetry topic |
+| `PREDICT_URL` | Yes | — | dashboard | Model Serving predict URL from [Step 6](../06_deploy_model/) |
+| `KAFKA_BROKER` | Yes | — | ingest + dashboard | Kafka bootstrap servers |
+| `KAFKA_USERNAME` | Yes | — | ingest + dashboard | Kafka SASL username |
+| `KAFKA_PASSWORD` | Yes | — | ingest + dashboard | Kafka SASL password |
+| `KAFKA_TOPIC` | No | `greenhouse_telemetry` | ingest + dashboard | Telemetry topic (created by `create_topic.py`) |
 | `INGEST_API_URL` | No | `http://127.0.0.1:5000/ingest` | dashboard | Simulator POST target |
 | `PORT` | No | `5000` | ingestion API | Ingest listen port |
+| `VAYU_PREDICT_HOST`, `VAYU_MODEL_NAME` | No | — | dashboard | Optional — pre-fill sidebar instead of `PREDICT_URL` |
 
-For local testing, **Predict host** and **Model name** in the sidebar can be used instead of `PREDICT_URL` when the env var is not set.
+For local testing, **Predict host** and **Model name** (`<MODEL_ID>`) in the sidebar can be used instead of `PREDICT_URL` when that export is not set. Get `<MODEL_ID>` from [Step 6](../06_deploy_model/).
+
+</details>
 
 ---
 
-## Troubleshooting
+<details>
+<summary><h3>🛠️ Troubleshooting</h3></summary>
 
 | Symptom | Fix |
 |---------|-----|
-| Sidebar shows **Kafka: Disconnected** | Check `KAFKA_BROKER` / `KAFKA_USER` / `KAFKA_PASS`; confirm topic exists |
-| **Set predict host/model or PREDICT_URL** | Set `PREDICT_URL` or fill **Predict host** + **Model name** in the sidebar |
+| Sidebar shows **Kafka: Disconnected** | Check `KAFKA_BROKER` / `KAFKA_USERNAME` / `KAFKA_PASSWORD`; confirm topic exists |
+| **Set predict host/model name or PREDICT_URL** | Set `PREDICT_URL` or fill **Predict host** + **Model name** (`<MODEL_ID>`) in the sidebar |
 | Prediction errors | Confirm Model Serving is **Ready** and the predict URL from [Step 6](../06_deploy_model/) is correct |
 | Simulation errors / JSON parse failures | Set `INGEST_API_URL` to the correct ingest URL; in a workspace, use the proxy path (e.g. `.../proxy/5000/ingest`) and ensure `root_path="/proxy/5000"` is set on the FastAPI app |
 | Ingest logs missing but Streamlit says "Sent" | Start `ingestion_api.py` first |
 | UI stuck on "Waiting" | Click **Start Simulation**; check sidebar **Buffered predictions** |
 | Preprocessing error | Ensure `01_dataset/cropdata.csv` exists (included in Docker image) |
 
+</details>
+
 ---
 
-## Navigation
-
-| | |
-|---|---|
-| **Previous** | [Step 6 — Deploy Model](../06_deploy_model/) |
-| **Next** | [Step 8 — Deploy to Vayu →](../08_deploy/) |
-| **Overview** | [Move-It overview](../README.md) |
+| [← Previous — Step 6 — Deploy Model](../06_deploy_model/) | [Overview](../README.md) | [Next — Step 8 — Deploy →](../08_deploy/) |
+|:---|:---:|---:|

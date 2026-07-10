@@ -1,23 +1,21 @@
-# Step 8 — Deploy Move-It (Two ML Services)
+# ☁️ Step 8 — Deploy Move-It (Two ML Services)
 
-**Move-It** › **Vayu ML Service** · `07_build_app/`
+**Move-It** › **Vayu ML Service** · `08_deploy/`
 
-| | |
-|---|---|
-| **⬅ Previous** | [Step 7 — Build app](../07_build_app/) |
-| **🏁 Next** | — (journey complete) |
-| **🏠 Overview** | [Move-It overview](../README.md) |
+| [← Previous — Step 7 — Build App](../07_build_app/) | Journey complete |
+|:---|---:|
 
-Deploy the **Move-It dashboard** (Streamlit + co-located ingest API) to the **Vayu platform** as an **ML Service**. After deployment you get a **public URL** where judges can run the built-in simulator, see live telemetry, and watch irrigation predictions from your **Vayu Model Serving** endpoint.
+Deploy the **Move-It dashboard** (Streamlit + co-located ingest API) to the **Vayu platform** as an **ML Service**. After deployment you get a **Public Endpoint** where judges can run the built-in simulator, see live telemetry, and watch irrigation predictions from your **Vayu Model Serving** endpoint.
 
-1. **Ingest API** (`ingestion_api.py`) — HTTP → Kafka  
-2. **Dashboard** (`app.py`) — simulator, Kafka consumer, Model Serving client, Streamlit UI  
+1. **Ingest API** (`ingestion_api.py`) — HTTP → Kafka
+2. **Dashboard** (`app.py`) — simulator, Kafka consumer, Model Serving client, Streamlit UI
 
-Deploy **ingest first**, copy its public URL, then deploy the dashboard with `INGEST_API_URL` pointing at it.
+Deploy **ingest first**, copy its **Public Endpoint**, then deploy the dashboard with `INGEST_API_URL` pointing at it.
 
 ---
 
-## Architecture
+<details>
+<summary><h3>🗺️ Architecture</h3></summary>
 
 ```text
 ML Service 2 — Dashboard (:8501)     app.py · simulator
@@ -43,9 +41,12 @@ Vayu Model Serving (Step 6)
 | **move-it-ingest** | `Dockerfile.ingest` | **5000** | **Python3** (CMD runs uvicorn) |
 | **move-it-dashboard** | `Dockerfile.dashboard` | **8501** | **Streamlit** |
 
+</details>
+
 ---
 
-## Prerequisites
+<details>
+<summary><h3>📋 Prerequisites</h3></summary>
 
 | Step | Folder | You need |
 |------|--------|----------|
@@ -56,17 +57,23 @@ Vayu Model Serving (Step 6)
 
 **Before Step 8:** Run locally with two terminals ([Step 7](../07_build_app/README.md)) and confirm **Start Simulation** works.
 
+</details>
+
 ---
 
-## Folder Contents
+<details>
+<summary><h3>📂 Folder contents</h3></summary>
 
 | File / folder | Purpose |
 |---------------|---------|
 | [`image-signing/`](image-signing/) | Optional automated signing guide and [`sign_image.py`](image-signing/sign_image.py) |
 
+</details>
+
 ---
 
-## Step 1 — Build and push both images
+<details>
+<summary><h3>📦 Step 1 — Build and push both images</h3></summary>
 
 Build context **must** be `move-it/` (not `07_build_app/`). You build **two images** — one per ML Service:
 
@@ -89,9 +96,12 @@ Re-run `set -a && source .env && set +a` (and the `docker login` line that follo
 
 *If you push a new tag, the **previous tag must be signed before** you push the new one. See **Step 2** below for signing instructions.*
 
+</details>
+
 ---
 
-## Step 2 — Sign both images
+<details>
+<summary><h3>✍️ Step 2 — Sign both images</h3></summary>
 
 Vayu ML Services require **signed** container images. Sign **each** image after push — repeat for ingest and dashboard.
 
@@ -102,19 +112,41 @@ Follow the [Container Registry guide](https://ipcloud.tatacommunications.com/doc
 
 **Optional:** use the [automated image signing guide](image-signing/README.md).
 
+**Verify signatures in the Container Registry**
+
+1. Open [Vayu Container Registry](https://ipcloud.tatacommunications.com/cloud/console/vks/#/ms/vayucontainerregistry) and log in using your **Vayu credentials**.
+2. Under **Project Name**, select the appropriate project (named in the **Access Guide**).
+3. On the project overview page, click **View Dashboard**.
+4. Open the **`move-it-ingest`** and **`move-it-dashboard`** repositories.
+5. Confirm both `move-it-ingest:latest` and `move-it-dashboard:latest` show ✅ under **Signed**. If you see ❌, the image is not signed — repeat **Step 2 — Sign both images** before deploying.
+
+**Ingest image (`move-it-ingest:latest`):**
+
+<img src="../assets/ingest_img_signed.png" alt="Ingest image signed in the Container Registry" width="500">
+
+**Dashboard image (`move-it-dashboard:latest`):**
+
+<img src="../assets/dashboard_img_signed.png" alt="Dashboard image signed in the Container Registry" width="500">
+
+</details>
+
 ---
 
-## Step 3 — Open Vayu ML Services
+<details>
+<summary><h3>🔗 Step 3 — Open Vayu ML Services</h3></summary>
 
 Go to [Vayu ML Services](https://ipcloud.tatacommunications.com/aistudio/#/deploy/mlops-service-list).
 
 For the full create wizard (Start → Infrastructure → Configure Compute → Observability → Review), see the [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service).
 
+</details>
+
 ---
 
-## Phase A — Deploy ingest API (first)
+<details>
+<summary><h3>🅰️ Phase A — Deploy ingest API (first)</h3></summary>
 
-### A.1 Start — image and runtime
+#### A.1 Start — image and runtime
 
 | Field | Value |
 |-------|-------|
@@ -122,37 +154,63 @@ For the full create wizard (Start → Infrastructure → Configure Compute → O
 | **Framework** | **Python3** |
 | **Image** | `<image-registry>/<project>/move-it-ingest:latest` |
 | **Port** | **5000** |
-| **Public Expose** | **Enable** |
 
-### A.2 Environment variables
+#### A.2 Public Expose
+
+Enable **Public Expose** in the ML Service wizard.
+
+#### A.3 Environment variables
 
 | Key | Required |
 |-----|----------|
 | `KAFKA_BROKER` | Yes |
-| `KAFKA_USER` | Yes |
-| `KAFKA_PASS` | Yes |
+| `KAFKA_USERNAME` | Yes |
+| `KAFKA_PASSWORD` | Yes |
 | `KAFKA_TOPIC` | No (default `greenhouse_telemetry`) |
 
-### A.3 Verify ingest
+#### A.4 Configure compute (recommended)
 
-When status is **Ready**, note the **Public URL** (call it `<INGEST_PUBLIC_URL>`).
+On the **Configure Compute** step:
+
+| Field | Recommended value |
+|-------|-------------------|
+| **Flavor** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavors (choose **cpu** from the dropdown) |
+| **Billing Mode** | **Hourly** |
+| **Replicas** | **1** |
+
+Change these if your workload needs more resources.
+
+#### A.5 Firewall rules
+
+After the ingest ML Service is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
+
+#### A.6 Note the ingest endpoint
+
+When status is **Ready**, open the **Connect** tab on the ingest ML Service detail page and **copy** the **Public Endpoint** (call it `<INGEST_ENDPOINT>`).
+
+Set **`INGEST_API_URL=<INGEST_ENDPOINT>/ingest`** for Phase B (include the `/ingest` path).
+
+#### A.7 Verify ingest
+
+After firewall rules are applied, test the public endpoint:
 
 ```bash
-curl -s "<INGEST_PUBLIC_URL>/health"
-curl -s -X POST "<INGEST_PUBLIC_URL>/ingest" \
+curl -s "<INGEST_ENDPOINT>/health"
+curl -s -X POST "<INGEST_ENDPOINT>/ingest" \
   -H "Content-Type: application/json" \
   -d '{"temp": 25.0, "humidity": 60.0, "MOI": 10.0}'
 ```
 
-Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_PUBLIC_URL>/docs`.
+Both should return JSON with `"status": "ok"`. Swagger UI: `<INGEST_ENDPOINT>/docs`.
 
-Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/ingest` path).
+</details>
 
 ---
 
-## Phase B — Deploy dashboard (second)
+<details>
+<summary><h3>🅱️ Phase B — Deploy dashboard (second)</h3></summary>
 
-### B.1 Start — image and runtime
+#### B.1 Start — image and runtime
 
 | Field | Value |
 |-------|-------|
@@ -160,70 +218,116 @@ Set **`INGEST_API_URL=<INGEST_PUBLIC_URL>/ingest`** for Phase B (include the `/i
 | **Framework** | **Streamlit** |
 | **Image** | `<image-registry>/<project>/move-it-dashboard:latest` |
 | **Port** | **8501** |
-| **Public Expose** | **Enable** |
 
-### B.2 Environment variables
+#### B.2 Public Expose
+
+Enable **Public Expose** in the ML Service wizard.
+
+#### B.3 Environment variables
 
 | Key | Required | Description |
 |-----|----------|-------------|
-| `INGEST_API_URL` | **Yes** | Phase A URL, e.g. `https://<ingest-host>/ingest` |
+| `INGEST_API_URL` | **Yes** | Phase A **Public Endpoint**, e.g. `https://<INGEST_ENDPOINT>/ingest` |
 | `PREDICT_URL` | **Yes** | From [Step 6](../06_deploy_model/) |
 | `KAFKA_BROKER` | Yes | Same broker as ingest |
-| `KAFKA_USER` | Yes | |
-| `KAFKA_PASS` | Yes | |
+| `KAFKA_USERNAME` | Yes | |
+| `KAFKA_PASSWORD` | Yes | |
 | `KAFKA_TOPIC` | No | Default `greenhouse_telemetry` |
 
 **Example:**
 
 ```text
-INGEST_API_URL=https://<INGEST_PUBLIC_HOST>/ingest
-PREDICT_URL=http://<INGRESS_HOST>:<PORT>/v1/models/<MODEL_NAME>:predict
+INGEST_API_URL=https://<INGEST_ENDPOINT>/ingest
+PREDICT_URL=https://<MODEL_SERVING_ENDPOINT>/v1/models/<MODEL_ID>:predict
 KAFKA_BROKER=<VAYU_KAFKA_BROKER>
-KAFKA_USER=<VAYU_KAFKA_USER>
-KAFKA_PASS=<VAYU_KAFKA_PASS>
+KAFKA_USERNAME=<VAYU_KAFKA_USERNAME>
+KAFKA_PASSWORD=<VAYU_KAFKA_PASSWORD>
 KAFKA_TOPIC=greenhouse_telemetry
 ```
 
-### B.3 Infrastructure
+#### B.4 Configure compute (recommended)
 
-| Field | Guidance |
-|-------|----------|
-| **Resources** | CPU is sufficient |
-| **Replicas** | `1` for demo |
+On the **Configure Compute** step:
+
+| Field | Recommended value |
+|-------|-------------------|
+| **Flavor** | **4 vCPU / 16GB RAM / cpu** from **General Purpose** flavors (choose **cpu** from the dropdown) |
+| **Billing Mode** | **Hourly** |
+| **Replicas** | **1** |
+
+Change these if your workload needs more resources.
+
+#### B.5 Firewall rules
+
+After the dashboard ML Service is **Ready**, configure firewall rules. Follow **`Port 443 FW Rule.pdf`** shared with your team.
+
+#### B.6 Note the dashboard endpoint
+
+When status is **Ready**, open the **Connect** tab on the dashboard ML Service detail page and **copy** the **Public Endpoint** for the dashboard.
+
+#### B.7 Verify dashboard (after firewall)
+
+Open the dashboard **Public Endpoint** in your browser and confirm the Streamlit UI loads.
+
+</details>
 
 ---
 
-## Step 4 — Verify end-to-end
+<details>
+<summary><h3>🔍 Step 4 — Verify end-to-end</h3></summary>
 
-1. Open the **dashboard** public URL (port 8501).
-2. Sidebar should show your **ingest public URL** (not `127.0.0.1`).
+After firewall rules are applied on **both** ML Services (Phase A and Phase B):
+
+1. Open the dashboard **Public Endpoint**.
+2. Sidebar should show your ingest **Public Endpoint** (not `127.0.0.1`).
 3. Confirm **Kafka: Connected**.
 4. Click **Start Simulation**.
 5. Verify temperature/humidity update and **Irrigation Action** from Model Serving.
 
 | Symptom | What to check |
-|---------|----------------|
-| Ingest `/health` fails | Port **5000**, **Public Expose**, pod **Ready** |
-| Dashboard page won't load | Port **8501**, **Public Expose** |
-| Simulation error / JSON parse | `INGEST_API_URL` must be the **ingest public URL** from Phase A |
+|---------|---------------|
+| Ingest `/health` fails | Firewall rules applied for ingest; port **5000**, **Public Expose**, pod **Ready** |
+| Dashboard page won't load | Port **8501**, **Public Expose**, firewall rules — follow **`Port 443 FW Rule.pdf`** |
+| Simulation error / JSON parse | `INGEST_API_URL` must be the ingest **Public Endpoint** from Phase A (`<INGEST_ENDPOINT>/ingest`) |
 | Sidebar still shows `127.0.0.1` | `INGEST_API_URL` not set on dashboard ML Service |
 | Kafka disconnected | Same `KAFKA_*` on both services; topic exists |
 | No predictions | `PREDICT_URL`; Model Serving **Ready** |
 
----
-
-## Demo checklist
-
-- [ ] **Ingest** ML Service **Ready** on port **5000**; `/health` and `/ingest` work publicly  
-- [ ] **Dashboard** ML Service **Ready** on port **8501** with `INGEST_API_URL` + `PREDICT_URL`  
-- [ ] **Start Simulation** updates telemetry and irrigation predictions  
-- [ ] Both images pushed and **signed** from `move-it/` root  
-- [ ] Public URLs documented for judges  
+</details>
 
 ---
 
-## Pro tips
+<details>
+<summary><h3>✔️ Demo checklist</h3></summary>
+
+- [ ] **Ingest** ML Service **Ready** on port **5000**; firewall rules applied; `/health` and `/ingest` work publicly
+- [ ] **Dashboard** ML Service **Ready** on port **8501**; firewall rules applied; `INGEST_API_URL` + `PREDICT_URL` set
+- [ ] **Start Simulation** updates telemetry and irrigation predictions
+- [ ] Both images pushed and **signed** from `move-it/` root
+- [ ] **Public Endpoints** documented for judges
+
+</details>
+
+---
+
+<details>
+<summary><h3>💡 Pro tips</h3></summary>
 
 - Use the **built-in simulator** for a reliable hackathon demo; real sensors need the ingest API reachable on port 5000 inside the pod (already started by the container `CMD`).
 - If predictions are slow, check **Vayu Model Serving** latency separately from the dashboard.
 - Never commit secrets — set `PREDICT_URL` and Kafka credentials in the ML Service UI only.
+
+</details>
+
+---
+
+#### Resources
+
+- [Creating ML Service guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/ml-service/#creating-ml-service)
+- [Container Registry guide](https://ipcloud.tatacommunications.com/docs/docs/user-docs/vayu-ai-studio/registry/)
+- **`Port 443 FW Rule.pdf`**
+
+---
+
+| [← Previous — Step 7 — Build App](../07_build_app/) | [Overview](../README.md) | Journey complete |
+|:---|:---:|---:|
