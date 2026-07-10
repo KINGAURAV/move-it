@@ -56,7 +56,7 @@ For the complete product documentation, see the [Model Serving guide](https://ip
      - **Billing Mode:** **Hourly**
      - **Storage Flavor:** **SSD1-Persistent Storage**
      - **Billing Mode for Storage:** **Monthly**
-     - **Size:** **5Gi**
+     - **Size:** **5 GiB**
      - **Volume Mode:** **Dedicated** (replicas are set to **1** automatically when you select this)
 
      Change these if your workload needs more resources.
