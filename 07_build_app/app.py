@@ -1,12 +1,13 @@
 """
-Move-It — Streamlit dashboard.
+Move-It — Streamlit dashboard for RailOps.
 
-Flow: Start Simulation -> POST /ingest -> Kafka -> model predict -> UI
+Flow: Start Simulation -> POST /ingest -> Kafka -> model predict -> UI -> Command Kafka (Act)
 """
 
 from __future__ import annotations
 
 import os
+import json
 import random
 import sys
 import threading
@@ -17,9 +18,11 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import numpy as np
 import requests
 import streamlit as st
-from kafka import KafkaConsumer
+import pydeck as pdk
+from kafka import KafkaConsumer, KafkaProducer
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -27,31 +30,27 @@ sys.path.insert(0, str(APP_DIR))
 from kafka_config import KAFKA_BROKER, KAFKA_TOPIC, consumer_config
 
 LOCAL_INGEST_URL = "http://127.0.0.1:5000/ingest"
-DEFAULT_PREDICT_HOST = os.getenv("VAYU_PREDICT_HOST", "http://localhost:8880")
+DEFAULT_PREDICT_HOST = os.getenv("VAYU_PREDICT_HOST", "https://moveit-modeldeploy-ca942-paas-7250-22326-public.cloudservices.tatacommunications.com")
 DEFAULT_MODEL_NAME = os.getenv("VAYU_MODEL_NAME", "model")
 
+# Define the new command-out topic for the "Act" loop
+# Change this near the top of your app.py if needed to align with your cluster's topic space
+COMMAND_TOPIC = os.getenv("KAFKA_COMMAND_TOPIC", "xoxeb-kafka-topic")
 
 def _is_full_predict_url(url: str) -> bool:
-    """True when the value is already a KServe predict endpoint."""
     return url.rstrip("/").endswith(":predict")
 
 
 def _is_dev_proxy_ingest_url(url: str) -> bool:
-    """Detect Jupyter / codeserver port-forward URLs that return HTML instead of JSON."""
     lowered = url.lower()
     if "proxy" not in lowered:
         return False
-    return any(
-        marker in lowered
-        for marker in ("codeserver", "vscode", "jupyter", "rstudio", "/user/", "aistudio")
-    )
+    return any(marker in lowered for marker in ("codeserver", "vscode", "jupyter", "rstudio", "/user/", "aistudio"))
 
 
 def resolve_ingest_url(raw: str | None = None) -> str:
     url = (raw or os.getenv("INGEST_API_URL", LOCAL_INGEST_URL)).strip()
-    if not url:
-        return LOCAL_INGEST_URL
-    if _is_dev_proxy_ingest_url(url):
+    if not url or _is_dev_proxy_ingest_url(url):
         return LOCAL_INGEST_URL
     if not url.rstrip("/").endswith("/ingest"):
         url = url.rstrip("/") + "/ingest"
@@ -61,12 +60,12 @@ def resolve_ingest_url(raw: str | None = None) -> str:
 def build_predict_url(host: str, model_name: str) -> str:
     host = host.strip().rstrip("/")
     model_name = model_name.strip()
-    if not host:
-        raise ValueError("Set predict host and model name.")
-    if _is_full_predict_url(host):
+    if not host or _is_full_predict_url(host):
         return host
     if not model_name:
         raise ValueError("Set predict host and model name.")
+    if host.endswith("/v1"):
+        return f"{host}/models/{model_name}:predict"
     return f"{host}/v1/models/{model_name}:predict"
 
 
@@ -91,14 +90,22 @@ def parse_ingest_response(resp: requests.Response, payload: dict) -> dict:
         return payload
 
 
-DEFAULT_CATEGORICALS = {
-    "crop ID": "Wheat",
-    "soil_type": "Black Soil",
-    "Seedling Stage": "Germination",
-}
+COLUMNS = [
+    "timestamp", "track_id", "section", "latitude", "longitude", 
+    "vibration_hz", "rail_strain_mu", "alignment_deviation_mm", 
+    "prediction", "probability", "risk_level", "fault_type", 
+    "recommended_action", "rul_days", "assigned_team", "dispatch_status",
+    "command_sent", "command_status"
+]
 
-COLUMNS = ["timestamp", "temp", "humidity", "MOI", "prediction", "probability", "action"]
-
+FEATURE_COLS = [
+    "vibration_hz", 
+    "acoustic_emission_db", 
+    "rail_strain_mu", 
+    "track_temperature_c", 
+    "alignment_deviation_mm", 
+    "last_maintenance_days"
+]
 
 def _shared_state() -> dict:
     if not hasattr(builtins, "_moveit_shared_state"):
@@ -110,6 +117,7 @@ def _shared_state() -> dict:
                 "connected": False,
                 "error": None,
                 "messages": 0,
+                "commands_sent": 0,
                 "last_prediction_error": None,
             },
             "seen_keys": set(),
@@ -130,27 +138,69 @@ _seen_keys = _SHARED["seen_keys"]
 _seen_lock = _SHARED["seen_lock"]
 _state_lock = _SHARED["state_lock"]
 
-FEATURE_COLS = list(DEFAULT_CATEGORICALS.keys()) + ["MOI", "temp", "humidity"]
+
+# Initialize Kafka Producer for the command-out topic
+@st.cache_resource
+def get_kafka_producer():
+    try:
+        # Check if consumer_config has your credentials we can borrow for parity
+        try:
+            from kafka_config import consumer_config
+            cfg = consumer_config()
+            # Extract common authentication fields if they exist in your config file
+            security_protocol = cfg.get("security_protocol", "SASL_PLAINTEXT")
+            sasl_mechanism = cfg.get("sasl_mechanism", "SCRAM-SHA-256")
+        except Exception:
+            # Fallbacks if we need to declare them manually
+            security_protocol = "SASL_PLAINTEXT"
+            sasl_mechanism = "SCRAM-SHA-256"
+
+        return KafkaProducer(
+            bootstrap_servers=KAFKA_BROKER, # Maps to 100.78.64.24:9095
+            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+            acks="all",
+            retries=3,
+            max_block_ms=5000,
+            # Explicit SASL Configuration for the xoxeb cluster
+            security_protocol=security_protocol,
+            sasl_mechanism=sasl_mechanism,
+            sasl_plain_username="xoxeb-kafkauser",
+            sasl_plain_password="8aC5D#EasE"
+        )
+    except Exception as e:
+        print(f"Failed to initialize Authenticated Kafka Producer: {e}")
+        return None
+
+def send_system_command(track_id: str, action: str, level: str):
+    """Publishes an operational directive back to the edge via Kafka."""
+    producer = get_kafka_producer()
+    if not producer:
+        return False
+        
+    command_payload = {
+        "command_timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "track_id": track_id,
+        "directive": "SPEED_RESTRICTION" if level == "HIGH" else "EMERGENCY_SHUTDOWN" if level == "CRITICAL" else "MAINTENANCE_SCHEDULED",
+        "recommended_action": action,
+        "risk_severity": level
+    }
+    
+    try:
+        producer.send(COMMAND_TOPIC, value=command_payload)
+        producer.flush()
+        _kafka_status["commands_sent"] += 1
+        return True
+    except Exception as e:
+        print(f"Error publishing command out: {e}")
+        return False
 
 
-def sync_predict_config(
-    host: str,
-    model_name: str,
-    host_header: str = "",
-    bearer_token: str = "",
-) -> str:
-    """Mirror sidebar predict settings into process-wide state for background threads."""
+def sync_predict_config(host: str, model_name: str, host_header: str = "", bearer_token: str = "") -> str:
     predict_url = resolve_predict_url(host, model_name)
     _SHARED["predict_url"] = predict_url
     _SHARED["predict_host_header"] = host_header.strip()
     _SHARED["predict_bearer_token"] = bearer_token.strip()
     return predict_url
-
-
-def _build_kserve_instance(temp: float, humidity: float, moi: float) -> dict[str, list]:
-    """Build a KServe V1 dict instance (each feature value must be a list)."""
-    row = {**DEFAULT_CATEGORICALS, "MOI": moi, "temp": temp, "humidity": humidity}
-    return {col: [row[col]] for col in FEATURE_COLS}
 
 
 def _predict_headers() -> dict[str, str]:
@@ -164,43 +214,17 @@ def _predict_headers() -> dict[str, str]:
     return headers
 
 
-def _parse_predict_response(body: dict[str, Any]) -> tuple[int, float]:
-    preds = body.get("predictions")
-    if preds is None:
-        raise ValueError(f"No predictions in response: {body}")
-
-    pred = preds[0]
-    if isinstance(pred, (list, tuple)):
-        pred = pred[0]
-    prediction = int(pred)
-
-    probability: float | None = None
-    for key in ("probabilities", "prediction_probabilities"):
-        probas = body.get(key)
-        if not probas:
-            continue
-        row = probas[0]
-        if isinstance(row, (list, tuple)) and len(row) >= 2:
-            probability = float(row[1] if prediction == 1 else row[0])
-            break
-
-    if probability is None:
-        probability = 0.9 if prediction == 1 else 0.1
-
-    return prediction, probability
-
-
-def predict_irrigation(temp: float, humidity: float, moi: float) -> tuple[int, float]:
+def predict_maintenance(data: dict) -> tuple[int, float]:
     predict_url = str(_SHARED.get("predict_url", "")).strip() or os.getenv("PREDICT_URL", "").strip()
     if not predict_url:
-        raise ValueError("Set PREDICT_URL or configure Vayu Model Serving in the sidebar.")
+        raise ValueError("Set PREDICT_URL or configure Vayu Model Serving.")
 
-    payload = {"instances": [_build_kserve_instance(temp, humidity, moi)]}
-
-    if os.getenv("DEBUG_PREDICT"):
-        print("PREDICT URL:", predict_url)
-        print("PAYLOAD:", payload)
-
+    payload = {
+        "instances": [
+            [float(data.get(col, 0.0)) for col in FEATURE_COLS]
+        ]
+    }
+    
     response = requests.post(
         predict_url,
         headers=_predict_headers(),
@@ -208,46 +232,94 @@ def predict_irrigation(temp: float, humidity: float, moi: float) -> tuple[int, f
         timeout=float(os.getenv("PREDICT_TIMEOUT", "30")),
     )
     response.raise_for_status()
-    return _parse_predict_response(response.json())
+    body = response.json()
+    
+    preds = body.get("predictions")
+    if preds is None:
+        raise ValueError(f"No predictions in response: {body}")
+
+    pred = preds[0]
+    if isinstance(pred, list):
+        probability = float(pred[1]) if len(pred) > 1 else float(pred[0])
+        prediction = int(probability >= 0.5)
+    else:
+        prediction = int(pred)
+        probability = 0.90 if prediction == 1 else 0.10
+
+    return prediction, probability
 
 
 def _predict_row(data: dict) -> dict:
-    temp = float(data.get("temp", 0))
-    humidity = float(data.get("humidity", 0))
-    moi = float(data.get("MOI", 10))
+    prediction, probability = predict_maintenance(data)
 
-    if os.getenv("DEBUG_PREDICT"):
-        print("INPUT DATA:", data)
-        print("FEATURES:", temp, humidity, moi)
+    if probability < 0.30: risk_level = "LOW"
+    elif probability < 0.60: risk_level = "MEDIUM"
+    elif probability < 0.85: risk_level = "HIGH"
+    else: risk_level = "CRITICAL"
 
-    prediction, probability = predict_irrigation(temp, humidity, moi)
+    alignment = abs(float(data.get("alignment_deviation_mm", 0)))
+    if risk_level == "LOW": fault_type = "Normal"
+    elif alignment > 4: fault_type = "Track Misalignment"
+    else: fault_type = "Excessive Wear"
 
-    if os.getenv("DEBUG_PREDICT"):
-        print("PRED:", prediction, probability)
+    action_map = {"LOW": "Monitor", "MEDIUM": "Schedule Inspection", "HIGH": "Repair Soon", "CRITICAL": "Immediate Shutdown"}
+    action = action_map[risk_level]
 
-    action = "Irrigation ON" if prediction == 1 else "Idle"
+    base_rul = max(1, 365 - int(data.get("last_maintenance_days", 0)))
+    rul_days = int(base_rul * (1.0 - probability))
 
-    row = {
+    assigned_team = data.get("assigned_team", "Unassigned")
+    if risk_level in ("HIGH", "CRITICAL"):
+        dispatch_status = "Dispatched"
+    elif risk_level == "MEDIUM":
+        dispatch_status = "Standby"
+    else:
+        dispatch_status = "Idle"
+
+    track_hash = hash(str(data.get("track_id", "TRK-001"))) % 1000
+    lat = 40.7128 + (track_hash / 5000.0)
+    lon = -74.0060 + (track_hash / 5000.0)
+
+    # Automatically "Act" if the cloud model yields High/Critical anomalies
+    command_sent = False
+    command_status = "N/A"
+    if risk_level in ["HIGH", "CRITICAL"]:
+        command_sent = send_system_command(str(data.get("track_id", "UNKNOWN")), action, risk_level)
+        command_status = "Dispatched via Kafka" if command_sent else "Failed to Transmit"
+
+    return {
         "timestamp": data.get("timestamp", time.strftime("%H:%M:%S")),
-        "temp": temp,
-        "humidity": humidity,
-        "MOI": moi,
+        "track_id": data.get("track_id", "UNKNOWN"),
+        "section": data.get("section", "UNKNOWN"),
+        "latitude": lat,
+        "longitude": lon,
+        "vibration_hz": float(data.get("vibration_hz", 0)),
+        "rail_strain_mu": float(data.get("rail_strain_mu", 0)),
+        "alignment_deviation_mm": alignment,
         "prediction": prediction,
         "probability": round(probability, 3),
-        "action": action,
+        "risk_level": risk_level,
+        "fault_type": fault_type,
+        "recommended_action": action,
+        "rul_days": rul_days,
+        "assigned_team": assigned_team,
+        "dispatch_status": dispatch_status,
+        "command_sent": command_sent,
+        "command_status": command_status,
+        "acoustic_emission_db": float(data.get("acoustic_emission_db", 0)),
+        "track_temperature_c": float(data.get("track_temperature_c", 0)),
+        "last_maintenance_days": int(data.get("last_maintenance_days", 0))
     }
-    print(f"Predicted: {row}")
-    return row
 
 
 def _append_prediction_row(row: dict) -> None:
     with _SHARED["rows_lock"]:
         _SHARED["prediction_buffer"].append(row)
-        _SHARED["prediction_buffer"] = _SHARED["prediction_buffer"][-20:]
+        _SHARED["prediction_buffer"] = _SHARED["prediction_buffer"][-50:]
 
 
 def enqueue_prediction(data: dict, source: str) -> None:
-    key = (data.get("timestamp"), float(data.get("temp", 0)), float(data.get("humidity", 0)))
+    key = (data.get("timestamp"), data.get("track_id"), float(data.get("vibration_hz", 0)))
     with _seen_lock:
         if key in _seen_keys:
             return
@@ -256,10 +328,8 @@ def enqueue_prediction(data: dict, source: str) -> None:
     try:
         _append_prediction_row(_predict_row(data))
         _kafka_status["last_prediction_error"] = None
-        print(f"Queued prediction from {source}")
     except Exception as exc:
         _kafka_status["last_prediction_error"] = str(exc)
-        print(f"Prediction failed ({source}): {exc}")
 
 
 def kafka_consumer_worker() -> None:
@@ -270,7 +340,6 @@ def kafka_consumer_worker() -> None:
             consumer.subscribe([KAFKA_TOPIC])
             _kafka_status["connected"] = True
             _kafka_status["error"] = None
-            print(f"Kafka consumer connected to {KAFKA_BROKER} / {KAFKA_TOPIC}")
 
             while True:
                 msg_pack = consumer.poll(timeout_ms=1000)
@@ -281,7 +350,6 @@ def kafka_consumer_worker() -> None:
         except Exception as exc:
             _kafka_status["connected"] = False
             _kafka_status["error"] = str(exc)
-            print(f"Kafka Consumer Error: {exc}. Retrying in 5s...")
             time.sleep(5)
         finally:
             if consumer is not None:
@@ -296,23 +364,38 @@ def ensure_kafka_consumer() -> None:
 
 
 def run_sensor_simulation(ingest_url: str) -> None:
-    print(f"Simulation started -> {ingest_url}")
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    dataset_path = BASE_DIR / "01_dataset" / "downloaded_railway_telemetry.csv"
+    if not dataset_path.exists():
+        _kafka_status["last_prediction_error"] = f"Dataset path {dataset_path} missing."
+        return
+
+    df_source = pd.read_csv(dataset_path)
+    
     while _simulating.is_set():
-        payload = {
-            "timestamp": time.strftime("%H:%M:%S"),
-            "temp": round(random.uniform(22.0, 35.0), 2),
-            "humidity": round(random.uniform(40.0, 85.0), 2),
-            "MOI": 10,
-        }
-        try:
-            resp = requests.post(ingest_url, json=payload, timeout=5)
-            data = parse_ingest_response(resp, payload)
-            print(f"Ingest OK: {data}")
-            enqueue_prediction(data, "ingest")
-        except Exception as exc:
-            print(f"Simulation error: {exc}")
-        time.sleep(2)
-    print("Simulation stopped.")
+        for _, row in df_source.iterrows():
+            if not _simulating.is_set():
+                break
+            payload = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "track_id": str(row.get("track_id", "TRK-001")),
+                "section": str(row.get("section", "East")),
+                "vibration_hz": float(row.get("vibration_hz", 0.0)),
+                "acoustic_emission_db": float(row.get("acoustic_emission_db", 0.0)),
+                "rail_strain_mu": float(row.get("rail_strain_mu", 0.0)),
+                "track_temperature_c": float(row.get("track_temperature_c", 0.0)),
+                "alignment_deviation_mm": float(row.get("alignment_deviation_mm", 0.0)),
+                "assigned_team": str(row.get("assigned_team", "Team A")),
+                "last_maintenance_days": int(row.get("last_maintenance_days", 0)),
+                "action_taken": str(row.get("action_taken", "No"))
+            }
+            try:
+                resp = requests.post(ingest_url, json=payload, timeout=5)
+                data = parse_ingest_response(resp, payload)
+                enqueue_prediction(data, "ingest")
+            except Exception as exc:
+                print(f"Simulation error: {exc}")
+            time.sleep(2)
 
 
 def start_simulation(ingest_url: str) -> None:
@@ -321,13 +404,9 @@ def start_simulation(ingest_url: str) -> None:
         st.session_state.simulation_running = True
         thread = getattr(run_sensor_simulation, "_thread", None)
         if thread is None or not thread.is_alive():
-            thread = threading.Thread(
-                target=run_sensor_simulation,
-                args=(ingest_url,),
-                daemon=True,
-            )
+            thread = threading.Thread(target=run_sensor_simulation, args=(ingest_url,), daemon=True)
             thread.start()
-            run_sensor_simulation._thread = thread  # type: ignore[attr-defined]
+            run_sensor_simulation._thread = thread
 
 
 def stop_simulation() -> None:
@@ -338,10 +417,8 @@ def stop_simulation() -> None:
 def sync_predictions_to_session() -> int:
     with _SHARED["rows_lock"]:
         rows = list(_SHARED["prediction_buffer"])
-
     if not rows:
         return 0
-
     st.session_state.prediction_rows = rows
     st.session_state.data_stream = pd.DataFrame(rows)
     return len(rows)
@@ -352,38 +429,102 @@ def render_dashboard() -> None:
 
     if df.empty:
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Temperature", "-")
-        col2.metric("Humidity", "-")
-        col3.metric("ML Prediction", "Waiting")
-        col4.metric("Action", "-")
-        st.info("Start ingestion API, then click **Start Simulation**.")
+        col1.metric("Vibration Telemetry", "-")
+        col2.metric("Est. Remaining Useful Life", "-")
+        col3.metric("AI Risk Assessment", "Waiting")
+        col4.metric("Crew Dispatch Status", "-")
+        st.info("Start Ingestion API, then hit **Start Simulation**.")
         return
 
     latest = df.iloc[-1]
+    
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Temperature", f"{latest['temp']} C")
-    col2.metric("Humidity", f"{latest['humidity']} %")
-    col3.metric(
-        "ML Prediction",
-        "Irrigate" if latest["prediction"] == 1 else "No irrigation",
-        delta=f"p={latest['probability']:.0%}",
-    )
-    col4.metric("Action", latest["action"])
+    col1.metric("Live Vibration", f"{latest['vibration_hz']:.2f} Hz")
+    col2.metric("Remaining Useful Life (RUL)", f"{latest['rul_days']} Days")
+    col3.metric("AI Risk Score", f"{latest['probability']:.0%}", delta=latest["risk_level"])
+    col4.metric("Crew Dispatch Status", f"{latest['assigned_team']} ({latest['dispatch_status']})")
 
-    st.subheader("Live Telemetry + Predictions")
-    display_df = df.sort_index(ascending=False).copy()
-    display_df["prediction"] = display_df["prediction"].map({0: "No irrigation", 1: "Irrigate"})
-    st.dataframe(display_df, use_container_width=True, hide_index=True)
+    # Manual Command Override Control Board
+    st.markdown("### 🎛️ Operator Tactical Command Deck")
+    cmd_col1, cmd_col2, cmd_col3 = st.columns([2, 2, 3])
+    with cmd_col1:
+        selected_track = st.selectbox("Select Target Track Segment", df["track_id"].unique())
+    with cmd_col2:
+        override_action = st.selectbox("Select Force Directive", ["EMERGENCY_SHUTDOWN", "SPEED_RESTRICTION", "DISPATCH_INSPECTION"])
+    with cmd_col3:
+        st.write("") # Padding
+        st.write("") 
+        if st.button("🚨 Broadcast Forced Command Over Kafka", use_container_width=True):
+            success = send_system_command(selected_track, override_action, "CRITICAL")
+            if success:
+                st.toast(f"Forced directive successfully published to {COMMAND_TOPIC}!", icon="🚀")
+            else:
+                st.toast("Failed to emit Kafka payload.", icon="❌")
+
+    st.markdown("---")
+    
+    st.subheader("Interactive Railway Network Spatial Map")
+    map_data = df[["latitude", "longitude", "track_id", "risk_level"]].copy()
+    color_map = {"LOW": [0, 200, 0, 160], "MEDIUM": [240, 200, 0, 180], "HIGH": [240, 100, 0, 200], "CRITICAL": [240, 0, 0, 225]}
+    map_data["color"] = map_data["risk_level"].map(color_map)
+    
+    view_state = pdk.ViewState(latitude=latest["latitude"], longitude=latest["longitude"], zoom=10, pitch=30)
+    layer = pdk.Layer(
+        "ScatterplotLayer",
+        map_data,
+        get_position=["longitude", "latitude"],
+        get_color="color",
+        get_radius=300,
+        pickable=True
+    )
+    st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view_state, tooltip={"text": "Track: {track_id} | Risk: {risk_level}"}))
+
+    st.markdown("---")
 
     c1, c2 = st.columns(2)
     with c1:
-        st.line_chart(df.set_index("timestamp")[["humidity"]])
+        st.subheader("Failure Probability Trends")
+        # Ensure proper chronological sorting so Streamlit can evaluate bounds accurately
+        trend_df = df.dropna(subset=["timestamp", "probability"]).sort_values("timestamp")
+        if not trend_df.empty:
+            st.line_chart(trend_df.set_index("timestamp")[["probability"]])
+        else:
+            st.caption("Waiting for stream metrics...")
+    
     with c2:
-        st.line_chart(df.set_index("timestamp")[["probability"]])
+        st.subheader("Explainable AI (XAI) Diagnostics")
+        # Scale inputs cleanly to avoid sending extreme limits or 0 division to the bar chart axis
+        vibration_contrib = float(latest.get("vibration_hz", 0)) / 50.0
+        strain_contrib = float(latest.get("rail_strain_mu", 0)) / 400.0
+        alignment_contrib = float(latest.get("alignment_deviation_mm", 0)) / 5.0
+        temp_contrib = float(latest.get("track_temperature_c", 0)) / 60.0
+
+        diag_metrics = {
+            "Vibration Delta": max(0.01, vibration_contrib),
+            "Strain Load Factor": max(0.01, strain_contrib),
+            "Alignment Deviation": max(0.01, alignment_contrib),
+            "Thermal Friction Coefficient": max(0.01, temp_contrib)
+        }
+        diag_df = pd.DataFrame(list(diag_metrics.items()), columns=["Feature Metric", "Relative Risk Contribution"])
+        st.bar_chart(diag_df.set_index("Feature Metric")[["Relative Risk Contribution"]])
+
+    st.markdown("---")
+
+    # Command Execution Audit Log
+    st.subheader("📡 Active Fleet Incidents & Closed-Loop Command Audit Logs")
+    incidents = df[df["risk_level"].isin(["HIGH", "CRITICAL"])].sort_index(ascending=False)
+    if not incidents.empty:
+        st.dataframe(incidents[["timestamp", "track_id", "risk_level", "recommended_action", "command_status"]], use_container_width=True, hide_index=True)
+    else:
+        st.success("No active failure incidents detected across track assets.")
+
+    st.subheader("All Live Telemetry Stream Logs")
+    display_df = df.sort_index(ascending=False).copy()
+    st.dataframe(display_df, use_container_width=True, hide_index=True)
 
 
-# --- Streamlit UI ---
-st.set_page_config(page_title="Smart Greenhouse Monitor", layout="wide")
+# --- Streamlit UI Setup ---
+st.set_page_config(page_title="RailOps Predictive Maintenance System", layout="wide")
 
 if "data_stream" not in st.session_state:
     st.session_state.data_stream = pd.DataFrame(columns=COLUMNS)
@@ -403,27 +544,15 @@ if "predict_bearer_token" not in st.session_state:
     st.session_state.predict_bearer_token = os.getenv("VAYU_BEARER_TOKEN", "")
 
 st.sidebar.header("Vayu Model Serving")
-st.session_state.predict_host = st.sidebar.text_input(
-    "Predict host (base URL or full :predict endpoint)",
-    value=st.session_state.predict_host,
-)
+st.session_state.predict_host = st.sidebar.text_input("Predict host base URL", value=st.session_state.predict_host)
 st.session_state.predict_model = st.sidebar.text_input("Model name", value=st.session_state.predict_model)
-st.session_state.predict_host_header = st.sidebar.text_input(
-    "Host header (optional)",
-    value=st.session_state.predict_host_header,
-)
-st.session_state.predict_bearer_token = st.sidebar.text_input(
-    "Bearer token (optional)",
-    value=st.session_state.predict_bearer_token,
-    type="password",
-)
+st.session_state.predict_host_header = st.sidebar.text_input("Host header (optional)", value=st.session_state.predict_host_header)
+st.session_state.predict_bearer_token = st.sidebar.text_input("Bearer token (optional)", value=st.session_state.predict_bearer_token, type="password")
 
 try:
     predict_url = sync_predict_config(
-        st.session_state.predict_host,
-        st.session_state.predict_model,
-        st.session_state.predict_host_header,
-        st.session_state.predict_bearer_token,
+        st.session_state.predict_host, st.session_state.predict_model,
+        st.session_state.predict_host_header, st.session_state.predict_bearer_token
     )
     st.sidebar.success("Predict endpoint ready")
     st.sidebar.code(predict_url, language=None)
@@ -433,30 +562,12 @@ except ValueError as exc:
 
 ensure_kafka_consumer()
 
-with st.sidebar.expander("Model debug"):
-    st.write(f"Model inputs: {', '.join(FEATURE_COLS)}")
-    if st.button("Test prediction (25C, 60% humidity)"):
-        if not predict_url:
-            st.error("Configure a valid predict endpoint first.")
-        else:
-            try:
-                pred, prob = predict_irrigation(25.0, 60.0, 10.0)
-                st.success(f"prediction={pred}, probability={prob:.3f}")
-            except Exception as exc:
-                st.error(str(exc))
-
-st.title("Smart Greenhouse Irrigation Monitor")
-st.caption("Simulation -> Ingest API -> Kafka -> ML prediction -> Dashboard")
+st.title("RailOps Live Operations Dashboard")
+st.caption("Real-Time Telemetry Pipeline Buffered via Kafka & Audited by Cloud Inference Engines")
 
 st.sidebar.header("Control Panel")
-st.session_state.ingest_api_url = st.sidebar.text_input(
-    "Ingest API URL",
-    value=st.session_state.ingest_api_url,
-)
+st.session_state.ingest_api_url = st.sidebar.text_input("Ingest API URL", value=st.session_state.ingest_api_url)
 ingest_url = resolve_ingest_url(st.session_state.ingest_api_url)
-if ingest_url != st.session_state.ingest_api_url:
-    st.session_state.ingest_api_url = ingest_url
-st.sidebar.code(ingest_url, language="text")
 
 if st.sidebar.button("Start Simulation"):
     if not predict_url:
@@ -465,8 +576,6 @@ if st.sidebar.button("Start Simulation"):
         start_simulation(ingest_url)
         st.sidebar.success("Simulation running")
         st.rerun()
-    else:
-        st.sidebar.warning("Already running")
 
 if st.sidebar.button("Stop Simulation"):
     stop_simulation()
@@ -485,16 +594,13 @@ if st.sidebar.button("Clear Data"):
 def render_live_status() -> None:
     sim_running = _simulating.is_set() or st.session_state.simulation_running
     st.write("Simulation:", "Running" if sim_running else "Stopped")
-    st.write("Kafka:", "Connected" if _kafka_status["connected"] else "Disconnected")
-    st.write(f"Kafka messages: {_kafka_status['messages']}")
-    st.write(f"UI rows: {len(st.session_state.data_stream)}")
-    with _SHARED["rows_lock"]:
-        buffered = len(_SHARED["prediction_buffer"])
-    st.write(f"Buffered predictions: {buffered}")
+    st.write("Kafka Ingestion:", "Connected" if _kafka_status["connected"] else "Disconnected")
+    st.write(f"Telemetry Messages Processed: {_kafka_status['messages']}")
+    st.write(f"Command Directives Dispatched: {_kafka_status['commands_sent']}")
     if _kafka_status["error"]:
-        st.caption(f"Kafka: {_kafka_status['error']}")
+        st.caption(f"Kafka Error: {_kafka_status['error']}")
     if _kafka_status["last_prediction_error"]:
-        st.error(f"Prediction error: {_kafka_status['last_prediction_error']}")
+        st.error(f"Prediction Gateway Error: {_kafka_status['last_prediction_error']}")
 
 
 @st.fragment(run_every=timedelta(seconds=2))
@@ -516,4 +622,5 @@ with st.sidebar:
     live_status()
 
 st.sidebar.divider()
-st.sidebar.write(f"Topic: {KAFKA_TOPIC}")
+st.sidebar.write(f"Telemetry Topic: {KAFKA_TOPIC}")
+st.sidebar.write(f"Command Topic: {COMMAND_TOPIC}")

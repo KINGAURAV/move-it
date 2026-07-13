@@ -1,26 +1,21 @@
-# Move-It — Streamlit dashboard only (simulator + Kafka consumer + Model Serving client)
-# Deploy as ML Service 2 (port 8501). Requires INGEST_API_URL from the ingest service.
-# Build from move-it/ root:
-#   docker build -f 07_build_app/Dockerfile.dashboard -t <image-registry>/<project>/move-it-dashboard:latest --push .
 FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY 01_dataset/cropdata.csv ./01_dataset/cropdata.csv
-COPY 07_build_app/app.py \
-     07_build_app/kafka_config.py \
-     ./07_build_app/
+COPY . .
 
 WORKDIR /app/07_build_app
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+ENV STREAMLIT_SERVER_PORT=8501
+ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
+ENV STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+
+CMD ["streamlit","run","app.py","--server.address=0.0.0.0","--server.port=8501"]

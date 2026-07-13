@@ -1,23 +1,19 @@
-# Move-It — Ingestion API only (FastAPI → Kafka)
-# Deploy as ML Service 1 (port 5000). Build from move-it/ root:
-#   docker build -f 07_build_app/Dockerfile.ingest -t <image-registry>/<project>/move-it-ingest:latest --push .
 FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PORT=5000
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PORT=5000
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY 07_build_app/ingestion_api.py \
-     07_build_app/kafka_config.py \
-     ./07_build_app/
-
+COPY 07_build_app/ ./07_build_app/
+COPY 01_dataset/ ./01_dataset/
+COPY 07_build_app/ ./07_build_app/
 WORKDIR /app/07_build_app
 
 EXPOSE 5000
 
-CMD ["sh", "-c", "exec uvicorn ingestion_api:app --host 0.0.0.0 --port ${PORT:-5000}"]
+CMD ["uvicorn", "ingestion_api:app", "--host", "0.0.0.0", "--port", "5000"]

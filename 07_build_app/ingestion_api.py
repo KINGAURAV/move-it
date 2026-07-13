@@ -1,4 +1,4 @@
-"""FastAPI gateway: receive sensor HTTP POST and publish to Vayu Kafka."""
+"""FastAPI gateway: receive rail sensor HTTP POST and publish to Vayu Kafka."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from kafka_config import KAFKA_BROKER, KAFKA_TOPIC, producer_config
 
@@ -22,11 +22,18 @@ log = logging.getLogger(__name__)
 _producer: KafkaProducer | None = None
 
 
-class SensorPayload(BaseModel):
-    temp: float
-    humidity: float
-    MOI: float = Field(default=10.0)
+class RailSensorPayload(BaseModel):
     timestamp: str | None = None
+    track_id: str
+    section: str
+    vibration_hz: float
+    acoustic_emission_db: float
+    rail_strain_mu: float
+    track_temperature_c: float
+    alignment_deviation_mm: float
+    assigned_team: str
+    last_maintenance_days: int
+    action_taken: str
 
 
 class IngestResponse(BaseModel):
@@ -64,10 +71,11 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="Move-It Ingestion API",
-    description="HTTP gateway for greenhouse sensor telemetry -> Vayu Kafka",
+    title="Move-It RailOps Ingestion API",
+    description="HTTP gateway for railway telemetry -> Vayu Kafka",
     version="1.0.0",
     lifespan=lifespan,
+    root_path="/proxy/5000",
 )
 
 
@@ -90,12 +98,19 @@ def health() -> HealthResponse:
 
 
 @app.post("/ingest", response_model=IngestResponse)
-def ingest(payload: SensorPayload) -> IngestResponse:
+def ingest(payload: RailSensorPayload) -> IngestResponse:
     message = {
-        "timestamp": payload.timestamp or time.strftime("%H:%M:%S"),
-        "temp": payload.temp,
-        "humidity": payload.humidity,
-        "MOI": payload.MOI,
+        "timestamp": payload.timestamp or time.strftime("%Y-%m-%d %H:%M:%S"),
+        "track_id": payload.track_id,
+        "section": payload.section,
+        "vibration_hz": payload.vibration_hz,
+        "acoustic_emission_db": payload.acoustic_emission_db,
+        "rail_strain_mu": payload.rail_strain_mu,
+        "track_temperature_c": payload.track_temperature_c,
+        "alignment_deviation_mm": payload.alignment_deviation_mm,
+        "assigned_team": payload.assigned_team,
+        "last_maintenance_days": payload.last_maintenance_days,
+        "action_taken": payload.action_taken,
     }
     log.info("Received sensor data: %s", message)
 
